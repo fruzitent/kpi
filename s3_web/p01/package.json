@@ -1,0 +1,25 @@
+{
+  "$help": "https://docs.npmjs.com/files/package.json",
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/package.json",
+  "author": {
+    "email": "fruzit@gmail.com",
+    "name": "fruzitent",
+    "url": "https://github.com/fruzitent"
+  },
+  "dependencies": {},
+  "description": "s3_web/p01",
+  "devDependencies": {},
+  "keywords": [],
+  "license": "SEE LICENSE IN license.md",
+  "main": "index.js",
+  "name": "p01",
+  "private": true,
+  "readme": "readme.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fruzitent/kpi.git"
+  },
+  "scripts": {},
+  "type": "module",
+  "version": "1.0.0"
+}
