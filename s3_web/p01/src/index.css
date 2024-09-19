@@ -3,9 +3,9 @@ html {
   background: light-dark(var(--ctp-latte-base), var(--ctp-mocha-base));
   color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
   color-scheme: light dark;
+}
+
 a {
   color: light-dark(var(--ctp-latte-lavender), var(--ctp-mocha-lavender));
   text-decoration: none;
-}
-
 }
