@@ -3,9 +3,39 @@ html {
   background: light-dark(var(--ctp-latte-base), var(--ctp-mocha-base));
   color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
   color-scheme: light dark;
+  min-height: 100vh;
 }
 
 a {
   color: light-dark(var(--ctp-latte-lavender), var(--ctp-mocha-lavender));
   text-decoration: none;
+}
+
+footer,
+header {
+  padding: 1em 2em;
+  position: sticky;
+}
+
+footer {
+  background: linear-gradient(
+    to top,
+    light-dark(var(--ctp-latte-mantle), var(--ctp-mocha-mantle)),
+    transparent 90%
+  );
+  text-align: right;
+  top: 100vh;
+}
+
+header {
+  background: linear-gradient(
+    to bottom,
+    light-dark(var(--ctp-latte-mantle), var(--ctp-mocha-mantle)),
+    transparent 90%
+  );
+  top: 0;
+}
+
+main {
+  padding: 0 2em;
 }
