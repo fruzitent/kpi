@@ -6,7 +6,10 @@
     "name": "fruzitent",
     "url": "https://github.com/fruzitent"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@catppuccin/palette": "1.4.0",
+    "modern-normalize": "3.0.1"
+  },
   "description": "s3_web/p01",
   "devDependencies": {
     "@farmfe/cli": "1.0.4",

@@ -1,3 +1,6 @@
+@import "@catppuccin/palette/css/catppuccin.css";
+@import "modern-normalize/modern-normalize.css";
+
 body,
 html {
   background: light-dark(var(--ctp-latte-base), var(--ctp-mocha-base));
