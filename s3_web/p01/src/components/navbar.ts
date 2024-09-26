@@ -13,6 +13,7 @@ class Navbar extends HTMLElement {
       alert(`failed to populate node: ${res.error}`);
       return;
     }
+    this.shadowRoot?.adoptedStyleSheets.push(styles);
   }
 
   async connectedCallback() {
