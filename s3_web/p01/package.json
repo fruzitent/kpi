@@ -13,10 +13,10 @@
   "description": "s3_web/p01",
   "devDependencies": {
     "@biomejs/biome": "1.9.2",
-    "@farmfe/cli": "1.0.4",
-    "@farmfe/core": "1.3.23",
     "@types/node": "22.6.1",
-    "typescript": "5.6.2"
+    "typescript": "5.6.2",
+    "vite": "5.4.8",
+    "vite-plugin-standard-css-modules": "0.0.11"
   },
   "keywords": [],
   "license": "SEE LICENSE IN license.md",
@@ -29,9 +29,10 @@
     "url": "https://github.com/fruzitent/kpi.git"
   },
   "scripts": {
-    "build": "farm build",
+    "build": "vite build",
     "check": "biome check --write .",
-    "dev": "farm"
+    "dev": "vite",
+    "preview": "vite preview"
   },
   "type": "module",
   "version": "1.0.0"
