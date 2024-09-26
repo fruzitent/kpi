@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <link href="./src/index.css" rel="stylesheet" />
@@ -7,12 +7,26 @@
     <title>s3_web/p01</title>
   </head>
   <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
     <header>
-      <h1>The Fairy Philosophy</h1>
+      <h1>Gachimuchi Pants Wrestling</h1>
     </header>
-    <main></main>
+    <main>
+      <my-navbar></my-navbar>
+    </main>
     <footer>
       <h3>Made with <a href="https://catppuccin.com">Catppuccin</a></h3>
     </footer>
+    <template id="navbar">
+      <nav>
+        <ol></ol>
+      </nav>
+    </template>
+    <template id="navbar-item">
+      <li>
+        <a></a>
+      </li>
+    </template>
+    <script src="./src/index.ts" type="module"></script>
   </body>
 </html>
