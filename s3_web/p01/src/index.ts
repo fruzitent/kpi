@@ -2,6 +2,10 @@ if (!("content" in document.createElement("template"))) {
   throw new Error("<template> is not supported");
 }
 
+type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
+const Ok = <T>(value: T): Result<T, never> => ({ ok: true, value });
+const Err = <E>(error: E): Result<never, E> => ({ ok: false, error });
+
 type Page = {
   href: URL;
   title: string;
@@ -36,31 +40,33 @@ const populateNode = <
 >(
   node: N,
   selector: S,
-): ShadowRoot => {
+): Result<void, string> => {
   const template = document.querySelector<HTMLTemplateElement>(selector);
   if (template === null) {
-    throw new Error(`failed to query: ${selector}`);
+    return Err(`failed to query: ${selector}`);
   }
-  const shadowRoot = node.attachShadow({ mode: "open" });
-  shadowRoot.appendChild(template.content.cloneNode(true));
-  return shadowRoot;
+  node.attachShadow({ mode: "open" });
+  node.shadowRoot?.appendChild(template.content.cloneNode(true));
+  return Ok(undefined);
 };
 
 customElements.define(
   "my-navbar",
   class extends HTMLElement {
-    #root: ShadowRoot;
-
     constructor() {
       super();
-      this.#root = populateNode(this, "template#navbar");
+      const res = populateNode(this, "template#navbar");
+      if (!res.ok) {
+        alert(`failed to populate node: ${res.error}`);
+        return;
+      }
     }
 
     connectedCallback() {
       const selector = "ol";
-      const olist = this.#root.querySelector<HTMLOListElement>(selector);
-      if (olist === null) {
-        throw new Error(`failed to query: ${selector}`);
+      const olist = this.shadowRoot?.querySelector<HTMLOListElement>(selector);
+      if (typeof olist === "undefined" || olist === null) {
+        return alert(`failed to query: ${selector}`);
       }
 
       for (const page of PAGES) {
@@ -76,32 +82,35 @@ customElements.define(
 customElements.define(
   "my-navbar-item",
   class extends HTMLElement {
-    #root: ShadowRoot;
-
     constructor() {
       super();
-      this.#root = populateNode(this, "template#navbar-item");
+      const res = populateNode(this, "template#navbar-item");
+      if (!res.ok) {
+        alert(`failed to populate node: ${res.error}`);
+        return;
+      }
     }
 
     connectedCallback() {
       const selector = "a";
-      const anchor = this.#root.querySelector<HTMLAnchorElement>(selector);
-      if (anchor === null) {
-        throw new Error(`failed to query: ${selector}`);
+      const anchor =
+        this.shadowRoot?.querySelector<HTMLAnchorElement>(selector);
+      if (typeof anchor === "undefined" || anchor === null) {
+        return alert(`failed to query: ${selector}`);
       }
 
       const href = this.getAttribute("data-href");
       if (href !== null) {
         anchor.href = href;
       } else {
-        throw new Error("missing required parameter: href");
+        return alert("missing required parameter: href");
       }
 
       const title = this.getAttribute("data-title");
       if (title !== null) {
         anchor.innerHTML = title;
       } else {
-        throw new Error("missing required parameter: title");
+        return alert("missing required parameter: title");
       }
     }
   },
