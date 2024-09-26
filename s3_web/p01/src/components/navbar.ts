@@ -32,7 +32,7 @@ class Navbar extends HTMLElement {
 
     for (const page of pages) {
       const item = document.createElement("my-navbar-item");
-      item.dataset.href = page.href.toString();
+      item.dataset.href = page.href;
       item.dataset.title = page.title;
       olist.appendChild(item);
     }
