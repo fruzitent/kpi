@@ -62,6 +62,7 @@ export const populateNode = <
 >(
   node: N,
   selector: S,
+  styles?: CSSStyleSheet,
 ): Result<void, string> => {
   const template = document.querySelector<HTMLTemplateElement>(selector);
   if (template === null) {
@@ -69,5 +70,8 @@ export const populateNode = <
   }
   node.attachShadow({ mode: "open" });
   node.shadowRoot?.appendChild(template.content.cloneNode(true));
+  if (styles) {
+    node.shadowRoot?.adoptedStyleSheets.push(styles);
+  }
   return Ok(undefined);
 };

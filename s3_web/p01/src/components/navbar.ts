@@ -8,12 +8,11 @@ import styles from "@/components/navbar.module.css" with { type: "css" };
 class Navbar extends HTMLElement {
   constructor() {
     super();
-    const res = populateNode(this, "template#navbar");
+    const res = populateNode(this, "template#navbar", styles);
     if (!res.ok) {
       alert(`failed to populate node: ${res.error}`);
       return;
     }
-    this.shadowRoot?.adoptedStyleSheets.push(styles);
   }
 
   async connectedCallback() {
