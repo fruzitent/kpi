@@ -1,6 +1,20 @@
+#:schema https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/cargo.json
+# @help: https://doc.rust-lang.org/cargo/reference/manifest.html
+
 [package]
-name = "p01"
-version = "0.1.0"
+authors = ["fruzitent <fruzit@gmail.com>"]
+description = "s3_dsa/p01"
 edition = "2021"
+license-file = "license.md"
+name = "p01"
+readme = "readme.md"
+repository = "git+https://github.com/fruzitent/kpi.git"
+version = "0.1.0"
+
+[build-dependencies]
 
 [dependencies]
+
+[dev-dependencies]
+
+[features]
