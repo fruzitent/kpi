@@ -14,6 +14,10 @@ version = "0.1.0"
 [build-dependencies]
 
 [dependencies]
+bytemuck = "1.19.0"
+fern = "0.7.0"
+humantime = "2.1.0"
+log = "0.4.22"
 nanorand = "0.7.0"
 
 [features]
