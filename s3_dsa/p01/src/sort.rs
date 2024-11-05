@@ -21,5 +21,5 @@ pub fn polyphase_merge_sort(input_path: &std::path::Path, output_path: &std::pat
     process_chunk(input_file, CHUNK_SIZE, |buffer| {
         let data: &[i32] = bytemuck::try_cast_slice(buffer).unwrap();
         println!("{data:?}");
-    })
+    });
 }
