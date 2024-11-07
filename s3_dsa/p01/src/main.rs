@@ -32,6 +32,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         std::io::Write::write_all(&mut input_file, &data).unwrap();
     }
 
-    sort::polyphase_merge_sort(input_path, output_path, 3);
+    sort::polyphase_merge_sort(input_path, output_path, false, 3);
     Ok(())
 }
