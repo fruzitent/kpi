@@ -1,6 +1,9 @@
 const CHUNK_SIZE: usize = 4096;
 
-fn process_chunk(file: std::fs::File, chunk_size: usize, callback: fn(buffer: &[u8])) {
+fn process_file<F>(file: std::fs::File, chunk_size: usize, mut callback: F)
+where
+    F: FnMut(&[u8]),
+{
     let mut reader = std::io::BufReader::with_capacity(chunk_size, file);
     loop {
         let mut buffer = vec![0; chunk_size].into_boxed_slice();
@@ -12,14 +15,47 @@ fn process_chunk(file: std::fs::File, chunk_size: usize, callback: fn(buffer: &[
     }
 }
 
+fn process_chunk(runs: &mut Vec<Vec<i32>>, data: &[i32]) {
+    let mut run = runs.last_mut().unwrap();
+    for &curr in data {
+        match run.last() {
+            Some(&prev) => {
+                if prev > curr {
+                    run.push(curr);
+                } else {
+                    runs.push(vec![curr]);
+                    run = runs.last_mut().unwrap();
+                }
+            }
+            None => {
+                run.push(curr);
+            }
+        }
+    }
+}
+
 /// @see: https://en.wikipedia.org/wiki/Polyphase_merge_sort
 pub fn polyphase_merge_sort(input_path: &std::path::Path, output_path: &std::path::Path, tape_count: usize) {
     if tape_count >= 8 {
         log::warn!("balanced_merge_sort() may perform better at 8 or more tapes");
     }
+    let mut runs: Vec<Vec<i32>> = vec![vec![]];
     let input_file = std::fs::File::open(input_path).unwrap();
-    process_chunk(input_file, CHUNK_SIZE, |buffer| {
+    process_file(input_file, CHUNK_SIZE, |buffer| {
         let data: &[i32] = bytemuck::try_cast_slice(buffer).unwrap();
-        println!("{data:?}");
+        process_chunk(&mut runs, data);
     });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn get_records() {
+        let mut runs: Vec<Vec<i32>> = vec![vec![]];
+        let data: &[i32] = &[5, 4, 3, 7, 6, 9];
+        process_chunk(&mut runs, data);
+        assert_eq!(runs, vec![vec![5, 4, 3], vec![7, 6], vec![9]]);
+    }
 }
