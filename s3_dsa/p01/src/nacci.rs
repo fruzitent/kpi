@@ -3,12 +3,11 @@ pub struct Nacci {
     // TODO: replace usize with T
     cache: Vec<usize>,
     index: usize,
-    length: usize,
     total: usize,
 }
 
 impl Nacci {
-    pub fn new(order: usize, length: usize) -> Option<Self> {
+    pub fn new(order: usize) -> Option<Self> {
         if order < 2 {
             // TODO: https://en.wikipedia.org/wiki/Negafibonacci_coding
             return None;
@@ -18,7 +17,6 @@ impl Nacci {
         Some(Self {
             cache,
             index: 0,
-            length,
             total: 1,
         })
     }
@@ -35,10 +33,6 @@ impl Iterator for Nacci {
     }
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.length == 0 {
-            return None;
-        }
-        self.length -= 1;
         let result = self.cache[self.index];
         self.cache[self.index] = self.total;
         self.index = (self.index + 1) % self.cache.len();
@@ -53,19 +47,19 @@ mod tests {
 
     #[test]
     fn it_works() {
-        assert!(Nacci::new(1, 16).is_none());
+        assert!(Nacci::new(1).is_none());
         assert_eq!(
-            Nacci::new(2, 16).unwrap().collect::<Vec<_>>(),
+            Nacci::new(2).unwrap().take(16).collect::<Vec<_>>(),
             vec![0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610]
         );
         assert_eq!(
-            Nacci::new(3, 16).unwrap().collect::<Vec<_>>(),
+            Nacci::new(3).unwrap().take(16).collect::<Vec<_>>(),
             vec![0, 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, 149, 274, 504, 927, 1705]
         );
         assert_eq!(
-            Nacci::new(4, 16).unwrap().collect::<Vec<_>>(),
+            Nacci::new(4).unwrap().take(16).collect::<Vec<_>>(),
             vec![0, 0, 0, 1, 1, 2, 4, 8, 15, 29, 56, 108, 208, 401, 773, 1490]
         );
-        assert_eq!(Nacci::new(5, 0).unwrap().collect::<Vec<usize>>(), vec![]);
+        assert_eq!(Nacci::new(5).unwrap().take(0).collect::<Vec<usize>>(), vec![]);
     }
 }
