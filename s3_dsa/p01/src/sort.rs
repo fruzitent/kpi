@@ -1,3 +1,5 @@
+use crate::nacci;
+
 const CHUNK_SIZE: usize = 4096;
 
 fn comparator<T>(a: T, b: T, reverse: bool) -> bool
@@ -56,11 +58,15 @@ pub fn polyphase_merge_sort(
         log::warn!("balanced_merge_sort() may perform better at 8 or more tapes");
     }
     let mut runs: Vec<Vec<i32>> = vec![vec![]];
+
     let input_file = std::fs::File::open(input_path).unwrap();
     process_file(input_file, CHUNK_SIZE, |buffer| {
         let data: &[i32] = bytemuck::try_cast_slice(buffer).unwrap();
         process_chunk(&mut runs, data, reverse);
     });
+
+    let dist = nacci::get_dist(runs.len(), tape_count);
+    println!("{dist:?}");
 }
 
 #[cfg(test)]

@@ -41,6 +41,18 @@ impl Iterator for Nacci {
     }
 }
 
+pub fn get_dist(length: usize, tape_count: usize) -> Vec<usize> {
+    let fib = Nacci::new(tape_count - 1).unwrap();
+    let mut levels: Vec<usize> = vec![0; tape_count - 1];
+    for (i, val) in fib.enumerate() {
+        levels[i % (tape_count - 1)] = val;
+        if levels.iter().sum::<usize>() >= length {
+            break;
+        }
+    }
+    levels
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
