@@ -30,7 +30,7 @@ where
 
 fn process_chunk(runs: &mut Vec<Vec<i32>>, data: &[i32], reverse: bool) {
     let mut run = runs.last_mut().unwrap();
-    for &curr in data {
+    for &curr in data.iter() {
         match run.last() {
             Some(&prev) => {
                 if comparator(prev, curr, reverse) {
