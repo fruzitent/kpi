@@ -56,7 +56,7 @@ fn process_chunk(runs: &mut Vec<Vec<i32>>, data: &[i32], reverse: bool) {
 
 type Tape<T> = Vec<Vec<T>>;
 
-fn write_to_tape<T>(series: Tape<T>, dist: &mut Vec<usize>, tapes: &mut Vec<Tape<T>>)
+fn write_to_tape<T>(series: Tape<T>, dist: &mut [usize], tapes: &mut [Tape<T>])
 where
     T: Clone,
 {
