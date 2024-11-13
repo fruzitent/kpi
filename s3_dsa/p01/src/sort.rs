@@ -47,6 +47,25 @@ fn process_chunk(runs: &mut Vec<Vec<i32>>, data: &[i32], reverse: bool) {
     }
 }
 
+type Tape<T> = Vec<Vec<T>>;
+
+fn write_to_tape<T>(series: Tape<T>, dist: &mut Vec<usize>, tapes: &mut Vec<Tape<T>>)
+where
+    T: Clone,
+{
+    let mut iter = series.iter();
+    for (i, d) in dist.iter_mut().enumerate() {
+        while *d != 0 {
+            if let Some(s) = iter.next() {
+                tapes[i].push(s.clone());
+            } else {
+                tapes[i].push(vec![]);
+            }
+            *d -= 1;
+        }
+    }
+}
+
 /// @see: https://en.wikipedia.org/wiki/Polyphase_merge_sort
 pub fn polyphase_merge_sort(
     input_path: &std::path::Path,
@@ -57,16 +76,17 @@ pub fn polyphase_merge_sort(
     if tape_count >= 8 {
         log::warn!("balanced_merge_sort() may perform better at 8 or more tapes");
     }
-    let mut runs: Vec<Vec<i32>> = vec![vec![]];
+    let mut series: Tape<i32> = vec![vec![]];
 
     let input_file = std::fs::File::open(input_path).unwrap();
     process_file(input_file, CHUNK_SIZE, |buffer| {
         let data: &[i32] = bytemuck::try_cast_slice(buffer).unwrap();
-        process_chunk(&mut runs, data, reverse);
+        process_chunk(&mut series, data, reverse);
     });
 
-    let dist = nacci::get_dist(runs.len(), tape_count);
-    println!("{dist:?}");
+    let mut dist = nacci::get_dist(series.len(), tape_count);
+    let mut tapes: Vec<Tape<i32>> = vec![vec![]; tape_count];
+    write_to_tape(series, &mut dist, &mut tapes);
 }
 
 #[cfg(test)]
@@ -74,7 +94,26 @@ mod tests {
     use super::*;
 
     #[test]
-    fn get_records() {
+    fn fill_empty() {
+        let mut dist = vec![1, 2, 4];
+        let series: Tape<i32> = vec![vec![6], vec![3, 20], vec![15], vec![13], vec![8, 10, 17], vec![1]];
+        let tape_count: usize = 4;
+
+        let mut tapes: Vec<Tape<i32>> = vec![vec![]; tape_count];
+        write_to_tape(series, &mut dist, &mut tapes);
+        assert_eq!(
+            tapes,
+            vec![
+                vec![vec![6]],
+                vec![vec![3, 20], vec![15]],
+                vec![vec![13], vec![8, 10, 17], vec![1], vec![]],
+                vec![],
+            ]
+        );
+    }
+
+    #[test]
+    fn get_series() {
         let mut runs: Vec<Vec<i32>> = vec![vec![]];
         let data: &[i32] = &[5, 4, 3, 7, 6, 9];
         process_chunk(&mut runs, data, true);
