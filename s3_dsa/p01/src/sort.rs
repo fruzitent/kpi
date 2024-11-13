@@ -109,7 +109,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn fill_empty() {
+    fn add_dummy_series() {
         let mut dist = vec![1, 2, 4];
         let series: Tape<i32> = vec![vec![6], vec![3, 20], vec![15], vec![13], vec![8, 10, 17], vec![1]];
         let tape_count: usize = 4;
