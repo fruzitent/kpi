@@ -83,10 +83,14 @@ pub fn polyphase_merge_sort(
         let data: &[i32] = bytemuck::try_cast_slice(buffer).unwrap();
         process_chunk(&mut series, data, reverse);
     });
+    log::debug!("series={series:?}");
 
     let mut dist = nacci::get_dist(series.len(), tape_count);
+    log::debug!("dist={dist:?}");
+
     let mut tapes: Vec<Tape<i32>> = vec![vec![]; tape_count];
     write_to_tape(series, &mut dist, &mut tapes);
+    log::debug!("tapes={tapes:?}");
 }
 
 #[cfg(test)]
