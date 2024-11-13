@@ -29,8 +29,15 @@ where
 }
 
 fn process_chunk(runs: &mut Vec<Vec<i32>>, data: &[i32], reverse: bool) {
+    #[cfg(feature = "init_merge")]
     let mut run = runs.last_mut().unwrap();
+
     for &curr in data.iter() {
+        #[cfg(not(feature = "init_merge"))]
+        // TODO: unused variable: reverse
+        runs.push(vec![curr]);
+
+        #[cfg(feature = "init_merge")]
         match run.last() {
             Some(&prev) => {
                 if comparator(prev, curr, reverse) {
@@ -76,7 +83,11 @@ pub fn polyphase_merge_sort(
     if tape_count >= 8 {
         log::warn!("balanced_merge_sort() may perform better at 8 or more tapes");
     }
-    let mut series: Tape<i32> = vec![vec![]];
+
+    let mut series: Tape<i32> = vec![
+        #[cfg(feature = "init_merge")]
+        vec![],
+    ];
 
     let input_file = std::fs::File::open(input_path).unwrap();
     process_file(input_file, CHUNK_SIZE, |buffer| {
@@ -118,9 +129,18 @@ mod tests {
 
     #[test]
     fn get_series() {
-        let mut runs: Vec<Vec<i32>> = vec![vec![]];
+        let mut series: Tape<i32> = vec![
+            #[cfg(feature = "init_merge")]
+            vec![],
+        ];
+
         let data: &[i32] = &[5, 4, 3, 7, 6, 9];
-        process_chunk(&mut runs, data, true);
-        assert_eq!(runs, vec![vec![5, 4, 3], vec![7, 6], vec![9]]);
+        process_chunk(&mut series, data, true);
+
+        #[cfg(feature = "init_merge")]
+        assert_eq!(series, vec![vec![5, 4, 3], vec![7, 6], vec![9]]);
+
+        #[cfg(not(feature = "init_merge"))]
+        assert_eq!(series, vec![vec![5], vec![4], vec![3], vec![7], vec![6], vec![9]]);
     }
 }

@@ -21,3 +21,4 @@ log = "0.4.22"
 nanorand = "0.7.0"
 
 [features]
+init_merge = []
