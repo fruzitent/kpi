@@ -1,7 +1,11 @@
 fn main() {
-    let input_path = std::path::Path::new("./input.bin");
+    let path = std::path::Path::new("./input.bin");
+    let size = usize::pow(2, 30);
+
+    let mut data = vec![0; size];
     let mut rng = nanorand::tls_rng();
-    let data: Vec<u8> = (0..2u32.pow(8)).map(|_| nanorand::Rng::generate(&mut rng)).collect();
-    let mut input_file = std::fs::File::create(input_path).unwrap();
-    std::io::Write::write_all(&mut input_file, &data).unwrap();
+    nanorand::Rng::fill_bytes(&mut rng, &mut data);
+
+    let mut file = std::fs::File::create(path).unwrap();
+    std::io::Write::write_all(&mut file, &data).unwrap();
 }
