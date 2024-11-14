@@ -1,5 +1,3 @@
-use crate::nacci;
-
 const CHUNK_SIZE: usize = 4096;
 
 fn comparator<T>(a: T, b: T, reverse: bool) -> bool
@@ -74,12 +72,7 @@ where
 }
 
 /// @see: https://en.wikipedia.org/wiki/Polyphase_merge_sort
-pub fn polyphase_merge_sort(
-    input_path: &std::path::Path,
-    output_path: &std::path::Path,
-    reverse: bool,
-    tape_count: usize,
-) {
+pub fn sort(input_path: &std::path::Path, output_path: &std::path::Path, reverse: bool, tape_count: usize) {
     if tape_count >= 8 {
         log::warn!("balanced_merge_sort() may perform better at 8 or more tapes");
     }

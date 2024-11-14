@@ -25,8 +25,9 @@ impl Nacci {
 impl Iterator for Nacci {
     type Item = usize;
 
-    fn collect<B: FromIterator<Self::Item>>(self) -> B
+    fn collect<B>(self) -> B
     where
+        B: FromIterator<Self::Item>,
         Self: Sized,
     {
         FromIterator::from_iter(self)
