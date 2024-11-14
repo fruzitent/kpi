@@ -11,6 +11,7 @@ nacci = { path = "../nacci/" }
 [dev-dependencies]
 
 [features]
+init_merge = []
 
 [package]
 authors.workspace = true
