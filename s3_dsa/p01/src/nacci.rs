@@ -46,7 +46,9 @@ pub fn get_dist(length: usize, tape_count: usize) -> Vec<usize> {
     let mut levels: Vec<usize> = vec![0; tape_count - 1];
     for (i, val) in fib.enumerate() {
         levels[i % (tape_count - 1)] = val;
-        if levels.iter().sum::<usize>() >= length {
+        let total: usize = levels.iter().sum();
+        log::debug!("i={i:?}, val={val:?}, levels={levels:?}, total={total:?}", i = i + 1);
+        if total >= length {
             break;
         }
     }
