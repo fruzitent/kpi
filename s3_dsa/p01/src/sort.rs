@@ -61,14 +61,14 @@ where
     T: Clone,
 {
     let mut iter = series.iter();
-    for (i, d) in dist.iter_mut().enumerate() {
-        while *d != 0 {
+    for (i, fib) in dist.iter_mut().enumerate() {
+        while *fib != 0 {
             if let Some(s) = iter.next() {
                 tapes[i].push(s.clone());
             } else {
                 tapes[i].push(vec![]);
             }
-            *d -= 1;
+            *fib -= 1;
         }
     }
 }
