@@ -1,0 +1,24 @@
+#:schema https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/cargo.json
+# @help: https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+
+[dependencies]
+bytemuck = "1.19.0"
+log.workspace = true
+nacci = { path = "../nacci/" }
+
+[dev-dependencies]
+
+[features]
+init_merge = []
+
+[package]
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+license-file.workspace = true
+name = "polyphase"
+readme.workspace = true
+repository.workspace = true
+version = "0.1.0"

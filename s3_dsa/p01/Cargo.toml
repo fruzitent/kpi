@@ -1,0 +1,23 @@
+#:schema https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/cargo.json
+# @help: https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+default-members = ["./src/bin/sort/"]
+members = [
+    "./src/bin/gen/",
+    "./src/bin/sort/",
+    "./src/lib/nacci/",
+    "./src/lib/polyphase/",
+]
+resolver = "2"
+
+[workspace.dependencies]
+log = "0.4.22"
+
+[workspace.package]
+authors = ["fruzitent <fruzit@gmail.com>"]
+description = "s3_dsa/p01"
+edition = "2021"
+license-file = "license.md"
+readme = "readme.md"
+repository = "git+https://github.com/fruzitent/kpi.git"

@@ -1,0 +1,21 @@
+#:schema https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/cargo.json
+# @help: https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+
+[dependencies]
+log.workspace = true
+
+[dev-dependencies]
+
+[features]
+
+[package]
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+license-file.workspace = true
+name = "nacci"
+readme.workspace = true
+repository.workspace = true
+version = "0.1.0"
