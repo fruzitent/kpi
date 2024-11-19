@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+# @help: https://docs.docker.com/compose/compose-file
+
+name: s3_db-p02
+
+services:
+  db:
+    env_file:
+      - ../.env
+    healthcheck:
+      interval: 10s
+      retries: 5
+      test:
+        - CMD
+        - pg_isready
+      timeout: 5s
+    image: docker.io/library/postgres:17.1
+    ports:
+      - published: 5432
+        target: 5432
+    pull_policy: if_not_present
+    restart: unless-stopped
+    volumes:
+      - source: db_data
+        target: /var/lib/postgresql/data/
+        type: volume
+
+volumes:
+  db_data:
