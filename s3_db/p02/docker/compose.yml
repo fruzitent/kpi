@@ -21,6 +21,9 @@ services:
     pull_policy: if_not_present
     restart: unless-stopped
     volumes:
+      - source: ../sql/
+        target: /docker-entrypoint-initdb.d/
+        type: bind
       - source: db_data
         target: /var/lib/postgresql/data/
         type: volume
