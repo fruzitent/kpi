@@ -1,0 +1,30 @@
+%!TEX program = lualatex
+
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{fontspec}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\newcommand{\DISCIPLINE}{Бази даних}
+\newcommand{\STUDENT}{}
+\newcommand{\SUBJECT}{Побудова ER-моделі предметної області}
+\newcommand{\TEACHER}{}
+\newcommand{\TITLE}{Лабораторна робота №1}
+\newcommand{\VARIANT}{33}
+
+\begin{document}
+
+\setmainfont{OpenSans}
+\setlength{\emergencystretch}{2cm}
+
+\clearpage\input{./title}
+
+\clearpage\tableofcontents
+
+\clearpage\input{./task}
+\clearpage\input{./er}
+\clearpage\input{./questions}
+
+\end{document}

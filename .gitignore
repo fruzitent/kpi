@@ -1,1 +1,4 @@
 # @help: https://git-scm.com/docs/gitignore
+
+docs/
+out/

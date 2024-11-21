@@ -1,0 +1,8 @@
+_default:
+    @just --list
+
+build:
+    latexmk -cd -file-line-error -halt-on-error -outdir="../out" -pdflua -shell-escape "./tex/main.tex"
+
+clean:
+    rm -rf "./out/"
