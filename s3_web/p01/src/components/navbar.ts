@@ -91,7 +91,7 @@ class NavbarItem extends HTMLElement {
 }
 
 (async () => {
-  (await insertFile("/templates/navbar.html")).unwrap();
+  (await insertFile("/templates/components/navbar.html")).unwrap();
   (await defineComponent("my-navbar", Navbar)).unwrap();
   (await defineComponent("my-navbar-item", NavbarItem)).unwrap();
 })();
