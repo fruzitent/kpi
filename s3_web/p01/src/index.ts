@@ -1,59 +1,60 @@
-import { Err, Ok } from "@/rustify.ts";
+import { Err, Ok, Result, match } from "oxide.ts";
 
-import type { Result } from "@/rustify.ts";
-
-const buildElement = <N extends Element>(node: N): Result<Element, string> => {
-  if (node instanceof HTMLScriptElement) {
+const buildElement = <E extends Element>(elem: E): Result<Element, Error> => {
+  if (elem instanceof HTMLScriptElement) {
     const script = document.createElement("script");
-    script.src = node.src ?? "";
-    script.type = node.type ?? "module";
+    script.src = elem.src ?? "";
+    script.type = elem.type ?? "module";
     return Ok(script);
   }
-  if (node instanceof HTMLTemplateElement) {
-    return Ok(node);
+  if (elem instanceof HTMLTemplateElement) {
+    return Ok(elem);
   }
-  return Err(`unexpected node: ${node}`);
+  return Err(new Error(`unexpected elem: ${elem}`));
 };
 
 export const defineComponent = async <E extends typeof HTMLElement>(
   name: string,
   elem: E,
-): Promise<Result<CustomElementConstructor, string>> => {
+): Promise<Result<CustomElementConstructor, Error>> => {
   customElements.define(name, elem);
-  try {
-    return Ok(await customElements.whenDefined(name));
-  } catch (err) {
-    return Err(`${name} is not a valid custom element name: ${err}`);
-  }
+  return Result.safe(customElements.whenDefined(name));
 };
 
-export const fetchFile = async (
+const fetchFile = async (path: string): Promise<Result<string, Error>> => {
+  const input = new URL(path, import.meta.url).href;
+  return Result.safe(fetch(input).then((data) => data.text()));
+};
+
+export const insertFile = async (
   path: string,
-): Promise<Result<string, string>> => {
-  const res = await fetch(new URL(path, import.meta.url).href);
-  if (!res.ok) {
-    return Err(`file not found: ${res.status} ${res.url} ${res.statusText}`);
-  }
-  return Ok(await res.text());
-};
-
-export const insertFile = async (path: string): Promise<void> => {
-  const res = await fetchFile(path);
-  if (!res.ok) {
-    return alert(`failed to fetch file: ${res.error}`);
+): Promise<Result<void, Error>> => {
+  const [err0, val0] = (await fetchFile(path)).intoTuple();
+  if (err0) {
+    return Err(new Error(`failed to fetch file: ${err0}`));
   }
 
   const parser = new DOMParser();
-  const doc = parser.parseFromString(res.value, "text/html");
-
-  for (const node of Array.from(doc.head.children)) {
-    const res = buildElement(node);
-    if (!res.ok) {
-      alert(`failed to build element: ${res.error}`);
-      continue;
-    }
-    document.body.appendChild(res.value);
+  const fn1 = () => parser.parseFromString(val0, "text/html");
+  const [err1, doc] = Result.safe(fn1).intoTuple();
+  if (err1) {
+    return Err(new Error(`failed to parse html: ${err1}`));
   }
+
+  for (const elem of Array.from(doc.head.children)) {
+    const [err2, val2] = buildElement(elem).intoTuple();
+    if (err2) {
+      return Err(new Error(`failed to build element: ${err2}`));
+    }
+
+    const fn3 = () => document.body.appendChild(val2);
+    const [err3, val3] = Result.safe(fn3).intoTuple();
+    if (err3) {
+      return Err(new Error(`failed to populate tree: ${err3}`));
+    }
+  }
+
+  return Ok(undefined);
 };
 
 export const populateNode = <
@@ -63,15 +64,32 @@ export const populateNode = <
   node: N,
   selector: S,
   styles?: CSSStyleSheet,
-): Result<void, string> => {
+): Result<void, Error> => {
   const template = document.querySelector<HTMLTemplateElement>(selector);
   if (template === null) {
-    return Err(`failed to query: ${selector}`);
+    return Err(new Error(`failed to query: ${selector}`));
   }
-  node.attachShadow({ mode: "open" });
-  node.shadowRoot?.appendChild(template.content.cloneNode(true));
+
+  const fn0 = () => node.attachShadow({ mode: "open" });
+  const [err0, val0] = Result.safe(fn0).intoTuple();
+  if (err0) {
+    return Err(new Error(`failed to attach shadow: ${err0}`));
+  }
+
+  const children = template.content.cloneNode(true);
+  let fn1 = () => node.shadowRoot?.appendChild(children);
+  const [err1, val1] = Result.safe(fn1).intoTuple();
+  if (err1) {
+    return Err(new Error(`failed to append children: ${err1}`));
+  }
+
   if (styles) {
-    node.shadowRoot?.adoptedStyleSheets.push(styles);
+    const fn2 = () => node.shadowRoot?.adoptedStyleSheets.push(styles);
+    const [err2, val2] = Result.safe(fn2).intoTuple();
+    if (err2) {
+      return Err(new Error(`failed to adopt style sheets: ${err2}`));
+    }
   }
+
   return Ok(undefined);
 };

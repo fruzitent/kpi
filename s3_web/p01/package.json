@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "@catppuccin/palette": "1.4.0",
-    "modern-normalize": "3.0.1"
+    "modern-normalize": "3.0.1",
+    "oxide.ts": "1.1.0"
   },
   "description": "s3_web/p01",
   "devDependencies": {

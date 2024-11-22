@@ -1,6 +1,4 @@
-import { Err, Ok } from "@/rustify.ts";
-
-import type { Result } from "@/rustify.ts";
+import { Err, Ok, Result } from "oxide.ts";
 
 export type Page = {
   href: string;
@@ -47,13 +45,13 @@ const PAGES: readonly Page[] = Object.freeze([
   },
 ]);
 
-export const fetchPages = async (): Promise<Result<Page[], string>> => {
+export const fetchPages = async (): Promise<Result<Page[], Error>> => {
   await new Promise((resolve) => setTimeout(resolve, 420));
   if (Math.random() < 0.1) {
-    return Err("internal server error");
+    return Err(new Error("internal server error"));
   }
   if (!isPages(PAGES)) {
-    return Err(`invalid type(Page[]): ${PAGES}`);
+    return Err(new Error(`invalid type(Page[]): ${PAGES}`));
   }
   return Ok(PAGES);
 };
