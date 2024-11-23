@@ -1,4 +1,6 @@
-import { Err, Ok, Result, match } from "oxide.ts";
+import { Err, Ok, Result } from "oxide.ts";
+
+import shared from "@/styles/shared.module.css" with { type: "css" };
 
 const buildElement = <E extends Element>(elem: E): Result<Element, Error> => {
   if (elem instanceof HTMLScriptElement) {
@@ -57,14 +59,12 @@ export const insertFile = async (
   return Ok(undefined);
 };
 
-export const populateNode = <
-  N extends HTMLElement,
-  S extends string, // TODO: keyof HTMLElementTagNameMap
->(
+export const populateNode = <N extends HTMLElement, T extends string>(
   node: N,
-  selector: S,
+  tag: T,
   styles?: CSSStyleSheet,
 ): Result<void, Error> => {
+  const selector = `template#${tag}`;
   const template = document.querySelector<HTMLTemplateElement>(selector);
   if (template === null) {
     return Err(new Error(`failed to query: ${selector}`));
@@ -84,10 +84,12 @@ export const populateNode = <
   }
 
   if (styles) {
-    const fn2 = () => node.shadowRoot?.adoptedStyleSheets.push(styles);
-    const [err2, val2] = Result.safe(fn2).intoTuple();
-    if (err2) {
-      return Err(new Error(`failed to adopt style sheets: ${err2}`));
+    for (const style of [shared, styles]) {
+      const fn2 = () => node.shadowRoot?.adoptedStyleSheets.push(style);
+      const [err2, val2] = Result.safe(fn2).intoTuple();
+      if (err2) {
+        return Err(new Error(`failed to adopt style sheets: ${err2}`));
+      }
     }
   }
 
