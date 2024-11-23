@@ -2,6 +2,7 @@
 @import "modern-normalize/modern-normalize.css";
 
 html {
+  color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
   background: light-dark(var(--ctp-latte-base), var(--ctp-mocha-base));
   color-scheme: light dark;
 }
