@@ -1,27 +1,11 @@
 @import "@catppuccin/palette/css/catppuccin.css";
 @import "modern-normalize/modern-normalize.css";
 
-:root {
-  /* @see: https://fluid.style minBP: 20rem(320px), maxBP: 77.5rem(1240px) */
-  --font-size-2xl: clamp(2.5rem, 1.804rem + 3.478vw, 4.5rem);
-  --font-size-xl: clamp(2rem, 1.478rem + 2.609vw, 3.5rem);
-  --font-size-l: clamp(1.75rem, 1.315rem + 2.174vw, 3rem);
-  --font-size-m: clamp(1.5rem, 1.152rem + 1.739vw, 2.5rem);
-  --font-size-s: clamp(1.25rem, 0.989rem + 1.304vw, 2rem);
-  --font-size-xs: clamp(1rem, 0.739rem + 1.304vw, 1.75rem);
-  --font-size-2xs: clamp(1rem, 0.739rem + 1.304vw, 1.75rem);
-  --font-size-3xs: clamp(0.875rem, 0.832rem + 0.217vw, 1rem);
-}
-
 html {
   background: light-dark(var(--ctp-latte-base), var(--ctp-mocha-base));
-  color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
   color-scheme: light dark;
-  font-size: calc(1rem + 0.5dvw);
-  min-height: 100dvh;
 }
 
 body {
   min-height: 100dvh;
-  margin-block: 0;
 }

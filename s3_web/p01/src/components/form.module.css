@@ -1,0 +1,9 @@
+form {
+  text-align: right;
+}
+
+input {
+  border: 0;
+  padding: 0;
+  width: 100%;
+}

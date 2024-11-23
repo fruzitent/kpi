@@ -1,0 +1,18 @@
+.fragment {
+  font-size: 0;
+}
+
+.column {
+  display: inline-block;
+  font-size: initial;
+  vertical-align: top;
+  width: calc(100% / 2);
+}
+
+.fragment {
+  padding: 1rem 0;
+}
+
+[data-block="s-1"] {
+  text-align: right;
+}

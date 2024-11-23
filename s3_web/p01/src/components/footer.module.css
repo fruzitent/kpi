@@ -1,0 +1,22 @@
+.fragment {
+  font-size: 0;
+}
+
+.column {
+  display: inline-block;
+  font-size: initial;
+  vertical-align: top;
+  width: calc(100% / 2);
+}
+
+.fragment {
+  padding: 1rem 0;
+}
+
+[data-block="s-y"] {
+  text-align: right;
+}
+
+.fragment {
+  background: light-dark(var(--ctp-latte-mantle), var(--ctp-mocha-mantle));
+}
