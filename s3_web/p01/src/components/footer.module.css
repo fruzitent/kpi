@@ -24,3 +24,7 @@
 .notice a {
   color: light-dark(var(--ctp-latte-mauve), var(--ctp-mocha-mauve));
 }
+
+li {
+  padding: 0.25rem 0;
+}
