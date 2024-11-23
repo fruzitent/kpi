@@ -24,7 +24,12 @@ pre {
   width: 3rem;
 }
 
-.attachment {
+.attachment > * {
   border-radius: 2rem;
   width: 100%;
+}
+
+iframe {
+  aspect-ratio: 16 / 9;
+  border: 0;
 }
