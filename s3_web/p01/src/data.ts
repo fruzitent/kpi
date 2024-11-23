@@ -62,3 +62,42 @@ export const POSTS: readonly Post[] = Object.freeze([
     username: "Danny Resko",
   },
 ]);
+
+export type Trend = {
+  category: string;
+  hashtag: string;
+  posts: string;
+};
+
+export const TRENDS: readonly Trend[] = Object.freeze([
+  {
+    category: "Trending",
+    hashtag: "レスリングシリーズ",
+    posts: "40K posts",
+  },
+  {
+    category: "Trending",
+    hashtag: "ビリー・へリントン",
+    posts: "2687 posts",
+  },
+  {
+    category: "Trending in Japan",
+    hashtag: "合作",
+    posts: "3979 posts",
+  },
+  {
+    category: "Trending in Japan",
+    hashtag: "音ＭＡＤ",
+    posts: "20.5K posts",
+  },
+  {
+    category: "Trending",
+    hashtag: "哲学",
+    posts: "7613 posts",
+  },
+  {
+    category: "Trending in Japan",
+    hashtag: "ガチムチメドレーシリーズ",
+    posts: "3652 posts",
+  },
+]);
