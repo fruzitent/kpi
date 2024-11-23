@@ -3,6 +3,7 @@ import { Err, Ok, Result } from "oxide.ts";
 import { NAVS } from "@/data.ts";
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
 
+import component from "@/components/navbar.html?url";
 import styles from "@/components/navbar.module.css" with { type: "css" };
 
 class Navbar extends HTMLElement {
@@ -67,7 +68,7 @@ class NavbarItem extends HTMLElement {
 }
 
 (async () => {
-  (await insertFile("/templates/components/navbar.html")).unwrap();
+  (await insertFile(component)).unwrap();
   (await defineComponent("component-navbar", Navbar)).unwrap();
   (await defineComponent("component-navbar-item", NavbarItem)).unwrap();
 })();

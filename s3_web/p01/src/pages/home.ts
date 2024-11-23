@@ -1,6 +1,7 @@
 import { POSTS } from "@/data.ts";
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
 
+import page from "@/pages/home.html?url";
 import styles from "@/pages/home.module.css" with { type: "css" };
 
 class Home extends HTMLElement {
@@ -35,6 +36,6 @@ class Home extends HTMLElement {
 }
 
 (async () => {
-  (await insertFile("/templates/pages/home.html")).unwrap();
+  (await insertFile(page)).unwrap();
   (await defineComponent("page-home", Home)).unwrap();
 })();

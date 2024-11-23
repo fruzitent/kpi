@@ -1,5 +1,6 @@
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
 
+import component from "@/components/search.html?url";
 import styles from "@/components/search.module.css" with { type: "css" };
 
 class Search extends HTMLElement {
@@ -10,6 +11,6 @@ class Search extends HTMLElement {
 }
 
 (async () => {
-  (await insertFile("/templates/components/search.html")).unwrap();
+  (await insertFile(component)).unwrap();
   (await defineComponent("component-search", Search)).unwrap();
 })();

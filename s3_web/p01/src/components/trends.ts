@@ -4,6 +4,7 @@ import { TRENDS } from "@/data.ts";
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
 
 import styles from "@/components/trends.module.css" with { type: "css" };
+import component from "./trends.html?url";
 
 class Trends extends HTMLElement {
   constructor() {
@@ -97,7 +98,7 @@ class TrendsItem extends HTMLElement {
 }
 
 (async () => {
-  (await insertFile("/templates/components/trends.html")).unwrap();
+  (await insertFile(component)).unwrap();
   (await defineComponent("component-trends", Trends)).unwrap();
   (await defineComponent("component-trends-item", TrendsItem)).unwrap();
 })();

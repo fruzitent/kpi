@@ -3,6 +3,7 @@ import { Err, Ok, Result } from "oxide.ts";
 import { AttachmentKind } from "@/data.ts";
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
 
+import component from "@/components/post.html?url";
 import styles from "@/components/post.module.css" with { type: "css" };
 
 class Post extends HTMLElement {
@@ -147,6 +148,6 @@ class Post extends HTMLElement {
 }
 
 (async () => {
-  (await insertFile("/templates/components/post.html")).unwrap();
+  (await insertFile(component)).unwrap();
   (await defineComponent("component-post", Post)).unwrap();
 })();
