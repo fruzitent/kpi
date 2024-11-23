@@ -5,3 +5,7 @@ h2 {
 li {
   padding: 0.5rem 0;
 }
+
+a {
+  color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
+}
