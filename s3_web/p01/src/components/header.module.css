@@ -5,7 +5,7 @@
 .column {
   display: inline-block;
   font-size: initial;
-  vertical-align: top;
+  vertical-align: middle;
   width: calc(100% / 2);
 }
 
