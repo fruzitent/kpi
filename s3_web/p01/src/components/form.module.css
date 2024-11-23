@@ -2,8 +2,10 @@ form {
   text-align: right;
 }
 
-input {
+/* TODO: resize on line break */
+textarea {
   border: 0;
   padding: 0;
+  resize: none;
   width: 100%;
 }
