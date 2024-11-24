@@ -1,5 +1,10 @@
+header {
+  font-size: 0;
+}
+
 header > * {
   display: inline-block;
+  font-size: initial;
   vertical-align: top;
 }
 
@@ -21,8 +26,11 @@ pre {
 
 .avatar {
   border-radius: 50%;
-  height: 3rem;
-  width: 3rem;
+  width: 10%;
+}
+
+main {
+  width: 90%;
 }
 
 .attachment > * {
