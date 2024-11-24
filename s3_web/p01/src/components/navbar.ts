@@ -1,7 +1,7 @@
 import { Err, Ok, Result } from "oxide.ts";
 
-import { NAVS } from "@/data.ts";
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
+import { route, ROUTES } from "@/router.ts";
 
 import component from "@/components/navbar.html?url";
 import styles from "@/components/navbar.module.css" with { type: "css" };
@@ -19,16 +19,25 @@ class Navbar extends HTMLElement {
       return alert(`failed to query: ${selector}`);
     }
 
-    for (const nav of NAVS) {
+    for (const route of ROUTES) {
       const component = document.createElement("component-navbar-item");
-      component.setAttribute("data-href", nav.href);
-      component.setAttribute("data-name", nav.name);
+      component.setAttribute("data-href", route.href);
+      component.setAttribute("data-name", route.name);
 
       const item = document.createElement("li");
       item.appendChild(component);
 
       ulist.appendChild(item);
     }
+  }
+
+  disconnectedCallback() {
+    const selector = "ul";
+    const ulist = this.shadowRoot?.querySelector(selector);
+    if (typeof ulist === "undefined" || ulist === null) {
+      return alert(`failed to query: ${selector}`);
+    }
+    ulist.innerHTML = "";
   }
 }
 
@@ -61,6 +70,11 @@ class NavbarItem extends HTMLElement {
     if (typeof a === "undefined" || a === null) {
       return Err(new Error(`failed to query: ${selector}`));
     }
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      history.pushState({}, "", href);
+      route(href).unwrap();
+    });
     a.href = href;
     a.innerText = name;
     return Ok(undefined);

@@ -1,31 +1,3 @@
-export type Nav = {
-  href: string;
-  name: string;
-};
-
-export const NAVS: readonly Nav[] = Object.freeze([
-  {
-    href: "/",
-    name: "Home",
-  },
-  {
-    href: "/explore/",
-    name: "Explore",
-  },
-  {
-    href: "/notifications/",
-    name: "Notifications",
-  },
-  {
-    href: "/messages/",
-    name: "Messages",
-  },
-  {
-    href: "/profile/",
-    name: "Profile",
-  },
-]);
-
 export type AttachmentKind = "image" | "video";
 
 export type Attachment = {

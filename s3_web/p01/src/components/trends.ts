@@ -31,6 +31,15 @@ class Trends extends HTMLElement {
       ulist.appendChild(item);
     }
   }
+
+  disconnectedCallback() {
+    const selector = "ul";
+    const ulist = this.shadowRoot?.querySelector(selector);
+    if (typeof ulist === "undefined" || ulist === null) {
+      return alert(`failed to query: ${selector}`);
+    }
+    ulist.innerHTML = "";
+  }
 }
 
 class TrendsItem extends HTMLElement {

@@ -4,12 +4,12 @@
     <link href="./src/index.css" rel="stylesheet" type="text/css" />
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="./src/index.ts" type="module"></script>
     <title>s3_web/p01</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <page-home></page-home>
-    <script src="./src/pages/home.ts" type="module"></script>
+    <div id="root"></div>
     <!-- TODO: fix imports in prod -->
     <script src="./src/components/footer.ts" type="module"></script>
     <script src="./src/components/form.ts" type="module"></script>
@@ -19,5 +19,10 @@
     <script src="./src/components/search.ts" type="module"></script>
     <script src="./src/components/trends.ts" type="module"></script>
     <script src="./src/layouts/default.ts" type="module"></script>
+    <script src="./src/pages/explore.ts" type="module"></script>
+    <script src="./src/pages/home.ts" type="module"></script>
+    <script src="./src/pages/messages.ts" type="module"></script>
+    <script src="./src/pages/notifications.ts" type="module"></script>
+    <script src="./src/pages/profile.ts" type="module"></script>
   </body>
 </html>

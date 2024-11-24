@@ -33,6 +33,15 @@ class Home extends HTMLElement {
       olist.appendChild(item);
     }
   }
+
+  disconnectedCallback() {
+    const selector = "ol";
+    const olist = this.shadowRoot?.querySelector(selector);
+    if (typeof olist === "undefined" || olist === null) {
+      return alert(`failed to query: ${selector}`);
+    }
+    olist.innerHTML = "";
+  }
 }
 
 (async () => {

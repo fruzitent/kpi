@@ -7,6 +7,6 @@ html {
   color-scheme: light dark;
 }
 
-body {
+#root {
   min-height: 100dvh;
 }
