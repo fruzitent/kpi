@@ -6,11 +6,11 @@
   display: inline-block;
   font-size: initial;
   vertical-align: top;
-  width: calc(100% / 2);
+  width: 50%;
 }
 
 .fragment {
-  padding: 1rem 0;
+  padding: 1rem;
 }
 
 [data-block="s-y"] {
@@ -27,4 +27,13 @@
 
 li {
   padding: 0.25rem 0;
+}
+
+@media screen and (max-width: 768px) {
+  .column {
+    width: 100%;
+  }
+  [data-block="s-y"] {
+    text-align: initial;
+  }
 }

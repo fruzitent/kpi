@@ -5,6 +5,7 @@ component-footer {
 
 .container {
   font-size: 0;
+  padding: 0 1rem;
 }
 
 .column {
@@ -17,13 +18,31 @@ component-footer {
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
-  width: calc(100% / 4);
+  width: 25%;
 }
 
 .center {
-  width: calc(100% / 2);
+  width: 50%;
 }
 
 .center > * {
   padding: 0 1rem;
+}
+
+@media screen and (max-width: 1024px) {
+  .side {
+    width: 12.5%;
+  }
+  .center {
+    width: 75%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .side {
+    display: none;
+  }
+  .center {
+    width: 100%;
+  }
 }

@@ -10,11 +10,11 @@ h1 {
   display: inline-block;
   font-size: initial;
   vertical-align: middle;
-  width: calc(100% / 2);
+  width: 50%;
 }
 
 .fragment {
-  padding: 1rem 0;
+  padding: 1rem;
 }
 
 [data-block="s-1"] {
