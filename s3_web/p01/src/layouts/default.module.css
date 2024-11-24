@@ -14,7 +14,9 @@ component-footer {
 }
 
 .side {
+  display: inline-block;
   overflow: hidden;
+  white-space: nowrap;
   width: calc(100% / 4);
 }
 
