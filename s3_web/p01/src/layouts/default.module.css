@@ -14,32 +14,38 @@ component-footer {
   vertical-align: top;
 }
 
-.side {
+.left,
+.right {
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.left {
+  width: 15%;
+}
+
+.right {
   width: 25%;
 }
 
 .center {
-  width: 50%;
+  width: 60%;
 }
 
 .center > * {
-  padding: 0 1rem;
+  padding: 0.5rem 3rem;
 }
 
-@media screen and (max-width: 1024px) {
-  .side {
-    width: 12.5%;
-  }
-  .center {
-    width: 75%;
-  }
+hr {
+  background: light-dark(var(--ctp-latte-surface0), var(--ctp-mocha-surface0));
+  border: none;
+  height: 0.1rem;
 }
 
 @media screen and (max-width: 768px) {
-  .side {
+  .left,
+  .right {
     display: none;
   }
   .center {

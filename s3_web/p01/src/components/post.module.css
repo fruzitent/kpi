@@ -1,3 +1,8 @@
+header,
+.attachment {
+  padding: 0.2rem 0;
+}
+
 header {
   font-size: 0;
 }
@@ -16,6 +21,15 @@ main > * {
 
 p {
   margin: 0;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.username,
+.text {
+  color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
 }
 
 pre {
@@ -61,7 +75,7 @@ component-tooltip {
 }
 
 .tag {
-  background: light-dark(var(--ctp-latte-overlay0), var(--ctp-mocha-overlay0));
+  background: light-dark(var(--ctp-latte-surface2), var(--ctp-mocha-surface2));
   border-radius: 2rem;
   color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
   padding: 0.5rem;

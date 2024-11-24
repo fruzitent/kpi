@@ -1,12 +1,31 @@
 @import "@catppuccin/palette/css/catppuccin.css";
 @import "modern-normalize/modern-normalize.css";
+@import "https://fonts.googleapis.com/css2?family=Montserrat";
 
 html {
-  color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
   background: light-dark(var(--ctp-latte-base), var(--ctp-mocha-base));
+  color: light-dark(var(--ctp-latte-subtext0), var(--ctp-mocha-subtext0));
   color-scheme: light dark;
+  font-family: "Montserrat", "system-ui", "sans-serif";
+  font-feature-settings: "tnum";
 }
 
 #root {
   min-height: 100dvh;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  #root {
+    background: color-mix(in srgb, var(--ctp-mocha-base), var(--ctp-mocha-mantle) 30%);
+  }
+}
+
+@media screen and (prefers-color-scheme: light) {
+  #root {
+    background: linear-gradient(
+      120deg,
+      color-mix(in srgb, var(--ctp-latte-base), var(--ctp-latte-peach) 5%),
+      color-mix(in srgb, var(--ctp-latte-base), var(--ctp-latte-mauve) 10%)
+    );
+  }
 }

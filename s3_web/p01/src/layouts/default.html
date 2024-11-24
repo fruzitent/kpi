@@ -1,16 +1,19 @@
 <template id="layout-default">
   <component-header></component-header>
   <main class="container">
-    <div class="column side">
+    <div class="column left">
       <div data-block="s-2"><component-navbar></component-navbar></div>
     </div>
     <div class="column center">
-      <div data-block="s-3"><component-form></component-form></div>
+      <div data-block="s-3">
+        <component-form></component-form>
+        <hr />
+      </div>
       <div data-block="s-5">
         <slot name="children"></slot>
       </div>
     </div>
-    <div class="column side">
+    <div class="column right">
       <div data-block="s-4"><component-trends></component-trends></div>
       <div data-block="s-6"><component-search></component-search></div>
     </div>

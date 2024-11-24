@@ -25,6 +25,10 @@
   color: light-dark(var(--ctp-latte-mauve), var(--ctp-mocha-mauve));
 }
 
+p {
+  color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
+}
+
 li {
   padding: 0.25rem 0;
 }
