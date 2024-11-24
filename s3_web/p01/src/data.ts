@@ -11,10 +11,22 @@ export const AttachmentSchema = z.object({
 });
 export type Attachment = z.infer<typeof AttachmentSchema>;
 
+export const TagSchema = z.object({
+  data: z.string(),
+  pos: z.object({
+    x0: z.number(),
+    x1: z.number(),
+    y0: z.number(),
+    y1: z.number(),
+  }),
+});
+export type Tag = z.infer<typeof TagSchema>;
+
 export const PostSchema = z.object({
   attachment: AttachmentSchema,
   avatar: z.string(),
   handle: z.string(),
+  tags: z.array(TagSchema),
   text: z.string(),
   timestamp: z.string(),
   username: z.string(),
@@ -29,6 +41,7 @@ export const POSTS: readonly Post[] = Object.freeze([
     },
     avatar: "/assets/images/shinnipporiacademy324.jpg",
     handle: "@shinnipporiacademy324",
+    tags: [],
     text: `
       兄貴誕生日おめでとう！
       そしてありがとう！
@@ -43,6 +56,10 @@ export const POSTS: readonly Post[] = Object.freeze([
     },
     avatar: "/assets/images/BillyHerring777.jpg",
     handle: "@BillyHerring777",
+    tags: [
+      { data: "ビリー・へリントン", pos: { x0: 270, x1: 600, y0: 825, y1: 1005 } },
+      { data: "哲学", pos: { x0: 600, x1: 800, y0: 100, y1: 250 } },
+    ],
     text: `
       "歪みねぇ人生を生きろ!"
       "Live a life of yugaminee!"
@@ -59,6 +76,7 @@ export const POSTS: readonly Post[] = Object.freeze([
     },
     avatar: "/assets/images/951DannyR.jpg",
     handle: "@951DannyR",
+    tags: [],
     text: `
       "おっほっほっほ～ 元気だ( ^ω^)"
       "Oh ho ho ho~ I'm lively! ( ^ω^)"

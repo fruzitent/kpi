@@ -42,3 +42,29 @@ iframe {
   aspect-ratio: 16 / 9;
   border: 0;
 }
+
+.attachment {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+}
+
+component-tooltip {
+  position: absolute;
+  transform: translate(-50%, -125%);
+}
+
+@media screen and (max-width: 768px) {
+  component-tooltip {
+    display: none !important;
+  }
+}
+
+.tag {
+  background: light-dark(var(--ctp-latte-overlay0), var(--ctp-mocha-overlay0));
+  border-radius: 2rem;
+  color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
+  padding: 0.5rem;
+  white-space: nowrap;
+  width: fit-content;
+}

@@ -87,6 +87,12 @@ class ComponentPost extends HTMLElement {
           const img = document.createElement("img");
           img.src = post.attachment.src;
           div.appendChild(img);
+
+          const [err, val] = this.#renderMap(post, img, div).intoTuple();
+          if (err) {
+            return Err(new Error(`failed to render map: ${err}`));
+          }
+
           break;
         }
         case "video": {
@@ -104,9 +110,90 @@ class ComponentPost extends HTMLElement {
 
     return Ok(undefined);
   }
+
+  #renderMap(post: Post, img: HTMLImageElement, div: HTMLDivElement): Result<void, Error> {
+    if (post.tags.length === 0) {
+      return Ok(undefined);
+    }
+
+    const selector = ".hashtag";
+    const hashtag = this.shadowRoot?.querySelector<HTMLDivElement>(selector);
+    if (typeof hashtag === "undefined" || hashtag === null) {
+      return Err(new Error(`failed to query: ${selector}`));
+    }
+
+    const map = document.createElement("map");
+    map.name = "tooltip-map";
+    img.useMap = `#${map.name}`;
+
+    for (const tag of post.tags) {
+      const area = document.createElement("area");
+
+      area.addEventListener("mousemove", (e) => {
+        const tooltip = document.createElement("component-tooltip");
+        tooltip.setAttribute("data-tag", tag.data);
+        hashtag.replaceChildren(tooltip);
+
+        // TODO: ignores media query
+        hashtag.style.display = "block";
+
+        const bounds = hashtag.getBoundingClientRect();
+        tooltip.style.left = `${e.clientX - bounds.left}px`;
+        tooltip.style.top = `${e.clientY - bounds.top}px`;
+      });
+      area.addEventListener("mouseout", (e) => {
+        hashtag.style.display = "none";
+      });
+
+      img.addEventListener("load", (e) => {
+        const x0 = Math.floor(tag.pos.x0 * (img.width / img.naturalWidth));
+        const x1 = Math.floor(tag.pos.x1 * (img.width / img.naturalWidth));
+        const y0 = Math.floor(tag.pos.y0 * (img.height / img.naturalHeight));
+        const y1 = Math.floor(tag.pos.y1 * (img.height / img.naturalHeight));
+        area.coords = `${x0},${y0},${x1},${y1}`;
+        area.shape = "rect";
+      });
+
+      area.alt = tag.data;
+      map.appendChild(area);
+    }
+
+    div.appendChild(map);
+    return Ok(undefined);
+  }
+}
+
+class ComponentTooltip extends HTMLElement {
+  constructor() {
+    super();
+    populateNode(this, "component-tooltip", styles).unwrap();
+  }
+
+  connectedCallback() {
+    const tag = this.getAttribute("data-tag");
+    if (tag === null) {
+      return alert("missing required parameter: tag");
+    }
+
+    const [err, val] = this.#render(tag).intoTuple();
+    if (err) {
+      return alert(`failed to render: ${err}`);
+    }
+  }
+
+  #render(tag: string): Result<void, Error> {
+    const selector = "p";
+    const p = this.shadowRoot?.querySelector(selector);
+    if (typeof p === "undefined" || p === null) {
+      return Err(new Error(`failed to query: ${selector}`));
+    }
+    p.innerText = `#${tag}`;
+    return Ok(undefined);
+  }
 }
 
 (async () => {
   (await insertFile(component)).unwrap();
   (await defineComponent("component-post", ComponentPost)).unwrap();
+  (await defineComponent("component-tooltip", ComponentTooltip)).unwrap();
 })();
