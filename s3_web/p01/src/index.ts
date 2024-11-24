@@ -19,7 +19,11 @@ export const defineComponent = async <E extends typeof HTMLElement>(
   name: string,
   elem: E,
 ): Promise<Result<CustomElementConstructor, Error>> => {
-  customElements.define(name, elem);
+  const fn0 = () => customElements.define(name, elem);
+  const [err0, val0] = Result.safe(fn0).intoTuple();
+  if (err0) {
+    return Err(new Error(`failed to define element: ${err0}`));
+  }
   return Result.safe(customElements.whenDefined(name));
 };
 
