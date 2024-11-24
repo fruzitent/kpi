@@ -4,7 +4,7 @@ import { z } from "zod";
 export const RouterSchema = z.object({
   href: z.string(),
   name: z.string(),
-  page: z.instanceof(HTMLElement),
+  page: z.string(),
 });
 export type Route = z.infer<typeof RouterSchema>;
 
@@ -12,31 +12,31 @@ export const ROUTES: readonly Route[] = Object.freeze([
   {
     href: "/",
     name: "Home",
-    page: document.createElement("page-home"),
+    page: "page-home",
   },
   {
     href: "/explore/",
     name: "Explore",
-    page: document.createElement("page-explore"),
+    page: "page-explore",
   },
   {
     href: "/notifications/",
     name: "Notifications",
-    page: document.createElement("page-notifications"),
+    page: "page-notifications",
   },
   {
     href: "/messages/",
     name: "Messages",
-    page: document.createElement("page-messages"),
+    page: "page-messages",
   },
   {
     href: "/profile/",
     name: "Profile",
-    page: document.createElement("page-profile"),
+    page: "page-profile",
   },
 ]);
 
-export const route = (path: string): Result<void, Error> => {
+export const navigate = (path: string): Result<void, Error> => {
   const selector = "#root";
   const root = document.querySelector<HTMLDivElement>(selector);
   if (root === null) {
@@ -48,7 +48,7 @@ export const route = (path: string): Result<void, Error> => {
     return Err(new Error(`failed to find route: ${path}`));
   }
 
-  const fn0 = () => root.replaceChildren(route.page);
+  const fn0 = () => root.replaceChildren(document.createElement(route.page));
   const [err0, val0] = Result.safe(fn0).intoTuple();
   if (err0) {
     return Err(new Error(`failed to render: ${err0}`));

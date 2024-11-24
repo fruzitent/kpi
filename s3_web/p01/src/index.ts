@@ -1,7 +1,7 @@
 import { Err, Ok, Result } from "oxide.ts";
 
 import shared from "@/styles/shared.module.css" with { type: "css" };
-import { route } from "./router";
+import { navigate } from "./router";
 
 const buildElement = <E extends Element>(elem: E): Result<Element, Error> => {
   if (elem instanceof HTMLScriptElement) {
@@ -103,9 +103,9 @@ export const populateNode = <N extends HTMLElement, T extends string>(
 
 (() => {
   window.addEventListener("DOMContentLoaded", (e) => {
-    route(window.location.pathname).unwrap();
+    navigate(window.location.pathname).unwrap();
   });
   window.addEventListener("popstate", (e) => {
-    route(window.location.pathname).unwrap();
+    navigate(window.location.pathname).unwrap();
   });
 })();
