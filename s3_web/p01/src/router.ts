@@ -1,12 +1,14 @@
 import { Err, Ok, Result } from "oxide.ts";
+import { z } from "zod";
 
-export type Router = {
-  href: string;
-  name: string;
-  page: HTMLElement;
-};
+export const RouterSchema = z.object({
+  href: z.string(),
+  name: z.string(),
+  page: z.instanceof(HTMLElement),
+});
+export type Route = z.infer<typeof RouterSchema>;
 
-export const ROUTES: readonly Router[] = Object.freeze([
+export const ROUTES: readonly Route[] = Object.freeze([
   {
     href: "/",
     name: "Home",

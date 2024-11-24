@@ -1,18 +1,23 @@
-export type AttachmentKind = "image" | "video";
+import { z } from "zod";
 
-export type Attachment = {
-  src: string;
-  type: AttachmentKind;
-};
+export const AttachmentKindSchema = z.enum(["image", "video"]);
+export type AttachmentKind = z.infer<typeof AttachmentKindSchema>;
 
-export type Post = {
-  attachment: Attachment;
-  avatar: string;
-  handle: string;
-  text: string;
-  timestamp: string;
-  username: string;
-};
+export const AttachmentSchema = z.object({
+  src: z.string(),
+  type: AttachmentKindSchema,
+});
+export type Attachment = z.infer<typeof AttachmentSchema>;
+
+export const PostSchema = z.object({
+  attachment: AttachmentSchema,
+  avatar: z.string(),
+  handle: z.string(),
+  text: z.string(),
+  timestamp: z.string(),
+  username: z.string(),
+});
+export type Post = z.infer<typeof PostSchema>;
 
 export const POSTS: readonly Post[] = Object.freeze([
   {
@@ -63,11 +68,12 @@ export const POSTS: readonly Post[] = Object.freeze([
   },
 ]);
 
-export type Trend = {
-  category: string;
-  hashtag: string;
-  posts: string;
-};
+export const TrendSchema = z.object({
+  category: z.string(),
+  hashtag: z.string(),
+  posts: z.string(),
+});
+export type Trend = z.infer<typeof TrendSchema>;
 
 export const TRENDS: readonly Trend[] = Object.freeze([
   {
