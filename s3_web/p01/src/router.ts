@@ -1,6 +1,8 @@
 import { Err, Ok, Result } from "oxide.ts";
 import { z } from "zod";
 
+import { fetchWithError } from "@/index.ts";
+
 export const RouterSchema = z.object({
   href: z.string(),
   name: z.string(),
@@ -35,6 +37,7 @@ export const ROUTES: readonly Route[] = Object.freeze([
     page: "page-profile",
   },
 ]);
+export const fetchRoutes = () => fetchWithError(ROUTES, z.array(RouterSchema));
 
 export const navigate = (path: string): Result<void, Error> => {
   const selector = "#root";

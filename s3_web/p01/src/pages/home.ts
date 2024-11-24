@@ -1,4 +1,4 @@
-import { POSTS } from "@/data.ts";
+import { fetchPosts } from "@/data.ts";
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
 
 import page from "@/pages/home.html?url";
@@ -10,14 +10,19 @@ class PageHome extends HTMLElement {
     populateNode(this, "page-home", styles).unwrap();
   }
 
-  connectedCallback() {
+  async connectedCallback() {
     const selector = "ol";
     const olist = this.shadowRoot?.querySelector(selector);
     if (typeof olist === "undefined" || olist === null) {
       return alert(`failed to query: ${selector}`);
     }
 
-    for (const post of POSTS) {
+    const posts = await fetchPosts();
+    if (posts.isErr()) {
+      return alert(`failed to fetch: ${posts.unwrapErr()}`);
+    }
+
+    for (const post of posts.unwrap()) {
       const component = document.createElement("component-post");
       component.setAttribute("data-__blob", JSON.stringify(post));
       const item = document.createElement("li");

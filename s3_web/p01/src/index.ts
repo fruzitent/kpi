@@ -1,6 +1,7 @@
 import { Err, Ok, Result } from "oxide.ts";
 
 import shared from "@/styles/shared.module.css" with { type: "css" };
+import { ZodType } from "zod";
 import { navigate } from "./router";
 
 const buildElement = <E extends Element>(elem: E): Result<Element, Error> => {
@@ -31,6 +32,22 @@ export const defineComponent = async <E extends typeof HTMLElement>(
 const fetchFile = async (path: string): Promise<Result<string, Error>> => {
   const input = new URL(path, import.meta.url).href;
   return Result.safe(fetch(input).then((data) => data.text()));
+};
+
+export const fetchWithError = async <T>(
+  data: T,
+  schema: ZodType<T>,
+): Promise<Result<T, Error>> => {
+  const timeout = Math.floor(Math.random() * 1000);
+  await new Promise((resolve) => setTimeout(resolve, timeout));
+  if (Math.random() < 0.1) {
+    return Err(new Error("internal server error"));
+  }
+  const type = schema.safeParse(data);
+  if (!type.success) {
+    return Err(new Error(`failed to parse: ${type.error.message}`));
+  }
+  return Ok(type.data);
 };
 
 export const insertFile = async (

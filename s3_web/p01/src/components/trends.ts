@@ -1,6 +1,6 @@
 import { Err, Ok, Result } from "oxide.ts";
 
-import { Trend, TRENDS, TrendSchema } from "@/data.ts";
+import { fetchTrends, Trend, TrendSchema } from "@/data.ts";
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
 
 import styles from "@/components/trends.module.css" with { type: "css" };
@@ -12,14 +12,19 @@ class ComponentTrends extends HTMLElement {
     populateNode(this, "component-trends", styles).unwrap();
   }
 
-  connectedCallback() {
+  async connectedCallback() {
     const selector = "ul";
     const ulist = this.shadowRoot?.querySelector(selector);
     if (typeof ulist === "undefined" || ulist === null) {
       return alert(`failed to query: ${selector}`);
     }
 
-    for (const trend of TRENDS) {
+    const trends = await fetchTrends();
+    if (trends.isErr()) {
+      return alert(`failed to fetch: ${trends.unwrapErr()}`);
+    }
+
+    for (const trend of trends.unwrap()) {
       const component = document.createElement("component-trends-item");
       component.setAttribute("data-__blob", JSON.stringify(trend));
       const item = document.createElement("li");

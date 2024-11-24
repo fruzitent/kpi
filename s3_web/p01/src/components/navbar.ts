@@ -1,7 +1,7 @@
 import { Err, Ok, Result } from "oxide.ts";
 
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
-import { navigate, Route, RouterSchema, ROUTES } from "@/router.ts";
+import { fetchRoutes, navigate, Route, RouterSchema } from "@/router.ts";
 
 import component from "@/components/navbar.html?url";
 import styles from "@/components/navbar.module.css" with { type: "css" };
@@ -12,14 +12,19 @@ class ComponentNavbar extends HTMLElement {
     populateNode(this, "component-navbar", styles).unwrap();
   }
 
-  connectedCallback() {
+  async connectedCallback() {
     const selector = "ul";
     const ulist = this.shadowRoot?.querySelector(selector);
     if (typeof ulist === "undefined" || ulist === null) {
       return alert(`failed to query: ${selector}`);
     }
 
-    for (const route of ROUTES) {
+    const routes = await fetchRoutes();
+    if (routes.isErr()) {
+      return alert(`failed to fetch: ${routes.unwrapErr()}`);
+    }
+
+    for (const route of routes.unwrap()) {
       const component = document.createElement("component-navbar-item");
       component.setAttribute("data-__blob", JSON.stringify(route));
       const item = document.createElement("li");

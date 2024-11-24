@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { fetchWithError } from "@/index.ts";
+
 export const AttachmentKindSchema = z.enum(["image", "video"]);
 export type AttachmentKind = z.infer<typeof AttachmentKindSchema>;
 
@@ -67,6 +69,7 @@ export const POSTS: readonly Post[] = Object.freeze([
     username: "Danny Resko",
   },
 ]);
+export const fetchPosts = () => fetchWithError(POSTS, z.array(PostSchema));
 
 export const TrendSchema = z.object({
   category: z.string(),
@@ -107,3 +110,4 @@ export const TRENDS: readonly Trend[] = Object.freeze([
     posts: "3652 posts",
   },
 ]);
+export const fetchTrends = () => fetchWithError(TRENDS, z.array(TrendSchema));
