@@ -6,7 +6,7 @@ import { defineComponent, insertFile, populateNode } from "@/index.ts";
 import styles from "@/components/trends.module.css" with { type: "css" };
 import component from "./trends.html?url";
 
-class Trends extends HTMLElement {
+class ComponentTrends extends HTMLElement {
   constructor() {
     super();
     populateNode(this, "component-trends", styles).unwrap();
@@ -42,7 +42,7 @@ class Trends extends HTMLElement {
   }
 }
 
-class TrendsItem extends HTMLElement {
+class ComponentTrendsItem extends HTMLElement {
   constructor() {
     super();
     populateNode(this, "component-trends-item", styles).unwrap();
@@ -108,6 +108,6 @@ class TrendsItem extends HTMLElement {
 
 (async () => {
   (await insertFile(component)).unwrap();
-  (await defineComponent("component-trends", Trends)).unwrap();
-  (await defineComponent("component-trends-item", TrendsItem)).unwrap();
+  (await defineComponent("component-trends", ComponentTrends)).unwrap();
+  (await defineComponent("component-trends-item", ComponentTrendsItem)).unwrap();
 })();

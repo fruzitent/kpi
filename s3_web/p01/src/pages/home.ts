@@ -4,7 +4,7 @@ import { defineComponent, insertFile, populateNode } from "@/index.ts";
 import page from "@/pages/home.html?url";
 import styles from "@/pages/home.module.css" with { type: "css" };
 
-class Home extends HTMLElement {
+class PageHome extends HTMLElement {
   constructor() {
     super();
     populateNode(this, "page-home", styles).unwrap();
@@ -46,5 +46,5 @@ class Home extends HTMLElement {
 
 (async () => {
   (await insertFile(page)).unwrap();
-  (await defineComponent("page-home", Home)).unwrap();
+  (await defineComponent("page-home", PageHome)).unwrap();
 })();

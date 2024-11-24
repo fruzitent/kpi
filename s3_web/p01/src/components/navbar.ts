@@ -6,7 +6,7 @@ import { route, ROUTES } from "@/router.ts";
 import component from "@/components/navbar.html?url";
 import styles from "@/components/navbar.module.css" with { type: "css" };
 
-class Navbar extends HTMLElement {
+class ComponentNavbar extends HTMLElement {
   constructor() {
     super();
     populateNode(this, "component-navbar", styles).unwrap();
@@ -41,7 +41,7 @@ class Navbar extends HTMLElement {
   }
 }
 
-class NavbarItem extends HTMLElement {
+class ComponentNavbarItem extends HTMLElement {
   constructor() {
     super();
     populateNode(this, "component-navbar-item", styles).unwrap();
@@ -83,6 +83,6 @@ class NavbarItem extends HTMLElement {
 
 (async () => {
   (await insertFile(component)).unwrap();
-  (await defineComponent("component-navbar", Navbar)).unwrap();
-  (await defineComponent("component-navbar-item", NavbarItem)).unwrap();
+  (await defineComponent("component-navbar", ComponentNavbar)).unwrap();
+  (await defineComponent("component-navbar-item", ComponentNavbarItem)).unwrap();
 })();
