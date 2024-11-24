@@ -1,6 +1,6 @@
 import { Err, Ok, Result } from "oxide.ts";
 
-import { AttachmentKind } from "@/data.ts";
+import { Post, PostSchema } from "@/data.ts";
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
 
 import component from "@/components/post.html?url";
@@ -13,71 +13,30 @@ class ComponentPost extends HTMLElement {
   }
 
   connectedCallback() {
-    const attachmentSrc = this.getAttribute("data-attachment-src");
-    if (attachmentSrc === null) {
-      return alert("missing required parameter: attachmentSrc");
+    const blob = this.getAttribute("data-__blob");
+    if (blob === null) {
+      return alert("missing required parameter: blob");
     }
 
-    const attachmentType = this.getAttribute("data-attachment-type");
-    if (attachmentType === null) {
-      return alert("missing required parameter: attachmentType");
+    const post = PostSchema.safeParse(JSON.parse(blob));
+    if (!post.success) {
+      return alert(`failed to parse: ${post.error.message}`);
     }
 
-    const avatar = this.getAttribute("data-avatar");
-    if (avatar === null) {
-      return alert("missing required parameter: avatar");
-    }
-
-    const handle = this.getAttribute("data-handle");
-    if (handle === null) {
-      return alert("missing required parameter: handle");
-    }
-
-    const text = this.getAttribute("data-text");
-    if (text === null) {
-      return alert("missing required parameter: text");
-    }
-
-    const timestamp = this.getAttribute("data-timestamp");
-    if (timestamp === null) {
-      return alert("missing required parameter: timestamp");
-    }
-
-    const username = this.getAttribute("data-username");
-    if (username === null) {
-      return alert("missing required parameter: username");
-    }
-
-    const [err, val] = this.#render(
-      attachmentSrc,
-      attachmentType,
-      avatar,
-      handle,
-      text,
-      timestamp,
-      username,
-    ).intoTuple();
+    const [err, val] = this.#render(post.data).intoTuple();
     if (err) {
       return alert(`failed to render: ${err}`);
     }
   }
 
-  #render(
-    attachmentSrc: string,
-    attachmentType: string,
-    avatar: string,
-    handle: string,
-    text: string,
-    timestamp: string,
-    username: string,
-  ): Result<void, Error> {
+  #render(post: Post): Result<void, Error> {
     {
       const selector = ".avatar";
       const img = this.shadowRoot?.querySelector<HTMLImageElement>(selector);
       if (typeof img === "undefined" || img === null) {
         return Err(new Error(`failed to query: ${selector}`));
       }
-      img.src = avatar;
+      img.src = post.avatar;
     }
 
     {
@@ -86,7 +45,7 @@ class ComponentPost extends HTMLElement {
       if (typeof p === "undefined" || p === null) {
         return Err(new Error(`failed to query: ${selector}`));
       }
-      p.innerText = username;
+      p.innerText = post.username;
     }
 
     {
@@ -95,7 +54,7 @@ class ComponentPost extends HTMLElement {
       if (typeof small === "undefined" || small === null) {
         return Err(new Error(`failed to query: ${selector}`));
       }
-      small.innerText = handle;
+      small.innerText = post.handle;
     }
 
     {
@@ -104,7 +63,7 @@ class ComponentPost extends HTMLElement {
       if (typeof small === "undefined" || small === null) {
         return Err(new Error(`failed to query: ${selector}`));
       }
-      small.innerText = timestamp;
+      small.innerText = post.timestamp;
     }
 
     {
@@ -113,7 +72,7 @@ class ComponentPost extends HTMLElement {
       if (typeof pre === "undefined" || pre === null) {
         return Err(new Error(`failed to query: ${selector}`));
       }
-      pre.innerText = text;
+      pre.innerText = post.text;
     }
 
     {
@@ -123,22 +82,22 @@ class ComponentPost extends HTMLElement {
         return Err(new Error(`failed to query: ${selector}`));
       }
 
-      switch (attachmentType as AttachmentKind) {
+      switch (post.attachment.type) {
         case "image": {
           const img = document.createElement("img");
-          img.src = attachmentSrc;
+          img.src = post.attachment.src;
           div.appendChild(img);
           break;
         }
         case "video": {
           const iframe = document.createElement("iframe");
           iframe.allowFullscreen = true;
-          iframe.src = attachmentSrc;
+          iframe.src = post.attachment.src;
           div.appendChild(iframe);
           break;
         }
         default: {
-          return Err(new Error(`unexpected attachment: ${attachmentType}`));
+          return Err(new Error(`unexpected attachment: ${post.attachment.type}`));
         }
       }
     }

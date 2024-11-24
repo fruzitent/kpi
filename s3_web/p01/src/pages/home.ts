@@ -19,17 +19,9 @@ class PageHome extends HTMLElement {
 
     for (const post of POSTS) {
       const component = document.createElement("component-post");
-      component.setAttribute("data-attachment-src", post.attachment.src);
-      component.setAttribute("data-attachment-type", post.attachment.type);
-      component.setAttribute("data-avatar", post.avatar);
-      component.setAttribute("data-handle", post.handle);
-      component.setAttribute("data-text", post.text);
-      component.setAttribute("data-timestamp", post.timestamp);
-      component.setAttribute("data-username", post.username);
-
+      component.setAttribute("data-__blob", JSON.stringify(post));
       const item = document.createElement("li");
       item.appendChild(component);
-
       olist.appendChild(item);
     }
   }
