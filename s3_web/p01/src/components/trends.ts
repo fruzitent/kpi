@@ -1,6 +1,6 @@
 import { Err, Ok, Result } from "oxide.ts";
 
-import { TRENDS } from "@/data.ts";
+import { Trend, TRENDS, TrendSchema } from "@/data.ts";
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
 
 import styles from "@/components/trends.module.css" with { type: "css" };
@@ -21,13 +21,9 @@ class ComponentTrends extends HTMLElement {
 
     for (const trend of TRENDS) {
       const component = document.createElement("component-trends-item");
-      component.setAttribute("data-category", trend.category);
-      component.setAttribute("data-hashtag", trend.hashtag);
-      component.setAttribute("data-posts", trend.posts);
-
+      component.setAttribute("data-__blob", JSON.stringify(trend));
       const item = document.createElement("li");
       item.appendChild(component);
-
       ulist.appendChild(item);
     }
   }
@@ -49,39 +45,30 @@ class ComponentTrendsItem extends HTMLElement {
   }
 
   connectedCallback() {
-    const category = this.getAttribute("data-category");
-    if (category === null) {
-      return alert("missing required parameter: category");
+    const blob = this.getAttribute("data-__blob");
+    if (blob === null) {
+      return alert("missing required parameter: blob");
     }
 
-    const hashtag = this.getAttribute("data-hashtag");
-    if (hashtag === null) {
-      return alert("missing required parameter: hashtag");
+    const trend = TrendSchema.safeParse(JSON.parse(blob));
+    if (!trend.success) {
+      return alert(`failed to parse: ${trend.error.errors}`);
     }
 
-    const posts = this.getAttribute("data-posts");
-    if (posts === null) {
-      return alert("missing required parameter: posts");
-    }
-
-    const [err, val] = this.#render(category, hashtag, posts).intoTuple();
+    const [err, val] = this.#render(trend.data).intoTuple();
     if (err) {
       return alert(`failed to render: ${err}`);
     }
   }
 
-  #render(
-    category: string,
-    hashtag: string,
-    posts: string,
-  ): Result<void, Error> {
+  #render(trend: Trend): Result<void, Error> {
     {
       const selector = ".category";
       const span = this.shadowRoot?.querySelector<HTMLSpanElement>(selector);
       if (typeof span === "undefined" || span === null) {
         return Err(new Error(`failed to query: ${selector}`));
       }
-      span.innerText = category;
+      span.innerText = trend.category;
     }
 
     {
@@ -90,7 +77,7 @@ class ComponentTrendsItem extends HTMLElement {
       if (typeof p === "undefined" || p === null) {
         return Err(new Error(`failed to query: ${selector}`));
       }
-      p.innerText = hashtag;
+      p.innerText = trend.hashtag;
     }
 
     {
@@ -99,7 +86,7 @@ class ComponentTrendsItem extends HTMLElement {
       if (typeof span === "undefined" || span === null) {
         return Err(new Error(`failed to query: ${selector}`));
       }
-      span.innerText = posts;
+      span.innerText = trend.posts;
     }
 
     return Ok(undefined);
