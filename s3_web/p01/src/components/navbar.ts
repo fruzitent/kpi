@@ -2,9 +2,10 @@ import { Ok } from "oxide.ts";
 
 import type { Result } from "oxide.ts";
 
-import { navigate, q } from "@/index.ts";
 import { getRoutes } from "@/lib/data.ts";
 import { RouteSchema } from "@/lib/dto.ts";
+import { navigate } from "@/lib/navigate";
+import { q } from "@/lib/rustify.ts";
 import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
 import type { Route } from "@/lib/dto.ts";

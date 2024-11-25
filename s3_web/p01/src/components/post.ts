@@ -2,8 +2,8 @@ import { Err, Ok } from "oxide.ts";
 
 import type { Result } from "oxide.ts";
 
-import { q } from "@/index.ts";
 import { AttachmentSchema, PostSchema } from "@/lib/dto.ts";
+import { q } from "@/lib/rustify.ts";
 import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
 import type { Attachment, Post } from "@/lib/dto.ts";

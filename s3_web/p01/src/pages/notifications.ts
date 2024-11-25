@@ -1,6 +1,6 @@
 import { Ok } from "oxide.ts";
 
-import { q } from "@/index.ts";
+import { q } from "@/lib/rustify.ts";
 import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
 import type { Result } from "oxide.ts";

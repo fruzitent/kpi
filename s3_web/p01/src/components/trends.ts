@@ -2,9 +2,9 @@ import { Err, Ok } from "oxide.ts";
 
 import type { Result } from "oxide.ts";
 
-import { q } from "@/index.ts";
 import { getTrends } from "@/lib/data.ts";
 import { TrendSchema } from "@/lib/dto.ts";
+import { q } from "@/lib/rustify.ts";
 import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
 import type { Trend } from "@/lib/dto.ts";
