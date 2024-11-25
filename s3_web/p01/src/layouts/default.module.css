@@ -35,10 +35,13 @@ component-footer {
   padding: 0.5rem 3rem;
 }
 
-hr {
-  background: var(--surface0);
-  border: none;
-  height: 0.1rem;
+@media screen and (max-width: 1024px) {
+  .right {
+    width: 15%;
+  }
+  .center {
+    width: 70%;
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -52,4 +55,10 @@ hr {
   .center > * {
     padding: 0.5rem 0;
   }
+}
+
+hr {
+  background: var(--surface0);
+  border: none;
+  height: 0.1rem;
 }
