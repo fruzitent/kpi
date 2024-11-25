@@ -13,10 +13,9 @@ class ComponentNavbar extends HTMLElement {
   }
 
   async connectedCallback() {
-    const selector = "ul";
-    const ulist = this.shadowRoot?.querySelector(selector);
-    if (typeof ulist === "undefined" || ulist === null) {
-      return alert(`failed to query: ${selector}`);
+    const ul = this.shadowRoot?.querySelector("ul");
+    if (typeof ul === "undefined" || ul === null) {
+      return alert(`failed to query: ul`);
     }
 
     const routes = await fetchRoutes();
@@ -29,17 +28,16 @@ class ComponentNavbar extends HTMLElement {
       component.setAttribute("data-__blob", JSON.stringify(route));
       const item = document.createElement("li");
       item.appendChild(component);
-      ulist.appendChild(item);
+      ul.appendChild(item);
     }
   }
 
   disconnectedCallback() {
-    const selector = "ul";
-    const ulist = this.shadowRoot?.querySelector(selector);
-    if (typeof ulist === "undefined" || ulist === null) {
-      return alert(`failed to query: ${selector}`);
+    const ul = this.shadowRoot?.querySelector("ul");
+    if (typeof ul === "undefined" || ul === null) {
+      return alert(`failed to query: ul`);
     }
-    ulist.innerHTML = "";
+    ul.innerHTML = "";
   }
 }
 
@@ -67,16 +65,17 @@ class ComponentNavbarItem extends HTMLElement {
   }
 
   #render(route: Route): Result<void, Error> {
-    const selector = "a";
-    const a = this.shadowRoot?.querySelector(selector);
+    const a = this.shadowRoot?.querySelector("a");
     if (typeof a === "undefined" || a === null) {
-      return Err(new Error(`failed to query: ${selector}`));
+      return Err(new Error(`failed to query: a`));
     }
+
     a.addEventListener("click", (e) => {
       e.preventDefault();
       history.pushState({}, "", route.href);
       navigate(route.href).unwrap();
     });
+
     a.href = route.href;
     a.innerText = route.name;
     return Ok(undefined);

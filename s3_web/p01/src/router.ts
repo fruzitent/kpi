@@ -40,10 +40,9 @@ export const ROUTES: readonly Route[] = Object.freeze([
 export const fetchRoutes = () => fetchWithError(ROUTES, z.array(RouterSchema));
 
 export const navigate = (path: string): Result<void, Error> => {
-  const selector = "#root";
-  const root = document.querySelector<HTMLDivElement>(selector);
+  const root = document.querySelector<HTMLDivElement>("#root");
   if (root === null) {
-    return Err(new Error(`failed to query: ${selector}`));
+    return Err(new Error(`failed to query: #root`));
   }
 
   const route = ROUTES.find((r) => r.href === path);

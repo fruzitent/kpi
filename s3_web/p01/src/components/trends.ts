@@ -13,10 +13,9 @@ class ComponentTrends extends HTMLElement {
   }
 
   async connectedCallback() {
-    const selector = "ul";
-    const ulist = this.shadowRoot?.querySelector(selector);
-    if (typeof ulist === "undefined" || ulist === null) {
-      return alert(`failed to query: ${selector}`);
+    const ul = this.shadowRoot?.querySelector("ul");
+    if (typeof ul === "undefined" || ul === null) {
+      return alert(`failed to query: "ul"`);
     }
 
     const trends = await fetchTrends();
@@ -29,17 +28,16 @@ class ComponentTrends extends HTMLElement {
       component.setAttribute("data-__blob", JSON.stringify(trend));
       const item = document.createElement("li");
       item.appendChild(component);
-      ulist.appendChild(item);
+      ul.appendChild(item);
     }
   }
 
   disconnectedCallback() {
-    const selector = "ul";
-    const ulist = this.shadowRoot?.querySelector(selector);
-    if (typeof ulist === "undefined" || ulist === null) {
-      return alert(`failed to query: ${selector}`);
+    const ul = this.shadowRoot?.querySelector("ul");
+    if (typeof ul === "undefined" || ul === null) {
+      return alert(`failed to query: ul`);
     }
-    ulist.innerHTML = "";
+    ul.innerHTML = "";
   }
 }
 
@@ -67,32 +65,23 @@ class ComponentTrendsItem extends HTMLElement {
   }
 
   #render(trend: Trend): Result<void, Error> {
-    {
-      const selector = ".category";
-      const span = this.shadowRoot?.querySelector<HTMLSpanElement>(selector);
-      if (typeof span === "undefined" || span === null) {
-        return Err(new Error(`failed to query: ${selector}`));
-      }
-      span.innerText = trend.category;
+    const category = this.shadowRoot?.querySelector<HTMLSpanElement>(".category");
+    if (typeof category === "undefined" || category === null) {
+      return Err(new Error(`failed to query: .category`));
     }
+    category.innerText = trend.category;
 
-    {
-      const selector = ".hashtag";
-      const p = this.shadowRoot?.querySelector<HTMLParagraphElement>(selector);
-      if (typeof p === "undefined" || p === null) {
-        return Err(new Error(`failed to query: ${selector}`));
-      }
-      p.innerText = trend.hashtag;
+    const hashtag = this.shadowRoot?.querySelector<HTMLParagraphElement>(".hashtag");
+    if (typeof hashtag === "undefined" || hashtag === null) {
+      return Err(new Error(`failed to query: .hashtag`));
     }
+    hashtag.innerText = trend.hashtag;
 
-    {
-      const selector = ".posts";
-      const span = this.shadowRoot?.querySelector<HTMLSpanElement>(selector);
-      if (typeof span === "undefined" || span === null) {
-        return Err(new Error(`failed to query: ${selector}`));
-      }
-      span.innerText = trend.posts;
+    const posts = this.shadowRoot?.querySelector<HTMLSpanElement>(".posts");
+    if (typeof posts === "undefined" || posts === null) {
+      return Err(new Error(`failed to query: .posts`));
     }
+    posts.innerText = trend.posts;
 
     return Ok(undefined);
   }

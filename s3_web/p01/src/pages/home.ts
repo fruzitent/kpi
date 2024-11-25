@@ -11,10 +11,9 @@ class PageHome extends HTMLElement {
   }
 
   async connectedCallback() {
-    const selector = "ol";
-    const olist = this.shadowRoot?.querySelector(selector);
-    if (typeof olist === "undefined" || olist === null) {
-      return alert(`failed to query: ${selector}`);
+    const ol = this.shadowRoot?.querySelector("ol");
+    if (typeof ol === "undefined" || ol === null) {
+      return alert(`failed to query: ol`);
     }
 
     const posts = await fetchPosts();
@@ -27,17 +26,16 @@ class PageHome extends HTMLElement {
       component.setAttribute("data-__blob", JSON.stringify(post));
       const item = document.createElement("li");
       item.appendChild(component);
-      olist.appendChild(item);
+      ol.appendChild(item);
     }
   }
 
   disconnectedCallback() {
-    const selector = "ol";
-    const olist = this.shadowRoot?.querySelector(selector);
-    if (typeof olist === "undefined" || olist === null) {
-      return alert(`failed to query: ${selector}`);
+    const ol = this.shadowRoot?.querySelector("ol");
+    if (typeof ol === "undefined" || ol === null) {
+      return alert(`failed to query: ol`);
     }
-    olist.innerHTML = "";
+    ol.innerHTML = "";
   }
 }
 

@@ -30,10 +30,9 @@ class ComponentAttachment extends HTMLElement {
   }
 
   #render(attachment: Attachment): Result<void, Error> {
-    const selector = ".attachment";
-    const div = this.shadowRoot?.querySelector<HTMLDivElement>(selector);
+    const div = this.shadowRoot?.querySelector<HTMLDivElement>(".attachment");
     if (typeof div === "undefined" || div === null) {
-      return Err(new Error(`failed to query: ${selector}`));
+      return Err(new Error(`failed to query: .attachment`));
     }
 
     switch (attachment.type) {
@@ -83,73 +82,55 @@ class ComponentPost extends HTMLElement {
   }
 
   #render(post: Post): Result<void, Error> {
-    {
-      const selector = ".avatar";
-      const img = this.shadowRoot?.querySelector<HTMLImageElement>(selector);
-      if (typeof img === "undefined" || img === null) {
-        return Err(new Error(`failed to query: ${selector}`));
-      }
-      img.src = post.avatar;
+    const avatar = this.shadowRoot?.querySelector<HTMLImageElement>(".avatar");
+    if (typeof avatar === "undefined" || avatar === null) {
+      return Err(new Error(`failed to query: .avatar`));
+    }
+    avatar.src = post.avatar;
+
+    const username = this.shadowRoot?.querySelector<HTMLParagraphElement>(".username");
+    if (typeof username === "undefined" || username === null) {
+      return Err(new Error(`failed to query: .username`));
+    }
+    username.innerText = post.username;
+
+    const handle = this.shadowRoot?.querySelector<HTMLElement>(".handle");
+    if (typeof handle === "undefined" || handle === null) {
+      return Err(new Error(`failed to query: .handle`));
+    }
+    handle.innerText = post.handle;
+
+    const timestamp = this.shadowRoot?.querySelector<HTMLElement>(".timestamp");
+    if (typeof timestamp === "undefined" || timestamp === null) {
+      return Err(new Error(`failed to query: .timestamp`));
+    }
+    timestamp.innerText = post.timestamp;
+
+    const text = this.shadowRoot?.querySelector<HTMLPreElement>(".text");
+    if (typeof text === "undefined" || text === null) {
+      return Err(new Error(`failed to query: .text`));
+    }
+    text.innerText = post.text;
+
+    const placeholder = this.shadowRoot?.querySelector<HTMLDivElement>(".placeholder");
+    if (typeof placeholder === "undefined" || placeholder === null) {
+      return Err(new Error(`failed to query: .placeholder`));
     }
 
-    {
-      const selector = ".username";
-      const p = this.shadowRoot?.querySelector<HTMLParagraphElement>(selector);
-      if (typeof p === "undefined" || p === null) {
-        return Err(new Error(`failed to query: ${selector}`));
-      }
-      p.innerText = post.username;
+    const component = document.createElement("component-attachment");
+    component.setAttribute("data-__blob", JSON.stringify(post.attachment));
+    placeholder.replaceChildren(component);
+
+    if (post.attachment.type !== "image") {
+      return Ok(undefined);
     }
 
-    {
-      const selector = ".handle";
-      const small = this.shadowRoot?.querySelector<HTMLElement>(selector);
-      if (typeof small === "undefined" || small === null) {
-        return Err(new Error(`failed to query: ${selector}`));
-      }
-      small.innerText = post.handle;
+    const img = component.shadowRoot?.querySelector("img");
+    if (typeof img === "undefined" || img === null) {
+      return Err(new Error("failed to query: img"));
     }
 
-    {
-      const selector = ".timestamp";
-      const small = this.shadowRoot?.querySelector<HTMLElement>(selector);
-      if (typeof small === "undefined" || small === null) {
-        return Err(new Error(`failed to query: ${selector}`));
-      }
-      small.innerText = post.timestamp;
-    }
-
-    {
-      const selector = ".text";
-      const pre = this.shadowRoot?.querySelector<HTMLElement>(selector);
-      if (typeof pre === "undefined" || pre === null) {
-        return Err(new Error(`failed to query: ${selector}`));
-      }
-      pre.innerText = post.text;
-    }
-
-    {
-      const selector = ".attachment-placeholder";
-      const attachment = this.shadowRoot?.querySelector<HTMLElement>(selector);
-      if (typeof attachment === "undefined" || attachment === null) {
-        return Err(new Error(`failed to query: ${selector}`));
-      }
-
-      const component = document.createElement("component-attachment");
-      component.setAttribute("data-__blob", JSON.stringify(post.attachment));
-      attachment.replaceChildren(component);
-
-      if (post.attachment.type !== "image") {
-        return Ok(undefined);
-      }
-
-      const img = component.shadowRoot?.querySelector("img");
-      if (typeof img === "undefined" || img === null) {
-        return Err(new Error("failed to query: img"));
-      }
-
-      return this.#renderMap(component, img, post);
-    }
+    return this.#renderMap(component, img, post);
   }
 
   #renderMap(attachment: HTMLElement, img: HTMLImageElement, post: Post): Result<void, Error> {
@@ -157,10 +138,9 @@ class ComponentPost extends HTMLElement {
       return Ok(undefined);
     }
 
-    const selector = ".tooltip";
-    const tooltip = attachment.shadowRoot?.querySelector<HTMLDivElement>(selector);
+    const tooltip = attachment.shadowRoot?.querySelector<HTMLDivElement>(".tooltip");
     if (typeof tooltip === "undefined" || tooltip === null) {
-      return Err(new Error(`failed to query: ${selector}`));
+      return Err(new Error(`failed to query: .tooltip`));
     }
 
     const map = document.createElement("map");
@@ -223,10 +203,9 @@ class ComponentTooltip extends HTMLElement {
   }
 
   #render(tag: string): Result<void, Error> {
-    const selector = "p";
-    const p = this.shadowRoot?.querySelector(selector);
+    const p = this.shadowRoot?.querySelector("p");
     if (typeof p === "undefined" || p === null) {
-      return Err(new Error(`failed to query: ${selector}`));
+      return Err(new Error(`failed to query: p`));
     }
     p.innerText = `#${tag}`;
     return Ok(undefined);

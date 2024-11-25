@@ -86,10 +86,9 @@ export const populateNode = <N extends HTMLElement, T extends string>(
   tag: T,
   styles?: CSSStyleSheet,
 ): Result<void, Error> => {
-  const selector = `template#${tag}`;
-  const template = document.querySelector<HTMLTemplateElement>(selector);
+  const template = document.querySelector<HTMLTemplateElement>(`template#${tag}`);
   if (template === null) {
-    return Err(new Error(`failed to query: ${selector}`));
+    return Err(new Error(`failed to query: template#${tag}`));
   }
 
   const fn0 = () => node.attachShadow({ mode: "open" });
