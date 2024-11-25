@@ -1,10 +1,63 @@
 import { Err, Ok, Result } from "oxide.ts";
 
-import { Post, PostSchema } from "@/data.ts";
+import { Attachment, AttachmentSchema, Post, PostSchema } from "@/data.ts";
 import { defineComponent, insertFile, populateNode } from "@/index.ts";
 
 import component from "@/components/post.html?url";
 import styles from "@/components/post.module.css" with { type: "css" };
+
+class ComponentAttachment extends HTMLElement {
+  constructor() {
+    super();
+    populateNode(this, "component-attachment", styles).unwrap();
+  }
+
+  connectedCallback() {
+    const blob = this.getAttribute("data-__blob");
+    if (blob === null) {
+      return alert("missing required parameter: blob");
+    }
+
+    const attachment = AttachmentSchema.safeParse(JSON.parse(blob));
+    if (!attachment.success) {
+      return alert(`failed to parse: ${attachment.error.message}`);
+    }
+
+    const [err, val] = this.#render(attachment.data).intoTuple();
+    if (err) {
+      return alert(`failed to render: ${err}`);
+    }
+  }
+
+  #render(attachment: Attachment): Result<void, Error> {
+    const selector = ".attachment";
+    const div = this.shadowRoot?.querySelector<HTMLDivElement>(selector);
+    if (typeof div === "undefined" || div === null) {
+      return Err(new Error(`failed to query: ${selector}`));
+    }
+
+    switch (attachment.type) {
+      case "image": {
+        const img = document.createElement("img");
+        img.src = attachment.src;
+        div.appendChild(img);
+        break;
+      }
+      case "video": {
+        const iframe = document.createElement("iframe");
+        iframe.allowFullscreen = true;
+        iframe.src = attachment.src;
+        div.appendChild(iframe);
+        break;
+      }
+      default: {
+        return Err(new Error(`unexpected attachment: ${attachment.type}`));
+      }
+    }
+
+    return Ok(undefined);
+  }
+}
 
 class ComponentPost extends HTMLElement {
   constructor() {
@@ -76,48 +129,36 @@ class ComponentPost extends HTMLElement {
     }
 
     {
-      const selector = ".attachment";
-      const div = this.shadowRoot?.querySelector<HTMLDivElement>(selector);
-      if (typeof div === "undefined" || div === null) {
+      const selector = ".attachment-placeholder";
+      const attachment = this.shadowRoot?.querySelector<HTMLElement>(selector);
+      if (typeof attachment === "undefined" || attachment === null) {
         return Err(new Error(`failed to query: ${selector}`));
       }
 
-      switch (post.attachment.type) {
-        case "image": {
-          const img = document.createElement("img");
-          img.src = post.attachment.src;
-          div.appendChild(img);
+      const component = document.createElement("component-attachment");
+      component.setAttribute("data-__blob", JSON.stringify(post.attachment));
+      attachment.replaceChildren(component);
 
-          const [err, val] = this.#renderMap(post, img, div).intoTuple();
-          if (err) {
-            return Err(new Error(`failed to render map: ${err}`));
-          }
-
-          break;
-        }
-        case "video": {
-          const iframe = document.createElement("iframe");
-          iframe.allowFullscreen = true;
-          iframe.src = post.attachment.src;
-          div.appendChild(iframe);
-          break;
-        }
-        default: {
-          return Err(new Error(`unexpected attachment: ${post.attachment.type}`));
-        }
+      if (post.attachment.type !== "image") {
+        return Ok(undefined);
       }
-    }
 
-    return Ok(undefined);
+      const img = component.shadowRoot?.querySelector("img");
+      if (typeof img === "undefined" || img === null) {
+        return Err(new Error("failed to query: img"));
+      }
+
+      return this.#renderMap(component, img, post);
+    }
   }
 
-  #renderMap(post: Post, img: HTMLImageElement, div: HTMLDivElement): Result<void, Error> {
+  #renderMap(attachment: HTMLElement, img: HTMLImageElement, post: Post): Result<void, Error> {
     if (post.tags.length === 0) {
       return Ok(undefined);
     }
 
     const selector = ".tooltip";
-    const tooltip = this.shadowRoot?.querySelector<HTMLDivElement>(selector);
+    const tooltip = attachment.shadowRoot?.querySelector<HTMLDivElement>(selector);
     if (typeof tooltip === "undefined" || tooltip === null) {
       return Err(new Error(`failed to query: ${selector}`));
     }
@@ -158,7 +199,7 @@ class ComponentPost extends HTMLElement {
       map.appendChild(area);
     }
 
-    div.appendChild(map);
+    attachment.shadowRoot?.appendChild(map);
     return Ok(undefined);
   }
 }
@@ -194,6 +235,7 @@ class ComponentTooltip extends HTMLElement {
 
 (async () => {
   (await insertFile(component)).unwrap();
+  (await defineComponent("component-attachment", ComponentAttachment)).unwrap();
   (await defineComponent("component-post", ComponentPost)).unwrap();
   (await defineComponent("component-tooltip", ComponentTooltip)).unwrap();
 })();
