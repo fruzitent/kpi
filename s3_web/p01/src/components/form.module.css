@@ -16,11 +16,7 @@ textarea:focus {
 }
 
 button {
-  background: linear-gradient(
-    120deg,
-    light-dark(var(--ctp-latte-pink), var(--ctp-mocha-pink)),
-    light-dark(var(--ctp-latte-mauve), var(--ctp-mocha-mauve))
-  );
+  background: linear-gradient(120deg, var(--pink), var(--mauve));
   border-radius: 2rem;
   border: none;
   color: light-dark(var(--ctp-mocha-text), var(--ctp-latte-text));
@@ -29,10 +25,6 @@ button {
 }
 
 button:hover {
-  background: linear-gradient(
-    120deg,
-    light-dark(var(--ctp-latte-teal), var(--ctp-mocha-teal)),
-    light-dark(var(--ctp-latte-green), var(--ctp-mocha-green))
-  );
+  background: linear-gradient(120deg, var(--teal), var(--green));
   cursor: pointer;
 }

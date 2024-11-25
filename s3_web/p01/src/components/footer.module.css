@@ -3,8 +3,6 @@
 }
 
 .column {
-  display: inline-block;
-  font-size: initial;
   vertical-align: top;
   width: 50%;
 }
@@ -18,15 +16,15 @@
 }
 
 .fragment {
-  background: light-dark(var(--ctp-latte-mantle), var(--ctp-mocha-mantle));
+  background: var(--mantle);
 }
 
 .notice a {
-  color: light-dark(var(--ctp-latte-mauve), var(--ctp-mocha-mauve));
+  color: var(--mauve);
 }
 
 p {
-  color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
+  color: var(--text);
 }
 
 li {

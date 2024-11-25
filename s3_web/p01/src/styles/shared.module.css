@@ -1,16 +1,22 @@
 a {
-  color: light-dark(var(--ctp-latte-blue), var(--ctp-mocha-blue));
+  color: var(--blue);
   text-decoration: none;
 }
 
 li {
   list-style: none;
+  padding: 0.5rem 0;
 }
 
 ol,
 ul {
   margin: 0;
   padding: 0;
+}
+
+.column {
+  display: inline-block;
+  font-size: initial;
 }
 
 .container {

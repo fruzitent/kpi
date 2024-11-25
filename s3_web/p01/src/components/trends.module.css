@@ -1,7 +1,3 @@
-span {
-  color: light-dark(var(--ctp-latte-subtext0), var(--ctp-mocha-subtext0));
-}
-
 p {
   font-weight: bold;
   margin: 0;
@@ -9,8 +5,4 @@ p {
 
 h3 {
   margin: 0;
-}
-
-li {
-  padding: 0.5rem 0;
 }

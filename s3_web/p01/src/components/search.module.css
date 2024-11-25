@@ -1,7 +1,7 @@
 input {
   background: none;
   border-radius: 2rem;
-  border: 0.1rem solid light-dark(var(--ctp-latte-surface0), var(--ctp-mocha-surface0));
+  border: 0.1rem solid var(--surface0);
   padding: 0.5rem;
   width: fit-content;
 }

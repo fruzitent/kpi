@@ -9,8 +9,6 @@ component-footer {
 }
 
 .column {
-  display: inline-block;
-  font-size: initial;
   vertical-align: top;
 }
 
@@ -38,7 +36,7 @@ component-footer {
 }
 
 hr {
-  background: light-dark(var(--ctp-latte-surface0), var(--ctp-mocha-surface0));
+  background: var(--surface0);
   border: none;
   height: 0.1rem;
 }

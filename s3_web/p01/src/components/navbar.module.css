@@ -2,10 +2,6 @@ h2 {
   margin: 0;
 }
 
-li {
-  padding: 0.5rem 0;
-}
-
 a {
-  color: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
+  color: var(--text);
 }
