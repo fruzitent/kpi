@@ -49,4 +49,7 @@ hr {
   .center {
     width: 100%;
   }
+  .center > * {
+    padding: 0.5rem 0;
+  }
 }
