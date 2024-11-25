@@ -2,10 +2,10 @@ import { navigate } from "@/lib/navigate.ts";
 import { q } from "@/lib/rustify.ts";
 
 (() => {
-  window.addEventListener("error", (e) => {
+  window.addEventListener("unhandledrejection", (e) => {
     e.preventDefault();
-    console.error(e.error);
-    alert(e.error);
+    console.error(e.reason);
+    alert(e.reason);
   });
   window.addEventListener("DOMContentLoaded", async (e) => {
     q(await navigate(window.location.pathname));
