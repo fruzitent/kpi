@@ -116,9 +116,9 @@ class ComponentPost extends HTMLElement {
       return Ok(undefined);
     }
 
-    const selector = ".hashtag";
-    const hashtag = this.shadowRoot?.querySelector<HTMLDivElement>(selector);
-    if (typeof hashtag === "undefined" || hashtag === null) {
+    const selector = ".tooltip";
+    const tooltip = this.shadowRoot?.querySelector<HTMLDivElement>(selector);
+    if (typeof tooltip === "undefined" || tooltip === null) {
       return Err(new Error(`failed to query: ${selector}`));
     }
 
@@ -130,19 +130,19 @@ class ComponentPost extends HTMLElement {
       const area = document.createElement("area");
 
       area.addEventListener("mousemove", (e) => {
-        const tooltip = document.createElement("component-tooltip");
-        tooltip.setAttribute("data-tag", tag.data);
-        hashtag.replaceChildren(tooltip);
+        const component = document.createElement("component-tooltip");
+        component.setAttribute("data-tag", tag.data);
+        tooltip.replaceChildren(component);
 
         // TODO: ignores media query
-        hashtag.style.display = "block";
+        tooltip.style.display = "block";
 
-        const bounds = hashtag.getBoundingClientRect();
-        tooltip.style.left = `${e.clientX - bounds.left}px`;
-        tooltip.style.top = `${e.clientY - bounds.top}px`;
+        const bounds = tooltip.getBoundingClientRect();
+        component.style.left = `${e.clientX - bounds.left}px`;
+        component.style.top = `${e.clientY - bounds.top}px`;
       });
       area.addEventListener("mouseout", (e) => {
-        hashtag.style.display = "none";
+        tooltip.style.display = "none";
       });
 
       img.addEventListener("load", (e) => {

@@ -5,7 +5,6 @@ form {
 /* TODO: resize on line break */
 textarea {
   border: 0;
-  padding: 0;
   resize: none;
   width: 100%;
   background: none;

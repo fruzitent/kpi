@@ -1,26 +1,30 @@
-header,
-.attachment {
+.fragment {
   padding: 0.2rem 0;
 }
 
-header {
+.head {
   font-size: 0;
 }
 
-header > * {
+.head > * {
   display: inline-block;
   font-size: initial;
   vertical-align: top;
 }
 
-main > * {
+.info {
+  width: 90%;
+}
+
+.info > * {
   display: inline-block;
   padding: 0 0.2rem;
   word-break: break-all;
 }
 
-p {
-  margin: 0;
+.avatar {
+  border-radius: 50%;
+  width: 10%;
 }
 
 .username {
@@ -32,19 +36,15 @@ p {
   color: var(--text);
 }
 
-pre {
+.text {
   display: block;
   margin: 0.5rem 0;
   white-space: pre-line;
 }
 
-.avatar {
-  border-radius: 50%;
-  width: 10%;
-}
-
-main {
-  width: 90%;
+.attachment {
+  position: relative;
+  width: 100%;
 }
 
 .attachment > * {
@@ -55,12 +55,6 @@ main {
 iframe {
   aspect-ratio: 16 / 9;
   border: 0;
-}
-
-.attachment {
-  display: inline-block;
-  position: relative;
-  width: 100%;
 }
 
 component-tooltip {
@@ -74,7 +68,7 @@ component-tooltip {
   }
 }
 
-.tag {
+.hashtag {
   background: var(--surface2);
   border-radius: 2rem;
   color: var(--text);
