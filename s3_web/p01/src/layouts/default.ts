@@ -1,16 +1,19 @@
-import { defineComponent, insertFile, populateNode } from "@/index.ts";
+import { q } from "@/index.ts";
+import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
-import layout from "@/layouts/default.html?url";
-import styles from "@/layouts/default.module.css" with { type: "css" };
+import html from "@/layouts/default.html?url";
+import css from "@/layouts/default.module.css" with { type: "css" };
 
-class LayoutDefault extends HTMLElement {
+export class LayoutDefault extends HTMLElement {
+  static __id = "layout-default";
+
   constructor() {
     super();
-    populateNode(this, "layout-default", styles).unwrap();
+    q(populateNode(this, LayoutDefault.__id, css));
   }
 }
 
 (async () => {
-  (await insertFile(layout)).unwrap();
-  (await defineComponent("layout-default", LayoutDefault)).unwrap();
+  q(await insertFile(html));
+  q(await defineComponent(LayoutDefault.__id, LayoutDefault));
 })();

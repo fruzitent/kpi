@@ -1,16 +1,39 @@
-import { defineComponent, insertFile, populateNode } from "@/index.ts";
+import { Ok } from "oxide.ts";
 
-import page from "@/pages/notifications.html?url";
-import styles from "@/pages/notifications.module.css" with { type: "css" };
+import { q } from "@/index.ts";
+import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
-class PageNotifications extends HTMLElement {
+import type { Result } from "oxide.ts";
+
+import type { Route } from "@/lib/dto.ts";
+
+import html from "@/pages/notifications.html?url";
+import css from "@/pages/notifications.module.css" with { type: "css" };
+
+export class PageNotifications extends HTMLElement {
+  static __route: Route = {
+    href: "/notifications/",
+    id: "page-notifications",
+    name: "Notifications",
+  };
+
   constructor() {
     super();
-    populateNode(this, "page-notifications", styles).unwrap();
+    q(populateNode(this, PageNotifications.__route.id, css));
+  }
+
+  connectedCallback() {
+    q(this.#render());
+  }
+
+  disconnectedCallback() {}
+
+  #render(): Result<void, Error> {
+    return Ok(undefined);
   }
 }
 
 (async () => {
-  (await insertFile(page)).unwrap();
-  (await defineComponent("page-notifications", PageNotifications)).unwrap();
+  q(await insertFile(html));
+  q(await defineComponent(PageNotifications.__route.id, PageNotifications));
 })();

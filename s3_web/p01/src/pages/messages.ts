@@ -1,16 +1,25 @@
-import { defineComponent, insertFile, populateNode } from "@/index.ts";
+import { q } from "@/index.ts";
+import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
-import page from "@/pages/messages.html?url";
-import styles from "@/pages/messages.module.css" with { type: "css" };
+import type { Route } from "@/lib/dto.ts";
 
-class PageMessages extends HTMLElement {
+import html from "@/pages/messages.html?url";
+import css from "@/pages/messages.module.css" with { type: "css" };
+
+export class PageMessages extends HTMLElement {
+  static __route: Route = {
+    href: "/messages/",
+    id: "page-messages",
+    name: "Messages",
+  };
+
   constructor() {
     super();
-    populateNode(this, "page-messages", styles).unwrap();
+    q(populateNode(this, PageMessages.__route.id, css));
   }
 }
 
 (async () => {
-  (await insertFile(page)).unwrap();
-  (await defineComponent("page-messages", PageMessages)).unwrap();
+  q(await insertFile(html));
+  q(await defineComponent(PageMessages.__route.id, PageMessages));
 })();

@@ -58,13 +58,13 @@ iframe {
   border: 0;
 }
 
-component-tooltip {
+component-post-tooltip {
   position: absolute;
   transform: translate(-50%, -125%);
 }
 
 @media screen and (max-width: 768px) {
-  component-tooltip {
+  component-post-tooltip {
     display: none !important;
   }
 }

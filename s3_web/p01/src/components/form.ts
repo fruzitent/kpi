@@ -1,16 +1,19 @@
-import { defineComponent, insertFile, populateNode } from "@/index.ts";
+import { q } from "@/index.ts";
+import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
-import component from "@/components/form.html?url";
-import styles from "@/components/form.module.css" with { type: "css" };
+import html from "@/components/form.html?url";
+import css from "@/components/form.module.css" with { type: "css" };
 
-class ComponentForm extends HTMLElement {
+export class ComponentForm extends HTMLElement {
+  static __id = "component-form";
+
   constructor() {
     super();
-    populateNode(this, "component-form", styles).unwrap();
+    q(populateNode(this, ComponentForm.__id, css));
   }
 }
 
 (async () => {
-  (await insertFile(component)).unwrap();
-  (await defineComponent("component-form", ComponentForm)).unwrap();
+  q(await insertFile(html));
+  q(await defineComponent(ComponentForm.__id, ComponentForm));
 })();

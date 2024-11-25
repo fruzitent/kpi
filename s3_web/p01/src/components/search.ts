@@ -1,16 +1,19 @@
-import { defineComponent, insertFile, populateNode } from "@/index.ts";
+import { q } from "@/index.ts";
+import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
-import component from "@/components/search.html?url";
-import styles from "@/components/search.module.css" with { type: "css" };
+import html from "@/components/search.html?url";
+import css from "@/components/search.module.css" with { type: "css" };
 
-class ComponentSearch extends HTMLElement {
+export class ComponentSearch extends HTMLElement {
+  static __id = "component-search";
+
   constructor() {
     super();
-    populateNode(this, "component-search", styles).unwrap();
+    q(populateNode(this, ComponentSearch.__id, css));
   }
 }
 
 (async () => {
-  (await insertFile(component)).unwrap();
-  (await defineComponent("component-search", ComponentSearch)).unwrap();
+  q(await insertFile(html));
+  q(await defineComponent(ComponentSearch.__id, ComponentSearch));
 })();

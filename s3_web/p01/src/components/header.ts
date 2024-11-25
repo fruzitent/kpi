@@ -1,16 +1,19 @@
-import { defineComponent, insertFile, populateNode } from "@/index.ts";
+import { q } from "@/index.ts";
+import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
-import component from "@/components/header.html?url";
-import styles from "@/components/header.module.css" with { type: "css" };
+import html from "@/components/header.html?url";
+import css from "@/components/header.module.css" with { type: "css" };
 
-class ComponentHeader extends HTMLElement {
+export class ComponentHeader extends HTMLElement {
+  static __id = "component-header";
+
   constructor() {
     super();
-    populateNode(this, "component-header", styles).unwrap();
+    q(populateNode(this, ComponentHeader.__id, css));
   }
 }
 
 (async () => {
-  (await insertFile(component)).unwrap();
-  (await defineComponent("component-header", ComponentHeader)).unwrap();
+  q(await insertFile(html));
+  q(await defineComponent(ComponentHeader.__id, ComponentHeader));
 })();

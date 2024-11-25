@@ -1,16 +1,19 @@
-import { defineComponent, insertFile, populateNode } from "@/index.ts";
+import { q } from "@/index.ts";
+import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
-import component from "@/components/footer.html?url";
-import styles from "@/components/footer.module.css" with { type: "css" };
+import html from "@/components/footer.html?url";
+import css from "@/components/footer.module.css" with { type: "css" };
 
-class ComponentFooter extends HTMLElement {
+export class ComponentFooter extends HTMLElement {
+  static __id = "component-footer";
+
   constructor() {
     super();
-    populateNode(this, "component-footer", styles).unwrap();
+    q(populateNode(this, ComponentFooter.__id, css));
   }
 }
 
 (async () => {
-  (await insertFile(component)).unwrap();
-  (await defineComponent("component-footer", ComponentFooter)).unwrap();
+  q(await insertFile(html));
+  q(await defineComponent(ComponentFooter.__id, ComponentFooter));
 })();

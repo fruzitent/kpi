@@ -1,81 +1,74 @@
-import { Err, Ok, Result } from "oxide.ts";
+import { Ok } from "oxide.ts";
 
-import { defineComponent, insertFile, populateNode } from "@/index.ts";
-import { fetchRoutes, navigate, Route, RouterSchema } from "@/router.ts";
+import type { Result } from "oxide.ts";
 
-import component from "@/components/navbar.html?url";
-import styles from "@/components/navbar.module.css" with { type: "css" };
+import { navigate, q } from "@/index.ts";
+import { getRoutes } from "@/lib/data.ts";
+import { RouteSchema } from "@/lib/dto.ts";
+import { defineComponent, insertFile, populateNode } from "@/lib/webComponents.ts";
 
-class ComponentNavbar extends HTMLElement {
+import type { Route } from "@/lib/dto.ts";
+
+import html from "@/components/navbar.html?url";
+import css from "@/components/navbar.module.css" with { type: "css" };
+
+export class ComponentNavbar extends HTMLElement {
+  static __id = "component-navbar";
+
   constructor() {
     super();
-    populateNode(this, "component-navbar", styles).unwrap();
+    q(populateNode(this, ComponentNavbar.__id, css));
   }
 
   async connectedCallback() {
     const ul = this.shadowRoot?.querySelector("ul");
     if (typeof ul === "undefined" || ul === null) {
-      return alert(`failed to query: ul`);
+      throw Error("failed to query", { cause: "ul" });
     }
 
-    const routes = await fetchRoutes();
-    if (routes.isErr()) {
-      return alert(`failed to fetch: ${routes.unwrapErr()}`);
+    const routes = q(await getRoutes());
+    for (const route of routes) {
+      const item = document.createElement(ComponentNavbarItem.__id);
+      item.setAttribute("data-__blob", JSON.stringify(route));
+      const li = document.createElement("li");
+      li.appendChild(item);
+      ul.appendChild(li);
     }
-
-    for (const route of routes.unwrap()) {
-      const component = document.createElement("component-navbar-item");
-      component.setAttribute("data-__blob", JSON.stringify(route));
-      const item = document.createElement("li");
-      item.appendChild(component);
-      ul.appendChild(item);
-    }
-  }
-
-  disconnectedCallback() {
-    const ul = this.shadowRoot?.querySelector("ul");
-    if (typeof ul === "undefined" || ul === null) {
-      return alert(`failed to query: ul`);
-    }
-    ul.innerHTML = "";
   }
 }
 
-class ComponentNavbarItem extends HTMLElement {
+export class ComponentNavbarItem extends HTMLElement {
+  static __id = "component-navbar-item";
+
   constructor() {
     super();
-    populateNode(this, "component-navbar-item", styles).unwrap();
+    q(populateNode(this, ComponentNavbarItem.__id, css));
   }
 
   connectedCallback() {
     const blob = this.getAttribute("data-__blob");
     if (blob === null) {
-      return alert("missing required parameter: blob");
+      throw Error("missing required parameter", { cause: "__blob" });
     }
 
-    const route = RouterSchema.safeParse(JSON.parse(blob));
+    const route = RouteSchema.safeParse(JSON.parse(blob));
     if (!route.success) {
-      return alert(`failed to parse: ${route.error.message}`);
+      throw Error("failed to parse", { cause: route.error });
     }
 
-    const [err, val] = this.#render(route.data).intoTuple();
-    if (err) {
-      return alert(`failed to render: ${err}`);
-    }
+    q(this.#render(route.data));
   }
 
   #render(route: Route): Result<void, Error> {
     const a = this.shadowRoot?.querySelector("a");
     if (typeof a === "undefined" || a === null) {
-      return Err(new Error(`failed to query: a`));
+      throw Error("failed to query", { cause: "a" });
     }
-
-    a.addEventListener("click", (e) => {
+    a.addEventListener("click", async (e) => {
       e.preventDefault();
-      history.pushState({}, "", route.href);
-      navigate(route.href).unwrap();
+      window.history.pushState(null, "", route.href);
+      q(await navigate(route.href));
     });
-
     a.href = route.href;
     a.innerText = route.name;
     return Ok(undefined);
@@ -83,7 +76,7 @@ class ComponentNavbarItem extends HTMLElement {
 }
 
 (async () => {
-  (await insertFile(component)).unwrap();
-  (await defineComponent("component-navbar", ComponentNavbar)).unwrap();
-  (await defineComponent("component-navbar-item", ComponentNavbarItem)).unwrap();
+  q(await insertFile(html));
+  q(await defineComponent(ComponentNavbar.__id, ComponentNavbar));
+  q(await defineComponent(ComponentNavbarItem.__id, ComponentNavbarItem));
 })();
