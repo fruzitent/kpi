@@ -1,0 +1,47 @@
+@import "@catppuccin/palette/css/catppuccin.css";
+@import "modern-normalize/modern-normalize.css";
+@import "https://fonts.googleapis.com/css2?family=Montserrat";
+
+:root {
+  --base: light-dark(var(--ctp-latte-base), var(--ctp-mocha-base));
+  --blue: light-dark(var(--ctp-latte-blue), var(--ctp-mocha-blue));
+  --green: light-dark(var(--ctp-latte-green), var(--ctp-mocha-green));
+  --mantle: light-dark(var(--ctp-latte-mantle), var(--ctp-mocha-mantle));
+  --mauve: light-dark(var(--ctp-latte-mauve), var(--ctp-mocha-mauve));
+  --peach: light-dark(var(--ctp-latte-peach), var(--ctp-mocha-peach));
+  --pink: light-dark(var(--ctp-latte-pink), var(--ctp-mocha-pink));
+  --subtext0: light-dark(var(--ctp-latte-subtext0), var(--ctp-mocha-subtext0));
+  --surface0: light-dark(var(--ctp-latte-surface0), var(--ctp-mocha-surface0));
+  --surface2: light-dark(var(--ctp-latte-surface2), var(--ctp-mocha-surface2));
+  --teal: light-dark(var(--ctp-latte-teal), var(--ctp-mocha-teal));
+  --text: light-dark(var(--ctp-latte-text), var(--ctp-mocha-text));
+}
+
+html {
+  background: var(--base);
+  color-scheme: light dark;
+  color: var(--subtext0);
+  font-family: Montserrat, system-ui, monospace;
+  font-feature-settings: tnum;
+  font-size: 24px;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  #root {
+    background: color-mix(in srgb, var(--ctp-mocha-base), var(--ctp-mocha-mantle) 30%);
+  }
+}
+
+@media screen and (prefers-color-scheme: light) {
+  #root {
+    background: linear-gradient(
+      120deg,
+      color-mix(in srgb, var(--ctp-latte-base), var(--ctp-latte-peach) 5%),
+      color-mix(in srgb, var(--ctp-latte-base), var(--ctp-latte-mauve) 10%)
+    );
+  }
+}

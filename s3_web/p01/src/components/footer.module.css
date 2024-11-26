@@ -1,0 +1,35 @@
+.fragment {
+  background: var(--mantle);
+  font-size: 0;
+  padding: 1rem;
+}
+
+.column {
+  vertical-align: top;
+  width: 50%;
+}
+
+p {
+  color: var(--text);
+}
+
+li {
+  padding: 0.25rem 0;
+}
+
+.notice {
+  text-align: right;
+}
+
+.notice a {
+  color: var(--mauve);
+}
+
+@media screen and (max-width: 768px) {
+  .column {
+    width: 100%;
+  }
+  .notice {
+    text-align: initial;
+  }
+}

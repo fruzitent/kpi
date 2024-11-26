@@ -1,0 +1,29 @@
+form {
+  text-align: right;
+}
+
+/* TODO: resize on line break */
+textarea {
+  border: 0;
+  resize: none;
+  width: 100%;
+  background: none;
+}
+
+textarea:focus {
+  outline: none;
+}
+
+button {
+  background: linear-gradient(120deg, var(--pink), var(--mauve));
+  border-radius: 2rem;
+  border: none;
+  color: light-dark(var(--ctp-mocha-text), var(--ctp-latte-text));
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+}
+
+button:hover {
+  background: linear-gradient(120deg, var(--teal), var(--green));
+  cursor: pointer;
+}
