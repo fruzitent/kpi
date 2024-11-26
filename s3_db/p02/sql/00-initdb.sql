@@ -27,3 +27,14 @@ create database example;
 drop schema if exists realtor;
 create schema realtor;
 set search_path to realtor;
+
+-- permissions
+alter default privileges in schema realtor
+    grant select on tables to viewer;
+grant usage on schema realtor to viewer;
+
+alter default privileges in schema realtor
+    grant delete, insert, select, update on tables to editor;
+
+alter default privileges in schema realtor
+    grant all privileges on tables to owner;
