@@ -23,7 +23,7 @@ export class ComponentTrends extends HTMLElement {
   async connectedCallback() {
     const ul = this.shadowRoot?.querySelector("ul");
     if (typeof ul === "undefined" || ul === null) {
-      throw Error("failed to query", { cause: "ul" });
+      throw new Error("failed to query", { cause: "ul" });
     }
 
     const trends = q(await getTrends());
@@ -48,12 +48,12 @@ export class ComponentTrendsItem extends HTMLElement {
   connectedCallback() {
     const blob = this.getAttribute("data-__blob");
     if (blob === null) {
-      throw Error("missing required parameter", { cause: "__blob" });
+      throw new Error("missing required parameter", { cause: "__blob" });
     }
 
     const trend = TrendSchema.safeParse(JSON.parse(blob));
     if (!trend.success) {
-      throw Error("failed to parse", { cause: trend.error });
+      throw new Error("failed to parse", { cause: trend.error });
     }
 
     q(this.#render(trend.data));
@@ -62,19 +62,19 @@ export class ComponentTrendsItem extends HTMLElement {
   #render(trend: Trend): Result<void, Error> {
     const category = this.shadowRoot?.querySelector<HTMLSpanElement>(".category");
     if (typeof category === "undefined" || category === null) {
-      return Err(Error("failed to query", { cause: ".category" }));
+      return Err(new Error("failed to query", { cause: ".category" }));
     }
     category.innerText = trend.category;
 
     const hashtag = this.shadowRoot?.querySelector<HTMLParagraphElement>(".hashtag");
     if (typeof hashtag === "undefined" || hashtag === null) {
-      return Err(Error("failed to query", { cause: ".hashtag" }));
+      return Err(new Error("failed to query", { cause: ".hashtag" }));
     }
     hashtag.innerText = trend.hashtag;
 
     const posts = this.shadowRoot?.querySelector<HTMLSpanElement>(".posts");
     if (typeof posts === "undefined" || posts === null) {
-      return Err(Error("failed to query", { cause: ".posts" }));
+      return Err(new Error("failed to query", { cause: ".posts" }));
     }
     posts.innerText = trend.posts;
 

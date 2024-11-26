@@ -23,7 +23,7 @@ export class PageHome extends HTMLElement {
   async connectedCallback() {
     const ol = this.shadowRoot?.querySelector("ol");
     if (typeof ol === "undefined" || ol === null) {
-      throw Error("failed to query", { cause: "ol" });
+      throw new Error("failed to query", { cause: "ol" });
     }
 
     const posts = q(await getPosts());

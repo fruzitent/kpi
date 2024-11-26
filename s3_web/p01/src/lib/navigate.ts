@@ -1,11 +1,12 @@
+import { Err, Ok, Result } from "oxide.ts";
+
 import { getRoutes } from "@/lib/data.ts";
 import { q } from "@/lib/rustify.ts";
-import { Err, Result } from "oxide.ts";
 
 export const navigate = async (path: string): Promise<Result<void, Error>> => {
   const root = document.querySelector("#root");
   if (root == null) {
-    return Err(Error("failed to query", { cause: "#root" }));
+    return Err(new Error("failed to query", { cause: "#root" }));
   }
 
   const url = new URL(path, import.meta.url);
@@ -14,8 +15,14 @@ export const navigate = async (path: string): Promise<Result<void, Error>> => {
   const routes = q(await getRoutes());
   const route = routes.find((r) => r.href === url.pathname);
   if (route === undefined) {
-    return Err(Error("failed to find route", { cause: path }));
+    return Err(new Error("failed to find route", { cause: path }));
   }
 
-  return Result.safe(() => root.replaceChildren(document.createElement(route.id)));
+  const page = document.createElement(route.id);
+  const [err, _] = Result.safe(() => root.replaceChildren(page)).intoTuple();
+  if (err) {
+    return Err(new Error("failed to populate", { cause: err }));
+  }
+
+  return Ok(undefined);
 };

@@ -24,7 +24,7 @@ export class ComponentNavbar extends HTMLElement {
   async connectedCallback() {
     const ul = this.shadowRoot?.querySelector("ul");
     if (typeof ul === "undefined" || ul === null) {
-      throw Error("failed to query", { cause: "ul" });
+      throw new Error("failed to query", { cause: "ul" });
     }
 
     const routes = q(await getRoutes());
@@ -49,12 +49,12 @@ export class ComponentNavbarItem extends HTMLElement {
   connectedCallback() {
     const blob = this.getAttribute("data-__blob");
     if (blob === null) {
-      throw Error("missing required parameter", { cause: "__blob" });
+      throw new Error("missing required parameter", { cause: "__blob" });
     }
 
     const route = RouteSchema.safeParse(JSON.parse(blob));
     if (!route.success) {
-      throw Error("failed to parse", { cause: route.error });
+      throw new Error("failed to parse", { cause: route.error });
     }
 
     q(this.#render(route.data));
@@ -63,7 +63,7 @@ export class ComponentNavbarItem extends HTMLElement {
   #render(route: Route): Result<void, Error> {
     const a = this.shadowRoot?.querySelector("a");
     if (typeof a === "undefined" || a === null) {
-      throw Error("failed to query", { cause: "a" });
+      throw new Error("failed to query", { cause: "a" });
     }
     a.addEventListener("click", async (e) => {
       e.preventDefault();

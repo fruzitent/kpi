@@ -22,52 +22,36 @@ export class ComponentPost extends HTMLElement {
   connectedCallback() {
     const blob = this.getAttribute("data-__blob");
     if (blob === null) {
-      throw Error("missing required parameter", { cause: "__blob" });
+      throw new Error("missing required parameter", { cause: "__blob" });
     }
 
     const post = PostSchema.safeParse(JSON.parse(blob));
     if (!post.success) {
-      throw Error("failed to parse", { cause: post.error });
+      throw new Error("failed to parse", { cause: post.error });
     }
 
     q(this.#render(post.data));
   }
 
   #render(post: Post): Result<void, Error> {
-    const avatar = this.shadowRoot?.querySelector<HTMLImageElement>(".avatar");
-    if (typeof avatar === "undefined" || avatar === null) {
-      return Err(Error("failed to query", { cause: ".avatar" }));
+    const [err0, _0] = this.#renderHead(post).intoTuple();
+    if (err0) {
+      return Err(new Error("failed to render", { cause: err0 }));
     }
-    avatar.src = post.avatar;
 
-    const username = this.shadowRoot?.querySelector<HTMLParagraphElement>(".username");
-    if (typeof username === "undefined" || username === null) {
-      return Err(Error("failed to query", { cause: ".username" }));
+    const [err1, _1] = this.#renderAttachment(post).intoTuple();
+    if (err1) {
+      return Err(new Error("failed to render", { cause: err1 }));
     }
-    username.innerText = post.username;
 
-    const handle = this.shadowRoot?.querySelector<HTMLElement>(".handle");
-    if (typeof handle === "undefined" || handle === null) {
-      return Err(Error("failed to query", { cause: ".handle" }));
-    }
-    handle.innerText = post.handle;
+    return Ok(undefined);
+  }
 
-    const timestamp = this.shadowRoot?.querySelector<HTMLElement>(".timestamp");
-    if (typeof timestamp === "undefined" || timestamp === null) {
-      return Err(Error("failed to query", { cause: ".timestamp" }));
-    }
-    timestamp.innerText = post.timestamp;
-
-    const text = this.shadowRoot?.querySelector<HTMLPreElement>(".text");
-    if (typeof text === "undefined" || text === null) {
-      return Err(Error("failed to query", { cause: ".text" }));
-    }
-    text.innerText = post.text;
-
+  #renderAttachment(post: Post): Result<void, Error> {
     // TODO: XXX
     const _attachment = this.shadowRoot?.querySelector<HTMLDivElement>(".placeholder");
     if (typeof _attachment === "undefined" || _attachment === null) {
-      return Err(Error("failed to query", { cause: ".placeholder" }));
+      return Err(new Error("failed to query", { cause: ".placeholder" }));
     }
 
     const attachment = document.createElement(ComponentPostAttachment.__id);
@@ -80,16 +64,56 @@ export class ComponentPost extends HTMLElement {
 
     const img = attachment.shadowRoot?.querySelector("img");
     if (typeof img === "undefined" || img === null) {
-      return Err(Error("failed to query", { cause: "img" }));
+      return Err(new Error("failed to query", { cause: "img" }));
     }
-    return this.#renderMap(attachment, img, post);
+
+    const [err, _] = this.#renderMap(attachment, img, post).intoTuple();
+    if (err) {
+      return Err(new Error("failed to render", { cause: err }));
+    }
+
+    return Ok(undefined);
+  }
+
+  #renderHead(post: Post): Result<void, Error> {
+    const avatar = this.shadowRoot?.querySelector<HTMLImageElement>(".avatar");
+    if (typeof avatar === "undefined" || avatar === null) {
+      return Err(new Error("failed to query", { cause: ".avatar" }));
+    }
+    avatar.src = post.avatar;
+
+    const username = this.shadowRoot?.querySelector<HTMLParagraphElement>(".username");
+    if (typeof username === "undefined" || username === null) {
+      return Err(new Error("failed to query", { cause: ".username" }));
+    }
+    username.innerText = post.username;
+
+    const handle = this.shadowRoot?.querySelector<HTMLElement>(".handle");
+    if (typeof handle === "undefined" || handle === null) {
+      return Err(new Error("failed to query", { cause: ".handle" }));
+    }
+    handle.innerText = post.handle;
+
+    const timestamp = this.shadowRoot?.querySelector<HTMLElement>(".timestamp");
+    if (typeof timestamp === "undefined" || timestamp === null) {
+      return Err(new Error("failed to query", { cause: ".timestamp" }));
+    }
+    timestamp.innerText = post.timestamp;
+
+    const text = this.shadowRoot?.querySelector<HTMLPreElement>(".text");
+    if (typeof text === "undefined" || text === null) {
+      return Err(new Error("failed to query", { cause: ".text" }));
+    }
+    text.innerText = post.text;
+
+    return Ok(undefined);
   }
 
   #renderMap(attachment: HTMLElement, img: HTMLImageElement, post: Post): Result<void, Error> {
     // TODO: XXX
     const _tooltip = attachment.shadowRoot?.querySelector<HTMLDivElement>(".tooltip");
     if (typeof _tooltip === "undefined" || _tooltip === null) {
-      return Err(Error("failed to query", { cause: ".tooltip" }));
+      return Err(new Error("failed to query", { cause: ".tooltip" }));
     }
 
     const map = document.createElement("map");
@@ -111,11 +135,11 @@ export class ComponentPost extends HTMLElement {
         tooltip.style.left = `${e.clientX - bounds.left}px`;
         tooltip.style.top = `${e.clientY - bounds.top}px`;
       });
-      area.addEventListener("mouseout", (e) => {
+      area.addEventListener("mouseout", (_) => {
         _tooltip.style.display = "none";
       });
 
-      img.addEventListener("load", (e) => {
+      img.addEventListener("load", (_) => {
         const x0 = Math.floor(tag.pos.x0 * (img.width / img.naturalWidth));
         const x1 = Math.floor(tag.pos.x1 * (img.width / img.naturalWidth));
         const y0 = Math.floor(tag.pos.y0 * (img.height / img.naturalHeight));
@@ -144,12 +168,12 @@ export class ComponentPostAttachment extends HTMLElement {
   connectedCallback() {
     const blob = this.getAttribute("data-__blob");
     if (blob === null) {
-      throw Error("missing required parameter", { cause: "__blob" });
+      throw new Error("missing required parameter", { cause: "__blob" });
     }
 
     const attachment = AttachmentSchema.safeParse(JSON.parse(blob));
     if (!attachment.success) {
-      throw Error("failed to parse", { cause: attachment.error });
+      throw new Error("failed to parse", { cause: attachment.error });
     }
 
     q(this.#render(attachment.data));
@@ -159,7 +183,7 @@ export class ComponentPostAttachment extends HTMLElement {
     // TODO: XXX
     const div = this.shadowRoot?.querySelector<HTMLDivElement>(".attachment");
     if (typeof div === "undefined" || div === null) {
-      return Err(Error("failed to query", { cause: ".attachment" }));
+      return Err(new Error("failed to query", { cause: ".attachment" }));
     }
 
     switch (attachment.type) {
@@ -177,7 +201,7 @@ export class ComponentPostAttachment extends HTMLElement {
         break;
       }
       default: {
-        return Err(Error("unexpected attachment type", { cause: attachment.type }));
+        return Err(new Error("unexpected attachment type", { cause: attachment.type }));
       }
     }
     return Ok(undefined);
@@ -195,7 +219,7 @@ export class ComponentPostTooltip extends HTMLElement {
   connectedCallback() {
     const tag = this.getAttribute("data-tag");
     if (tag === null) {
-      throw Error("missing required parameter", { cause: "tag" });
+      throw new Error("missing required parameter", { cause: "tag" });
     }
     q(this.#render(tag));
   }
@@ -203,7 +227,7 @@ export class ComponentPostTooltip extends HTMLElement {
   #render(tag: string): Result<void, Error> {
     const p = this.shadowRoot?.querySelector("p");
     if (typeof p === "undefined" || p === null) {
-      return Err(Error("failed to query", { cause: "p" }));
+      return Err(new Error("failed to query", { cause: "p" }));
     }
     p.innerText = `#${tag}`;
     return Ok(undefined);

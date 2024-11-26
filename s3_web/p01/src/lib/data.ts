@@ -18,11 +18,11 @@ export const fetchWithError = async <T>(data: T, schema: ZodType<T>): Promise<Re
   const timeout = Math.floor(Math.random() * 1000);
   await new Promise((resolve) => setTimeout(resolve, timeout));
   if (Math.random() < 0.1) {
-    return Err(Error("internal server error"));
+    return Err(new Error("internal server error"));
   }
   const type = schema.safeParse(data);
   if (!type.success) {
-    return Err(Error("failed to parse", { cause: type.error }));
+    return Err(new Error("failed to parse", { cause: type.error }));
   }
   return Ok(type.data);
 };

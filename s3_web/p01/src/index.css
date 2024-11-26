@@ -21,8 +21,8 @@ html {
   background: var(--base);
   color-scheme: light dark;
   color: var(--subtext0);
-  font-family: "Montserrat", "system-ui", "sans-serif";
-  font-feature-settings: "tnum";
+  font-family: Montserrat, system-ui, monospace;
+  font-feature-settings: tnum;
   font-size: 24px;
 }
 

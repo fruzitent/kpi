@@ -7,7 +7,7 @@
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "lineWidth": 80,
+    "lineWidth": 100,
     "useEditorconfig": true
   },
   "javascript": {
