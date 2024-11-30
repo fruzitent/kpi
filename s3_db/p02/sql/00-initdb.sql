@@ -38,3 +38,64 @@ alter default privileges in schema realtor
 
 alter default privileges in schema realtor
     grant all privileges on tables to owner;
+
+-- tables
+drop table if exists realtor.appointments;
+create table realtor.appointments
+(
+    appointment_id bigint not null generated always as identity primary key
+);
+
+drop table if exists realtor.offers;
+create table realtor.offers
+(
+    offer_id bigint not null generated always as identity primary key
+);
+
+drop table if exists realtor.properties;
+create table realtor.properties
+(
+    property_id bigint not null generated always as identity primary key
+);
+
+drop table if exists realtor.apartments;
+create table realtor.apartments
+(
+    property_id bigint not null primary key references realtor.properties (property_id) on delete cascade on update cascade
+);
+
+drop table if exists realtor.houses;
+create table realtor.houses
+(
+    property_id bigint not null primary key references realtor.properties (property_id) on delete cascade on update cascade
+);
+
+drop table if exists realtor.offices;
+create table realtor.offices
+(
+    property_id bigint not null primary key references realtor.properties (property_id) on delete cascade on update cascade
+);
+
+drop table if exists realtor.stats;
+create table realtor.stats
+(
+    stat_id bigint not null generated always as identity primary key
+);
+
+drop table if exists realtor.users;
+create table realtor.users
+(
+    user_id bigint not null generated always as identity primary key
+);
+
+drop table if exists realtor.agents;
+create table realtor.agents
+(
+    user_id bigint not null primary key references realtor.users (user_id) on delete cascade on update cascade
+);
+
+drop table if exists realtor.clients;
+create table realtor.clients
+(
+    user_id bigint not null primary key references realtor.users (user_id) on delete cascade on update cascade
+);
