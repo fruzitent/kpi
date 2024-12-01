@@ -49,11 +49,11 @@ create table realtor.appointments
 drop table if exists realtor.stats;
 create table realtor.stats
 (
-    created_at  timestamp with time zone not null                         default now(),
-    followers   bigint                   not null check (followers > 0)   default 0,
-    impressions bigint                   not null check (impressions > 0) default 0,
+    created_at  timestamp with time zone not null                          default now(),
+    followers   bigint                   not null check (followers >= 0)   default 0,
+    impressions bigint                   not null check (impressions >= 0) default 0,
     stat_id     bigint                   not null generated always as identity primary key,
-    updated_at  timestamp with time zone not null                         default now()
+    updated_at  timestamp with time zone not null                          default now()
 );
 
 drop table if exists realtor.offers;
