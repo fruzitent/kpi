@@ -90,13 +90,18 @@ create table realtor.offices
 drop table if exists realtor.users;
 create table realtor.users
 (
-    user_id bigint not null generated always as identity primary key,
-    stat_id bigint not null references realtor.stats (stat_id) on delete cascade on update cascade
+    email      text   not null check (length(email) <= 320) unique,
+    first_name text   not null check (length(first_name) <= 63),
+    last_name  text   not null check (length(last_name) <= 63),
+    password   text   not null,
+    stat_id    bigint not null references realtor.stats (stat_id) on delete cascade on update cascade,
+    user_id    bigint not null generated always as identity primary key
 );
 
 drop table if exists realtor.agents;
 create table realtor.agents
 (
+    nar_id  text   not null check (length(nar_id) = 9 and nar_id like '^\d$'),
     user_id bigint not null primary key references realtor.users (user_id) on delete cascade on update cascade
 );
 
