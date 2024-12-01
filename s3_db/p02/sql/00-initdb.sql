@@ -46,10 +46,21 @@ create table realtor.appointments
     appointment_id bigint not null generated always as identity primary key
 );
 
+drop table if exists realtor.stats;
+create table realtor.stats
+(
+    created_at  timestamp with time zone not null                         default now(),
+    followers   bigint                   not null check (followers > 0)   default 0,
+    impressions bigint                   not null check (impressions > 0) default 0,
+    stat_id     bigint                   not null generated always as identity primary key,
+    updated_at  timestamp with time zone not null                         default now()
+);
+
 drop table if exists realtor.offers;
 create table realtor.offers
 (
-    offer_id bigint not null generated always as identity primary key
+    offer_id bigint not null generated always as identity primary key,
+    stat_id  bigint not null references realtor.stats (stat_id) on delete cascade on update cascade
 );
 
 drop table if exists realtor.properties;
@@ -76,16 +87,11 @@ create table realtor.offices
     property_id bigint not null primary key references realtor.properties (property_id) on delete cascade on update cascade
 );
 
-drop table if exists realtor.stats;
-create table realtor.stats
-(
-    stat_id bigint not null generated always as identity primary key
-);
-
 drop table if exists realtor.users;
 create table realtor.users
 (
-    user_id bigint not null generated always as identity primary key
+    user_id bigint not null generated always as identity primary key,
+    stat_id bigint not null references realtor.stats (stat_id) on delete cascade on update cascade
 );
 
 drop table if exists realtor.agents;
