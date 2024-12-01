@@ -101,7 +101,7 @@ create table realtor.users
 drop table if exists realtor.agents;
 create table realtor.agents
 (
-    nar_id  text   not null check (length(nar_id) = 9 and nar_id like '^\d$'),
+    nar_id  text   not null check (length(nar_id) = 9 and nar_id ~ '^[0-9]+$'),
     user_id bigint not null primary key references realtor.users (user_id) on delete cascade on update cascade
 );
 
