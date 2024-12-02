@@ -40,12 +40,6 @@ alter default privileges in schema realtor
     grant all privileges on tables to owner;
 
 -- tables
-drop table if exists realtor.appointments;
-create table realtor.appointments
-(
-    appointment_id bigint not null generated always as identity primary key
-);
-
 drop table if exists realtor.stats;
 create table realtor.stats
 (
@@ -139,4 +133,20 @@ create table realtor.trades
 (
     offer_id    bigint not null primary key references realtor.offers (offer_id) on delete cascade on update cascade,
     total_price bigint not null check (total_price >= 0)
+);
+
+drop type if exists realtor.appointment_status;
+create type realtor.appointment_status as enum (
+    'cancelled',
+    'finished',
+    'scheduled'
+    );
+
+drop table if exists realtor.appointments;
+create table realtor.appointments
+(
+    appointment_id     bigint                     not null generated always as identity primary key,
+    appointment_status realtor.appointment_status not null,
+    offer_id           bigint                     not null references realtor.offers (offer_id) on delete cascade on update cascade,
+    scheduled_at       timestamp with time zone   not null
 );
