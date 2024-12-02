@@ -59,19 +59,22 @@ create table realtor.properties
 drop table if exists realtor.apartments;
 create table realtor.apartments
 (
-    property_id bigint not null primary key references realtor.properties (property_id) on delete cascade on update cascade
+    apartment_id bigint not null generated always as identity primary key,
+    property_id  bigint not null unique references realtor.properties (property_id) on delete cascade on update cascade
 );
 
 drop table if exists realtor.houses;
 create table realtor.houses
 (
-    property_id bigint not null primary key references realtor.properties (property_id) on delete cascade on update cascade
+    house_id    bigint not null generated always as identity primary key,
+    property_id bigint not null unique references realtor.properties (property_id) on delete cascade on update cascade
 );
 
 drop table if exists realtor.offices;
 create table realtor.offices
 (
-    property_id bigint not null primary key references realtor.properties (property_id) on delete cascade on update cascade
+    office_id   bigint not null generated always as identity primary key,
+    property_id bigint not null unique references realtor.properties (property_id) on delete cascade on update cascade
 );
 
 drop table if exists realtor.users;
@@ -88,14 +91,16 @@ create table realtor.users
 drop table if exists realtor.agents;
 create table realtor.agents
 (
-    nar_id  text   not null check (length(nar_id) = 9 and nar_id ~ '^[0-9]+$'),
-    user_id bigint not null primary key references realtor.users (user_id) on delete cascade on update cascade
+    agent_id bigint not null generated always as identity primary key,
+    nar_id   text   not null check (length(nar_id) = 9 and nar_id ~ '^[0-9]+$'),
+    user_id  bigint not null unique references realtor.users (user_id) on delete cascade on update cascade
 );
 
 drop table if exists realtor.clients;
 create table realtor.clients
 (
-    user_id bigint not null primary key references realtor.users (user_id) on delete cascade on update cascade
+    client_id bigint not null generated always as identity primary key,
+    user_id   bigint not null unique references realtor.users (user_id) on delete cascade on update cascade
 );
 
 drop type if exists realtor.offer_status;
@@ -125,14 +130,16 @@ drop table if exists realtor.tenancies;
 create table realtor.tenancies
 (
     monthly_price bigint not null check (monthly_price >= 0),
-    offer_id      bigint not null primary key references realtor.offers (offer_id) on delete cascade on update cascade
+    offer_id      bigint not null unique references realtor.offers (offer_id) on delete cascade on update cascade,
+    tenancy_id    bigint not null generated always as identity primary key
 );
 
 drop table if exists realtor.trades;
 create table realtor.trades
 (
-    offer_id    bigint not null primary key references realtor.offers (offer_id) on delete cascade on update cascade,
-    total_price bigint not null check (total_price >= 0)
+    offer_id    bigint not null unique references realtor.offers (offer_id) on delete cascade on update cascade,
+    total_price bigint not null check (total_price >= 0),
+    trade_id    bigint not null generated always as identity primary key
 );
 
 drop type if exists realtor.appointment_status;
