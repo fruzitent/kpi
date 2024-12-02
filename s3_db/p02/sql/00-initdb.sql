@@ -56,13 +56,6 @@ create table realtor.stats
     updated_at  timestamp with time zone not null                          default now()
 );
 
-drop table if exists realtor.offers;
-create table realtor.offers
-(
-    offer_id bigint not null generated always as identity primary key,
-    stat_id  bigint not null references realtor.stats (stat_id) on delete cascade on update cascade
-);
-
 drop table if exists realtor.properties;
 create table realtor.properties
 (
@@ -109,4 +102,41 @@ drop table if exists realtor.clients;
 create table realtor.clients
 (
     user_id bigint not null primary key references realtor.users (user_id) on delete cascade on update cascade
+);
+
+drop type if exists realtor.offer_status;
+create type realtor.offer_status as enum (
+    'accepted',
+    'cancelled',
+    'draft',
+    'finished',
+    'rejected',
+    'submitted'
+    );
+
+drop table if exists realtor.offers;
+create table realtor.offers
+(
+    agent_id     bigint references realtor.agents (user_id) on delete cascade on update cascade,
+    agent_rate   bigint check (agent_rate >= 0),
+    maker_id     bigint               not null references realtor.clients (user_id) on delete cascade on update cascade,
+    offer_id     bigint               not null generated always as identity primary key,
+    offer_status realtor.offer_status not null default 'draft',
+    property_id  bigint               not null references realtor.properties (property_id) on delete cascade on update cascade,
+    stat_id      bigint               not null references realtor.stats (stat_id) on delete cascade on update cascade,
+    taker_id     bigint references realtor.clients (user_id) on delete cascade on update cascade
+);
+
+drop table if exists realtor.tenancies;
+create table realtor.tenancies
+(
+    monthly_price bigint not null check (monthly_price >= 0),
+    offer_id      bigint not null primary key references realtor.offers (offer_id) on delete cascade on update cascade
+);
+
+drop table if exists realtor.trades;
+create table realtor.trades
+(
+    offer_id    bigint not null primary key references realtor.offers (offer_id) on delete cascade on update cascade,
+    total_price bigint not null check (total_price >= 0)
 );
