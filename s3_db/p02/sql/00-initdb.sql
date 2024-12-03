@@ -72,11 +72,20 @@ create type realtor.property_status as enum (
     'poor'
     );
 
+drop type if exists realtor.property_type;
+create type realtor.property_type as enum (
+    'apartment',
+    'house'
+    );
+
 drop table if exists realtor.property;
 create table realtor.property
 (
+    property_id     bigint                  not null generated always as identity unique,
+    property_type   realtor.property_type   not null,
+    primary key (property_id, property_type),
+
     location_id     bigint                  not null unique references realtor.location (location_id) on delete cascade on update cascade,
-    property_id     bigint                  not null generated always as identity primary key,
     property_status realtor.property_status not null,
     total_depth     integer                 not null check (total_depth > 0),
     total_height    integer check (total_height > 0),
@@ -86,21 +95,27 @@ create table realtor.property
 drop table if exists realtor.apartment;
 create table realtor.apartment
 (
-    apartment_id bigint  not null generated always as identity primary key,
-    floor        integer not null check (floor > 0),
-    property_id  bigint  not null unique references realtor.property (property_id) on delete cascade on update cascade,
-    room_count   integer not null check (room_count > 0)
+    apartment_id   bigint                not null unique,
+    apartment_type realtor.property_type not null check (apartment_type = 'apartment') default 'apartment',
+    foreign key (apartment_id, apartment_type) references realtor.property (property_id, property_type) on delete cascade on update cascade,
+    primary key (apartment_id, apartment_type),
+
+    floor          integer               not null check (floor > 0),
+    room_count     integer               not null check (room_count > 0)
 );
 
 drop table if exists realtor.house;
 create table realtor.house
 (
+    house_id     bigint                not null unique,
+    house_type   realtor.property_type not null check (house_type = 'house') default 'house',
+    foreign key (house_id, house_type) references realtor.property (property_id, property_type) on delete cascade on update cascade,
+    primary key (house_id, house_type),
+
     built_at     timestamp with time zone,
-    floor_count  integer not null check (floor_count > 0),
+    floor_count  integer               not null check (floor_count > 0),
     has_basement boolean,
-    has_garage   boolean,
-    house_id     bigint  not null generated always as identity primary key,
-    property_id  bigint  not null unique references realtor.property (property_id) on delete cascade on update cascade
+    has_garage   boolean
 );
 
 drop table if exists realtor.document;
@@ -113,30 +128,44 @@ create table realtor.document
     property_id bigint not null references realtor.property (property_id) on delete cascade on update cascade
 );
 
+drop type if exists realtor.user_type;
+create type realtor.user_type as enum (
+    'agent',
+    'client'
+    );
+
 drop table if exists realtor.user;
 create table realtor.user
 (
-    email      text   not null check (length(email) <= 320) unique,
-    first_name text   not null check (length(first_name) <= 63),
-    last_name  text   not null check (length(last_name) <= 63),
-    password   text   not null,
-    stat_id    bigint not null references realtor.stat (stat_id) on delete cascade on update cascade,
-    user_id    bigint not null generated always as identity primary key
+    user_id    bigint            not null generated always as identity unique,
+    user_type  realtor.user_type not null,
+    primary key (user_id, user_type),
+
+    email      text              not null check (length(email) <= 320) unique,
+    first_name text              not null check (length(first_name) <= 63),
+    last_name  text              not null check (length(last_name) <= 63),
+    password   text              not null,
+    stat_id    bigint            not null references realtor.stat (stat_id) on delete cascade on update cascade
 );
 
 drop table if exists realtor.agent;
 create table realtor.agent
 (
-    agent_id bigint not null generated always as identity primary key,
-    nar_id   text   not null check (length(nar_id) = 9 and nar_id ~ '^[0-9]+$'),
-    user_id  bigint not null unique references realtor.user (user_id) on delete cascade on update cascade
+    agent_id   bigint            not null unique,
+    agent_type realtor.user_type not null check (agent_type = 'agent') default 'agent',
+    foreign key (agent_id, agent_type) references realtor.user (user_id, user_type) on delete cascade on update cascade,
+    primary key (agent_id, agent_type),
+
+    nar_id     text              not null check (length(nar_id) = 9 and nar_id ~ '^[0-9]+$')
 );
 
 drop table if exists realtor.client;
 create table realtor.client
 (
-    client_id bigint not null generated always as identity primary key,
-    user_id   bigint not null unique references realtor.user (user_id) on delete cascade on update cascade
+    client_id   bigint            not null unique,
+    client_type realtor.user_type not null check (client_type = 'client') default 'client',
+    foreign key (client_id, client_type) references realtor.user (user_id, user_type) on delete cascade on update cascade,
+    primary key (client_id, client_type)
 );
 
 drop type if exists realtor.offer_status;
@@ -149,33 +178,48 @@ create type realtor.offer_status as enum (
     'submitted'
     );
 
+drop type if exists realtor.offer_type;
+create type realtor.offer_type as enum (
+    'tenancy',
+    'trade'
+    );
+
 drop table if exists realtor.offer;
 create table realtor.offer
 (
-    agent_id     bigint references realtor.agent (user_id) on delete cascade on update cascade,
+    offer_id     bigint               not null generated always as identity unique,
+    offer_type   realtor.offer_type   not null,
+    primary key (offer_id, offer_type),
+
+    agent_id     bigint references realtor.agent (agent_id) on delete cascade on update cascade,
     agent_rate   numeric(5, 4) check (0 <= agent_rate and agent_rate <= 1),
-    maker_id     bigint               not null references realtor.client (user_id) on delete cascade on update cascade,
-    offer_id     bigint               not null generated always as identity primary key,
+    maker_id     bigint               not null references realtor.client (client_id) on delete cascade on update cascade,
     offer_status realtor.offer_status not null default 'draft',
     property_id  bigint               not null references realtor.property (property_id) on delete cascade on update cascade,
     stat_id      bigint               not null references realtor.stat (stat_id) on delete cascade on update cascade,
-    taker_id     bigint references realtor.client (user_id) on delete cascade on update cascade
+    taker_id     bigint references realtor.client (client_id) on delete cascade on update cascade
 );
 
 drop table if exists realtor.tenancy;
 create table realtor.tenancy
 (
-    monthly_price integer not null check (monthly_price >= 0),
-    offer_id      bigint  not null unique references realtor.offer (offer_id) on delete cascade on update cascade,
-    tenancy_id    bigint  not null generated always as identity primary key
+    tenancy_id    bigint             not null unique,
+    tenancy_type  realtor.offer_type not null check (tenancy_type = 'tenancy') default 'tenancy',
+    foreign key (tenancy_id, tenancy_type) references realtor.offer (offer_id, offer_type) on delete cascade on update cascade,
+    primary key (tenancy_id, tenancy_type),
+
+    monthly_price integer            not null check (monthly_price >= 0)
 );
 
 drop table if exists realtor.trade;
 create table realtor.trade
 (
-    offer_id    bigint  not null unique references realtor.offer (offer_id) on delete cascade on update cascade,
-    total_price integer not null check (total_price >= 0),
-    trade_id    bigint  not null generated always as identity primary key
+    trade_id    bigint             not null unique,
+    trade_type  realtor.offer_type not null check (trade_type = 'trade') default 'trade',
+    foreign key (trade_id, trade_type) references realtor.offer (offer_id, offer_type) on delete cascade on update cascade,
+    primary key (trade_id, trade_type),
+
+    total_price integer            not null check (total_price >= 0)
 );
 
 drop type if exists realtor.appointment_status;
