@@ -193,3 +193,19 @@ create table realtor.appointment
     offer_id           bigint                     not null references realtor.offer (offer_id) on delete cascade on update cascade,
     scheduled_at       timestamp with time zone   not null
 );
+
+-- migrations
+alter table realtor.agent
+    add constraint agent_nar_id_key unique (nar_id);
+
+alter table realtor.apartment
+    rename column room_count to rooms;
+
+alter table realtor.appointment
+    add column created_at timestamp with time zone not null default now();
+
+alter table realtor.house
+    drop column has_basement;
+
+alter table realtor.house
+    alter column built_at type date;
