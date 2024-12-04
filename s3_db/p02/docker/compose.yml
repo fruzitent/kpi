@@ -14,7 +14,8 @@ services:
         - CMD
         - pg_isready
       timeout: 5s
-    image: docker.io/library/postgres:17.1
+    # image: docker.io/library/postgres:17.1
+    image: registry.gitlab.com/dalibo/postgresql_anonymizer@sha256:85f6a5918bf541cfd1cd43c802e148960611bfc4e8e3e55a9baff5bc523756a2 # 2.0.0-rc.1
     ports:
       - published: 5432
         target: 5432
