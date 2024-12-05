@@ -52,7 +52,8 @@ create procedure create_property(
 ) as
 $$
 declare
-    __property_type realtor.property_type;
+    __property_status realtor.property_status := anon.random_in_enum(null::realtor.property_status);
+    __property_type   realtor.property_type   := anon.random_in_enum(null::realtor.property_type);
 begin
     insert into realtor.property (location_id,
                                   property_status,
@@ -60,16 +61,11 @@ begin
                                   total_depth,
                                   total_width)
     values (__location_id,
-            anon.random_in_enum(null::realtor.property_status),
-            anon.random_in_enum(null::realtor.property_type),
+            __property_status,
+            __property_type,
             floor(random() * 127) + 1,
             floor(random() * 127) + 1)
     returning property_id into __property_id;
-
-    select property_type
-    into __property_type
-    from realtor.property
-    where property_id = __property_id;
 
     case __property_type
         when 'apartment' then insert into realtor.apartment (apartment_id,
@@ -113,7 +109,7 @@ create procedure create_user(
 ) as
 $$
 declare
-    __user_type realtor.user_type;
+    __user_type realtor.user_type := anon.random_in_enum(null::realtor.user_type);
 begin
     insert into realtor.user (email,
                               first_name,
@@ -126,13 +122,8 @@ begin
             anon.dummy_last_name(),
             md5(random()::text),
             __stat_id,
-            anon.random_in_enum(null::realtor.user_type))
+            __user_type)
     returning user_id into __user_id;
-
-    select user_type
-    into __user_type
-    from realtor.user
-    where user_id = __user_id;
 
     case __user_type
         when 'agent' then insert into realtor.agent (agent_id,
@@ -154,24 +145,24 @@ create procedure create_offer(
 ) as
 $$
 declare
-    __offer_type realtor.offer_type;
+    __agent_id     bigint;
+    __agent_rate   numeric(5, 4);
+    __maker_id     bigint;
+    __offer_status realtor.offer_status := anon.random_in_enum(null::realtor.offer_status);
+    __offer_type   realtor.offer_type   := anon.random_in_enum(null::realtor.offer_type);
 begin
+    __maker_id := (select client_id from realtor.client order by random() limit 1);
     insert into realtor.offer (maker_id,
                                offer_status,
                                offer_type,
                                property_id,
                                stat_id)
-    values ((select client_id from realtor.client order by random() limit 1),
-            anon.random_in_enum(null::realtor.offer_status),
-            anon.random_in_enum(null::realtor.offer_type),
+    values (__maker_id,
+            __offer_status,
+            __offer_type,
             __property_id,
             __stat_id)
     returning offer_id into __offer_id;
-
-    select offer_type
-    into __offer_type
-    from realtor.offer
-    where offer_id = __offer_id;
 
     case __offer_type
         when 'tenancy' then insert into realtor.tenancy (monthly_price,
