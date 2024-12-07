@@ -145,8 +145,6 @@ create procedure create_offer(
 ) as
 $$
 declare
-    __agent_id     bigint;
-    __agent_rate   numeric(5, 4);
     __maker_id     bigint;
     __offer_status realtor.offer_status := anon.random_in_enum(null::realtor.offer_status);
     __offer_type   realtor.offer_type   := anon.random_in_enum(null::realtor.offer_type);
@@ -185,18 +183,32 @@ create procedure create_appointment(
 ) as
 $$
 declare
-    __updated_at   timestamp with time zone := (select stat.updated_at
-                                                from realtor.offer
-                                                         join realtor.stat on offer.stat_id = stat.stat_id
-                                                where offer_id = __offer_id);
-    __scheduled_at timestamp with time zone := anon.random_in_tstzrange(tstzrange(__updated_at, now() + interval '1 month'));
+    __appointment_status realtor.appointment_status := anon.random_in_enum(null::realtor.appointment_status);
+    __created_at         timestamp with time zone;
+    __scheduled_at       tstzrange;
+    __updated_at         timestamp with time zone;
 begin
+    select stat.created_at, stat.updated_at
+    into __created_at, __updated_at
+    from realtor.offer
+             join realtor.stat on offer.stat_id = stat.stat_id
+    where offer_id = __offer_id;
+
+    case __appointment_status
+        when 'cancelled' then __scheduled_at := tstzrange(__updated_at, now());
+        when 'finished' then __scheduled_at := tstzrange(__updated_at, least(__updated_at + interval '1 month', now()));
+        when 'scheduled' then __scheduled_at := tstzrange(now(), now() + interval '1 month');
+        else raise 'unknown appointment_status: %', __appointment_status;
+        end case;
+
     insert into realtor.appointment (appointment_status,
+                                     created_at,
                                      offer_id,
                                      scheduled_at)
     values (anon.random_in_enum(null::realtor.appointment_status),
+            anon.random_in_tstzrange(tstzrange(__created_at, __updated_at)),
             __offer_id,
-            __scheduled_at)
+            anon.random_in_tstzrange(__scheduled_at))
     returning appointment_id into __appointment_id;
 end;
 $$ language plpgsql;
@@ -217,7 +229,11 @@ $$
                 call create_location(__location_id);
                 call create_stat(__stat_id);
                 call create_property(__location_id, __property_id);
-                call create_document(__property_id, __document_id);
+
+                for i in 1..floor(random() * 10)
+                    loop
+                        call create_document(__property_id, __document_id);
+                    end loop;
 
                 begin
                     call create_user(__stat_id, __user_id);
@@ -230,8 +246,61 @@ $$
                     continue;
                 end if;
 
-                call create_offer(__property_id, __stat_id, __offer_id);
-                call create_appointment(__offer_id, __appointment_id);
+                <<__inner>>
+                for i in 1..floor(random() * 3)
+                    loop
+                        call create_offer(__property_id, __stat_id, __offer_id);
+
+                        declare
+                            __agent_id     bigint               := (select agent_id from realtor.agent order by random() limit 1);
+                            __agent_rate   numeric(5, 4);
+                            __offer_status realtor.offer_status := (select offer_status from realtor.offer where offer_id = __offer_id);
+                            __offer_type   realtor.offer_type   := (select offer_type from realtor.offer where offer_id = __offer_id);
+                        begin
+                            if __agent_id is null then
+                                continue;
+                            end if;
+
+                            if __offer_status in ('draft', 'submitted') then
+                                continue __inner;
+                            end if;
+
+                            case __offer_type
+                                when 'tenancy' then __agent_rate := 0.0200;
+                                when 'trade' then __agent_rate := 0.5000;
+                                else raise 'unknown offer_type %', __offer_type;
+                                end case;
+
+                            update realtor.offer
+                            set (agent_id, agent_rate) = (__agent_id, __agent_rate)
+                            where offer_id = __offer_id;
+
+                            if __offer_status != 'finished' and random() < 0.5 then
+                                continue;
+                            end if;
+
+                            if exists (select *
+                                       from realtor.appointment
+                                       where appointment_status = 'finished'
+                                         and offer_id = __offer_id) then
+                                continue;
+                            end if;
+
+                            update realtor.offer
+                            set (taker_id) = ((select (user_id)
+                                               from realtor.user
+                                               where user_id != __user_id
+                                                 and user_type = 'client'
+                                               order by random()
+                                               limit 1))
+                            where offer_id = __offer_id;
+                        end;
+
+                        for i in 1..floor(random() * 3)
+                            loop
+                                call create_appointment(__offer_id, __appointment_id);
+                            end loop;
+                    end loop;
             end loop;
     end;
 $$ language plpgsql;
