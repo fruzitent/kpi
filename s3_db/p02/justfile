@@ -1,0 +1,11 @@
+_default:
+    @just --list
+
+down:
+    docker compose --file "./docker/compose.yml" down --volumes
+
+logs:
+    docker compose --file "./docker/compose.yml" logs --follow
+
+up:
+    docker compose --file "./docker/compose.yml" up --detach
