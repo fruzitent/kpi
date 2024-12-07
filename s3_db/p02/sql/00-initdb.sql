@@ -196,31 +196,10 @@ create table realtor.offer
     agent_rate   numeric(5, 4) check (0 <= agent_rate and agent_rate <= 1),
     maker_id     bigint               not null references realtor.client (client_id) on delete cascade on update cascade,
     offer_status realtor.offer_status not null default 'draft',
+    price        integer              not null check (price >= 0),
     property_id  bigint               not null references realtor.property (property_id) on delete cascade on update cascade,
     stat_id      bigint               not null references realtor.stat (stat_id) on delete cascade on update cascade,
     taker_id     bigint references realtor.client (client_id) on delete cascade on update cascade
-);
-
-drop table if exists realtor.tenancy;
-create table realtor.tenancy
-(
-    tenancy_id    bigint             not null unique,
-    tenancy_type  realtor.offer_type not null check (tenancy_type = 'tenancy') default 'tenancy',
-    foreign key (tenancy_id, tenancy_type) references realtor.offer (offer_id, offer_type) on delete cascade on update cascade,
-    primary key (tenancy_id, tenancy_type),
-
-    monthly_price integer            not null check (monthly_price >= 0)
-);
-
-drop table if exists realtor.trade;
-create table realtor.trade
-(
-    trade_id    bigint             not null unique,
-    trade_type  realtor.offer_type not null check (trade_type = 'trade') default 'trade',
-    foreign key (trade_id, trade_type) references realtor.offer (offer_id, offer_type) on delete cascade on update cascade,
-    primary key (trade_id, trade_type),
-
-    total_price integer            not null check (total_price >= 0)
 );
 
 drop type if exists realtor.appointment_status;

@@ -148,31 +148,29 @@ declare
     __maker_id     bigint;
     __offer_status realtor.offer_status := anon.random_in_enum(null::realtor.offer_status);
     __offer_type   realtor.offer_type   := anon.random_in_enum(null::realtor.offer_type);
+    __price        integer;
 begin
     __maker_id := (select client_id from realtor.client order by random() limit 1);
+
+    case __offer_type
+        when 'tenancy' then __price := floor(random() * 1e3);
+        when 'trade' then __price := floor(random() * 1e6);
+        else raise 'unknown offer_type %', __offer_type;
+        end case;
+
     insert into realtor.offer (maker_id,
                                offer_status,
                                offer_type,
+                               price,
                                property_id,
                                stat_id)
     values (__maker_id,
             __offer_status,
             __offer_type,
+            __price,
             __property_id,
             __stat_id)
     returning offer_id into __offer_id;
-
-    case __offer_type
-        when 'tenancy' then insert into realtor.tenancy (monthly_price,
-                                                         tenancy_id)
-                            values (floor(random() * 1e3),
-                                    __offer_id);
-        when 'trade' then insert into realtor.trade (total_price,
-                                                     trade_id)
-                          values (floor(random() * 1e6),
-                                  __offer_id);
-        else raise 'unknown offer_type %', __offer_type;
-        end case;
 end;
 $$ language plpgsql;
 
