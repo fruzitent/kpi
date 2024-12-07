@@ -86,6 +86,7 @@ create table realtor.property
     property_type   realtor.property_type   not null,
     primary key (property_id, property_type),
 
+    description     text check (length(description) <= 1023),
     location_id     bigint                  not null unique references realtor.location (location_id) on delete cascade on update cascade,
     property_status realtor.property_status not null,
     total_depth     integer                 not null check (total_depth > 0),
@@ -157,16 +158,20 @@ create table realtor.agent
     foreign key (agent_id, agent_type) references realtor.user (user_id, user_type) on delete cascade on update cascade,
     primary key (agent_id, agent_type),
 
-    nar_id     text              not null check (length(nar_id) = 9 and nar_id ~ '^[0-9]+$')
+    nar_id     text              not null check (length(nar_id) = 9 and nar_id ~ '^[0-9]+$'),
+    rating     numeric(5, 4) check (0 <= rating and rating <= 5)
 );
 
 drop table if exists realtor.client;
 create table realtor.client
 (
-    client_id   bigint            not null unique,
-    client_type realtor.user_type not null check (client_type = 'client') default 'client',
+    client_id    bigint            not null unique,
+    client_type  realtor.user_type not null check (client_type = 'client') default 'client',
     foreign key (client_id, client_type) references realtor.user (user_id, user_type) on delete cascade on update cascade,
-    primary key (client_id, client_type)
+    primary key (client_id, client_type),
+
+    phone_number text check (phone_number ~ '^\+[1-9]\d{1,14}$') unique,
+    preferences  jsonb
 );
 
 drop type if exists realtor.offer_status;
