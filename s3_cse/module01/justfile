@@ -1,0 +1,12 @@
+_default:
+    @just --list
+
+typst_dst := join("target", "typst", "main.pdf")
+typst_src := join("typst", "main.typ")
+
+compile:
+    mkdir -p {{ parent_directory(typst_dst) }}
+    typst compile {{ typst_src }} {{ typst_dst }}
+
+preview:
+    tinymist preview {{ typst_src }}
