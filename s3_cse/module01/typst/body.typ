@@ -12,7 +12,7 @@
   #figure(table(
     align: horizon,
     columns: (auto, auto, auto, auto, auto),
-    inset: 10pt,
+    inset: 1em,
     table.header([Функціонал], [Курсова робота], [Jellyfin], [Plex], [Пояснення]),
   ), caption: [Порівняння з аналогом])
 ]

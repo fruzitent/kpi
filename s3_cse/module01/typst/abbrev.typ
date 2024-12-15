@@ -1,5 +1,5 @@
-#align(center, [
-  #heading(outlined: false)[ПЕРЕЛІК УМОВНИХ ПОЗНАЧЕНЬ]
-])
+#set heading(outlined: false)
+
+= ПЕРЕЛІК УМОВНИХ ПОЗНАЧЕНЬ
 
 / short: full -- desc
