@@ -52,4 +52,9 @@
   #include "body.typ"
 ]
 
-#bibliography("./hayagriva.yml", title: "СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ")
+#bibliography(
+  "./hayagriva.yml",
+  // @see: https://zakon.rada.gov.ua/laws/show/z0155-17
+  style: "institute-of-electrical-and-electronics-engineers",
+  title: "СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ",
+)

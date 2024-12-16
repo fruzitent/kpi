@@ -2,3 +2,13 @@
 # @help: https://github.com/typst/hayagriva/blob/main/docs/file-format.md
 
 # TODO: https://github.imc.re/typst/hayagriva/pull/192
+
+jellyfin:
+  title: "The Free Software Media System | Jellyfin"
+  type: "web"
+  url: "https://jellyfin.org"
+
+plex:
+  title: "Stream Movies & Find Shows On The Best Streaming Services"
+  type: "web"
+  url: "https://plex.tv"
