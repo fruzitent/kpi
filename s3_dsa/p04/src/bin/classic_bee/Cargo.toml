@@ -1,0 +1,25 @@
+#:schema https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/cargo.json
+# @help: https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+
+[dependencies]
+eframe = "0.30.0"
+egui = "0.30.0"
+fern = "0.7.1"
+humantime = "2.1.0"
+log.workspace = true
+
+[dev-dependencies]
+
+[features]
+
+[package]
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+license-file.workspace = true
+name = "classic_bee"
+readme.workspace = true
+repository.workspace = true
+version = "0.1.0"
