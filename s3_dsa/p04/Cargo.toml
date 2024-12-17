@@ -3,11 +3,17 @@
 
 [workspace]
 default-members = ["./src/bin/classic_bee/"]
-members = ["./src/bin/classic_bee/"]
+members = [
+  "./src/bin/classic_bee/", 
+  "./src/widget/perf/",
+]
 resolver = "2"
 
 [workspace.dependencies]
+egui = "0.29.1"
 log = "0.4.22"
+
+perf = { path = "./src/widget/perf/" }
 
 [workspace.package]
 authors = ["fruzitent <fruzit@gmail.com>"]

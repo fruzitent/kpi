@@ -4,25 +4,19 @@
 [build-dependencies]
 
 [dependencies]
-eframe = "0.29.1"
-egui.workspace = true
-egui_graphs = "0.22.0"
-fern = "0.7.1"
-humantime = "2.1.0"
-log.workspace = true
-perf = { features = ["egui"], workspace = true }
-petgraph = "0.6.5"
+egui = { optional = true, workspace = true }
 
 [dev-dependencies]
 
 [features]
+egui = ["dep:egui"]
 
 [package]
 authors.workspace = true
 description.workspace = true
 edition.workspace = true
 license-file.workspace = true
-name = "classic_bee"
+name = "perf"
 readme.workspace = true
 repository.workspace = true
 version = "0.1.0"
