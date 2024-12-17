@@ -4,8 +4,8 @@
 [build-dependencies]
 
 [dependencies]
-eframe = "0.30.0"
-egui = "0.30.0"
+eframe = "0.29.1"
+egui = "0.29.1"
 fern = "0.7.1"
 humantime = "2.1.0"
 log.workspace = true
