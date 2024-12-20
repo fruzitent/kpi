@@ -10,9 +10,10 @@
 #include "title.typ"
 #pagebreak()
 
-#heading(outlined: false, [Варіант 24])
-
-#outline()
+#[
+  #show heading: set align(center)
+  #outline(title: "ЗМІСТ")
+]
 
 #include "task1.typ"
 #include "task2.typ"
