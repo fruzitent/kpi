@@ -46,5 +46,3 @@
 #align(center + bottom, [
   Київ - #datetime.today().year()
 ])
-
-#pagebreak()

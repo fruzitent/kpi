@@ -8,6 +8,7 @@
 }
 
 #include "title.typ"
+#pagebreak()
 
 #heading(outlined: false, [Варіант 24])
 
