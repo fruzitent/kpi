@@ -7,6 +7,8 @@
   it
 }
 
+#include "title.typ"
+
 #heading(outlined: false, [Варіант 24])
 
 #outline()
