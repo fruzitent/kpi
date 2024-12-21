@@ -6,3 +6,8 @@ deploy:
 
 rm:
     docker stack rm --detach=false "marine"
+
+rmv:
+    docker volume rm --force "marine_mariadb_data"
+    docker volume rm --force "marine_mssql_data"
+    docker volume rm --force "marine_psql_data"
