@@ -1,0 +1,8 @@
+_default:
+    @just --list
+
+deploy:
+    docker stack deploy --compose-file "./docker/compose.yml" --detach=false "marine"
+
+rm:
+    docker stack rm --detach=false "marine"
