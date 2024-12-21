@@ -1,6 +1,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
 # @help: https://docs.docker.com/compose/compose-file
 
+x-healthcheck: &healthcheck
+  interval: "10s"
+  retries: 3
+  start_period: "10s"
+  timeout: "5s"
+
 secrets:
   mariadb_pswd:
     external: true
@@ -13,6 +19,13 @@ services:
   mariadb:
     environment:
       MARIADB_ROOT_PASSWORD_FILE: "/run/secrets/mariadb_pswd"
+    healthcheck:
+      <<: *healthcheck
+      test:
+        - "CMD"
+        - "healthcheck.sh"
+        - "--connect"
+        - "--innodb_initialized"
     # @see: https://mariadb.org/mariadb/all-releases
     image: "docker.io/library/mariadb:11.6.2"
     ports:
@@ -25,6 +38,11 @@ services:
     environment:
       ACCEPT_EULA: "true"
       MSSQL_SA_PASSWORD_FILE: "/run/secrets/mssql_pswd"
+    healthcheck:
+      <<: *healthcheck
+      test:
+        - "CMD-SHELL"
+        - '/opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/mssql_pswd)" -U "sa" -Q "select 1;"'
     # @see: https://learn.microsoft.com/troubleshoot/sql/releases/download-and-install-latest-updates
     image: "mcr.microsoft.com/mssql/server:2022-CU16-ubuntu-22.04"
     ports:
@@ -36,6 +54,11 @@ services:
   psql:
     environment:
       POSTGRES_PASSWORD_FILE: "/run/secrets/psql_pswd"
+    healthcheck:
+      <<: *healthcheck
+      test:
+        - "CMD"
+        - "pg_isready"
     # @see: https://www.postgresql.org/docs/release
     image: "docker.io/library/postgres:17.2"
     ports:
