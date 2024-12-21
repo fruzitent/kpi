@@ -33,6 +33,7 @@ services:
         target: 3306
     secrets:
       - "mariadb_pswd"
+    user: "mysql"
     volumes:
       - source: "mariadb_data"
         target: "/var/lib/mysql/"
@@ -54,6 +55,7 @@ services:
         target: 1433
     secrets:
       - "mssql_pswd"
+    user: "mssql"
     volumes:
       - source: "mssql_data"
         target: "/var/opt/mssql/"
@@ -74,6 +76,7 @@ services:
         target: 5432
     secrets:
       - "psql_pswd"
+    user: "postgres"
     volumes:
       - source: "psql_data"
         target: "/var/lib/postgresql/data/"
