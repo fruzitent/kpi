@@ -99,6 +99,8 @@ services:
 
   psql:
     environment:
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
       POSTGRES_PASSWORD_FILE: "/run/secrets/marine_psql_pswd"
     healthcheck:
       <<: *healthcheck

@@ -11,12 +11,61 @@ _secret_mariadb := stack + "_" + _mariadb + "_pswd"
 _secret_mssql := stack + "_" + _mssql + "_pswd"
 _secret_psql := stack + "_" + _psql + "_pswd"
 
+_service_mariadb := stack + "_" + _mariadb
+_service_mssql := stack + "_" + _mssql
+_service_psql := stack + "_" + _psql
+
 _volume_mariadb := stack + "_" + _mariadb + "_data"
 _volume_mssql := stack + "_" + _mssql + "_data"
 _volume_psql := stack + "_" + _psql + "_data"
 
 deploy:
     docker stack deploy --compose-file "./docker/compose.yml" --detach=false "{{stack}}"
+
+exec_mariadb:
+    #!/bin/sh
+    container_id="$(docker service ps --quiet "{{_service_mariadb}}" | xargs docker inspect --format "{{{{.Status.ContainerStatus.ContainerID}}")"
+    image_id="$(docker service ps --quiet "{{_service_mariadb}}" | xargs docker inspect --format "{{{{.Spec.ContainerSpec.Image}}")"
+    password="$(docker exec "${container_id}" cat "/run/secrets/{{_secret_mariadb}}")"
+    docker run --rm -it                                \
+        --add-host "host.docker.internal:host-gateway" \
+        "${image_id}"                                  \
+        mariadb                                        \
+            --host="host.docker.internal"              \
+            --password="${password}"                   \
+            --port=3306                                \
+            --user="root"                              \
+        ;
+
+exec_mssql:
+    #!/bin/sh
+    container_id="$(docker service ps --quiet "{{_service_mssql}}" | xargs docker inspect --format "{{{{.Status.ContainerStatus.ContainerID}}")"
+    image_id="$(docker service ps --quiet "{{_service_mssql}}" | xargs docker inspect --format "{{{{.Spec.ContainerSpec.Image}}")"
+    password="$(docker exec "${container_id}" cat "/run/secrets/{{_secret_mssql}}")"
+    docker run --rm -it                                \
+        --add-host "host.docker.internal:host-gateway" \
+        "${image_id}"                                  \
+        /opt/mssql-tools18/bin/sqlcmd                  \
+            -C                                         \
+            -P "${password}"                           \
+            -S "host.docker.internal,1433"             \
+            -U "sa"                                    \
+        ;
+
+exec_psql:
+    #!/bin/sh
+    container_id="$(docker service ps --quiet "{{_service_psql}}" | xargs docker inspect --format "{{{{.Status.ContainerStatus.ContainerID}}")"
+    image_id="$(docker service ps --quiet "{{_service_psql}}" | xargs docker inspect --format "{{{{.Spec.ContainerSpec.Image}}")"
+    password="$(docker exec "${container_id}" cat "/run/secrets/{{_secret_psql}}")"
+    docker run --rm -it                                \
+        --add-host "host.docker.internal:host-gateway" \
+        --env "PGPASSWORD=${password}"                 \
+        "${image_id}"                                  \
+        psql                                           \
+            --host "host.docker.internal"              \
+            --port 5432                                \
+            --username "postgres"                      \
+        ;
 
 init:
     -docker swarm init

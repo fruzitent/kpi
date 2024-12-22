@@ -9,7 +9,7 @@ just init deploy
 ## Connect
 
 ```shell
-$ mariadb --password "<mariadb_pswd>" --user "root"
-$ /opt/mssql-tools18/bin/sqlcmd -C -P "<mssql_pswd>" -U "sa"
-$ PGPASSWORD="<psql_pswd>" psql --username "postgres"
+just exec_mariadb
+just exec_mssql
+just exec_psql
 ```
