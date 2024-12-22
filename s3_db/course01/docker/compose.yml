@@ -8,100 +8,17 @@ x-healthcheck: &healthcheck
   timeout: "5s"
 
 secrets:
-  marine_mariadb_pswd:
+  psql_pswd:
     external: true
-  marine_mssql_pswd:
-    external: true
-  marine_psql_pswd:
-    external: true
+    name: "${STACK}_psql_pswd"
 
 services:
-  mariadb:
+  psql-primary:
+    deploy:
+      replicas: 1
     environment:
-      MARIADB_ROOT_PASSWORD_FILE: "/run/secrets/marine_mariadb_pswd"
-    healthcheck:
-      <<: *healthcheck
-      test:
-        - "CMD"
-        - "healthcheck.sh"
-        - "--connect"
-        - "--innodb_initialized"
-    # @see: https://mariadb.org/mariadb/all-releases
-    image: "docker.io/library/mariadb:11.6.2"
-    ports:
-      - published: 3306
-        target: 3306
-    secrets:
-      - "marine_mariadb_pswd"
-    user: "mysql"
-    volumes:
-      - source: ../sql/
-        target: /docker-entrypoint-initdb.d/
-        type: bind
-      - source: "mariadb_data"
-        target: "/var/lib/mysql/"
-        type: "volume"
-
-  mssql:
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        /opt/mssql/bin/sqlservr &
-        if [ -f "/var/opt/mssql/data/master.mdf" ]; then
-          echo "note: database already initialized"
-          sleep infinity
-        fi
-        until /opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/marine_mssql_pswd)" -U "sa" -Q "select 1;"; do
-          echo "note: waiting for server startup"
-          sleep 1
-        done
-        for file in /docker-entrypoint-initdb.d/*; do
-          [ -e "$${file}" ] || continue
-          case "$${file}" in
-            *.sh)
-              echo "sourcing: $${file}"
-              . "$${file}"
-              ;;
-            *.sql)
-              echo "running: $${file}"
-              /opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/marine_mssql_pswd)" -U "sa" -i "$${file}" -X
-              ;;
-            *)
-              echo "ignoring: $${file}"
-              ;;
-          esac
-        done
-        sleep infinity
-    environment:
-      ACCEPT_EULA: "true"
-      MSSQL_SA_PASSWORD_FILE: "/run/secrets/marine_mssql_pswd"
-    healthcheck:
-      <<: *healthcheck
-      test:
-        - "CMD-SHELL"
-        - '/opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/marine_mssql_pswd)" -U "sa" -Q "select 1;"'
-    # @see: https://learn.microsoft.com/troubleshoot/sql/releases/download-and-install-latest-updates
-    image: "mcr.microsoft.com/mssql/server:2022-CU16-ubuntu-22.04"
-    ports:
-      - published: 1433
-        target: 1433
-    secrets:
-      - "marine_mssql_pswd"
-    user: "mssql"
-    volumes:
-      - source: ../sql/
-        target: /docker-entrypoint-initdb.d/
-        type: bind
-      - source: "mssql_data"
-        target: "/var/opt/mssql/"
-        type: "volume"
-
-  psql:
-    environment:
-      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
-      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
-      POSTGRES_PASSWORD_FILE: "/run/secrets/marine_psql_pswd"
+      POSTGRES_INITDB_ARGS: "--auth=scram-sha-256"
+      POSTGRES_PASSWORD_FILE: "/run/secrets/psql_pswd"
     healthcheck:
       <<: *healthcheck
       test:
@@ -110,20 +27,20 @@ services:
     # @see: https://www.postgresql.org/docs/release
     image: "docker.io/library/postgres:17.2"
     ports:
-      - published: 5432
+      - protocol: "tcp"
+        published: 5432
         target: 5432
     secrets:
-      - "marine_psql_pswd"
+      - "psql_pswd"
     user: "postgres"
     volumes:
-      - source: ../sql/
-        target: /docker-entrypoint-initdb.d/
-        type: bind
+      - source: "../sql/"
+        target: "/docker-entrypoint-initdb.d/"
+        type: "bind"
       - source: "psql_data"
         target: "/var/lib/postgresql/data/"
         type: "volume"
 
 volumes:
-  mariadb_data:
-  mssql_data:
   psql_data:
+    name: "{{.Service.Name}}-{{.Task.Slot}}_data"
