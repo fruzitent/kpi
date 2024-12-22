@@ -1,13 +1,33 @@
 _default:
     @just --list
 
+stack := "marine"
+
+_mariadb := "mariadb"
+_mssql := "mssql"
+_psql := "psql"
+
+_secret_mariadb := stack + "_" + _mariadb + "_pswd"
+_secret_mssql := stack + "_" + _mssql + "_pswd"
+_secret_psql := stack + "_" + _psql + "_pswd"
+
+_volume_mariadb := stack + "_" + _mariadb + "_data"
+_volume_mssql := stack + "_" + _mssql + "_data"
+_volume_psql := stack + "_" + _psql + "_data"
+
 deploy:
-    docker stack deploy --compose-file "./docker/compose.yml" --detach=false "marine"
+    docker stack deploy --compose-file "./docker/compose.yml" --detach=false "{{stack}}"
+
+init:
+    -docker swarm init
+    -openssl rand -base64 32 | docker secret create "{{_secret_mariadb}}" -
+    -openssl rand -base64 32 | docker secret create "{{_secret_mssql}}" -
+    -openssl rand -base64 32 | docker secret create "{{_secret_psql}}" -
 
 rm:
-    docker stack rm --detach=false "marine"
+    docker stack rm --detach=false "{{stack}}"
 
 rmv:
-    docker volume rm --force "marine_mariadb_data"
-    docker volume rm --force "marine_mssql_data"
-    docker volume rm --force "marine_psql_data"
+    docker volume rm --force "{{_volume_mariadb}}"
+    docker volume rm --force "{{_volume_mssql}}"
+    docker volume rm --force "{{_volume_psql}}"

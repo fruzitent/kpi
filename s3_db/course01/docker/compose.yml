@@ -8,17 +8,17 @@ x-healthcheck: &healthcheck
   timeout: "5s"
 
 secrets:
-  mariadb_pswd:
+  marine_mariadb_pswd:
     external: true
-  mssql_pswd:
+  marine_mssql_pswd:
     external: true
-  psql_pswd:
+  marine_psql_pswd:
     external: true
 
 services:
   mariadb:
     environment:
-      MARIADB_ROOT_PASSWORD_FILE: "/run/secrets/mariadb_pswd"
+      MARIADB_ROOT_PASSWORD_FILE: "/run/secrets/marine_mariadb_pswd"
     healthcheck:
       <<: *healthcheck
       test:
@@ -32,7 +32,7 @@ services:
       - published: 3306
         target: 3306
     secrets:
-      - "mariadb_pswd"
+      - "marine_mariadb_pswd"
     user: "mysql"
     volumes:
       - source: ../sql/
@@ -52,7 +52,7 @@ services:
           echo "note: database already initialized"
           sleep infinity
         fi
-        until /opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/mssql_pswd)" -U "sa" -Q "select 1;"; do
+        until /opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/marine_mssql_pswd)" -U "sa" -Q "select 1;"; do
           echo "note: waiting for server startup"
           sleep 1
         done
@@ -65,7 +65,7 @@ services:
               ;;
             *.sql)
               echo "running: $${file}"
-              /opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/mssql_pswd)" -U "sa" -i "$${file}" -X
+              /opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/marine_mssql_pswd)" -U "sa" -i "$${file}" -X
               ;;
             *)
               echo "ignoring: $${file}"
@@ -75,19 +75,19 @@ services:
         sleep infinity
     environment:
       ACCEPT_EULA: "true"
-      MSSQL_SA_PASSWORD_FILE: "/run/secrets/mssql_pswd"
+      MSSQL_SA_PASSWORD_FILE: "/run/secrets/marine_mssql_pswd"
     healthcheck:
       <<: *healthcheck
       test:
         - "CMD-SHELL"
-        - '/opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/mssql_pswd)" -U "sa" -Q "select 1;"'
+        - '/opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/marine_mssql_pswd)" -U "sa" -Q "select 1;"'
     # @see: https://learn.microsoft.com/troubleshoot/sql/releases/download-and-install-latest-updates
     image: "mcr.microsoft.com/mssql/server:2022-CU16-ubuntu-22.04"
     ports:
       - published: 1433
         target: 1433
     secrets:
-      - "mssql_pswd"
+      - "marine_mssql_pswd"
     user: "mssql"
     volumes:
       - source: ../sql/
@@ -99,7 +99,7 @@ services:
 
   psql:
     environment:
-      POSTGRES_PASSWORD_FILE: "/run/secrets/psql_pswd"
+      POSTGRES_PASSWORD_FILE: "/run/secrets/marine_psql_pswd"
     healthcheck:
       <<: *healthcheck
       test:
@@ -111,7 +111,7 @@ services:
       - published: 5432
         target: 5432
     secrets:
-      - "psql_pswd"
+      - "marine_psql_pswd"
     user: "postgres"
     volumes:
       - source: ../sql/
