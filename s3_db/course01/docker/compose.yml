@@ -35,11 +35,44 @@ services:
       - "mariadb_pswd"
     user: "mysql"
     volumes:
+      - source: ../sql/
+        target: /docker-entrypoint-initdb.d/
+        type: bind
       - source: "mariadb_data"
         target: "/var/lib/mysql/"
         type: "volume"
 
   mssql:
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - |
+        /opt/mssql/bin/sqlservr &
+        if [ -f "/var/opt/mssql/data/master.mdf" ]; then
+          echo "note: database already initialized"
+          sleep infinity
+        fi
+        until /opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/mssql_pswd)" -U "sa" -Q "select 1;"; do
+          echo "note: waiting for server startup"
+          sleep 1
+        done
+        for file in /docker-entrypoint-initdb.d/*; do
+          [ -e "$${file}" ] || continue
+          case "$${file}" in
+            *.sh)
+              echo "sourcing: $${file}"
+              . "$${file}"
+              ;;
+            *.sql)
+              echo "running: $${file}"
+              /opt/mssql-tools18/bin/sqlcmd -C -P "$$(cat /run/secrets/mssql_pswd)" -U "sa" -i "$${file}" -X
+              ;;
+            *)
+              echo "ignoring: $${file}"
+              ;;
+          esac
+        done
+        sleep infinity
     environment:
       ACCEPT_EULA: "true"
       MSSQL_SA_PASSWORD_FILE: "/run/secrets/mssql_pswd"
@@ -57,6 +90,9 @@ services:
       - "mssql_pswd"
     user: "mssql"
     volumes:
+      - source: ../sql/
+        target: /docker-entrypoint-initdb.d/
+        type: bind
       - source: "mssql_data"
         target: "/var/opt/mssql/"
         type: "volume"
@@ -78,6 +114,9 @@ services:
       - "psql_pswd"
     user: "postgres"
     volumes:
+      - source: ../sql/
+        target: /docker-entrypoint-initdb.d/
+        type: bind
       - source: "psql_data"
         target: "/var/lib/postgresql/data/"
         type: "volume"
