@@ -1,0 +1,15 @@
+_default:
+    @just --list
+
+fonts_dir := join("assets", "fonts")
+typst_flags := "--font-path " + fonts_dir + " --ignore-system-fonts"
+
+typst_dst := join("target", "typst", "main.pdf")
+typst_src := join("typst", "main.typ")
+
+compile:
+    mkdir -p {{ parent_directory(typst_dst) }}
+    typst compile {{ typst_flags }} {{ typst_src }} {{ typst_dst }}
+
+preview:
+    tinymist preview {{ typst_flags }} {{ typst_src }}
