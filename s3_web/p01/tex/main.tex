@@ -1,0 +1,32 @@
+%!TEX program = lualatex
+
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{fontspec}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage[cache=false, outputdir=../out]{minted}
+
+\newcommand{\DISCIPLINE}{Програмування веб-застосувань}
+\newcommand{\STUDENT}{}
+\newcommand{\SUBJECT}{Розробка HTML-структур та візуалізація з допомогою CSS}
+\newcommand{\TEACHER}{}
+\newcommand{\TITLE}{Лабораторна робота №1}
+\newcommand{\VARIANT}{8 (24)}
+
+\begin{document}
+
+\setmainfont{OpenSans}
+\setlength{\emergencystretch}{2cm}
+
+\clearpage\input{./title}
+
+\clearpage\tableofcontents
+
+\clearpage\input{./task}
+\clearpage\input{./demo}
+\clearpage\input{./code}
+
+\end{document}
