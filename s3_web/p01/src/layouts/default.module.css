@@ -1,0 +1,64 @@
+component-footer {
+  position: sticky;
+  top: 100dvh;
+}
+
+.container {
+  font-size: 0;
+  padding: 0 1rem;
+}
+
+.column {
+  vertical-align: top;
+}
+
+.left,
+.right {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.left {
+  width: 15%;
+}
+
+.right {
+  width: 25%;
+}
+
+.center {
+  width: 60%;
+}
+
+.center > * {
+  padding: 0.5rem 3rem;
+}
+
+@media screen and (max-width: 1024px) {
+  .right {
+    width: 15%;
+  }
+  .center {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .left,
+  .right {
+    display: none;
+  }
+  .center {
+    width: 100%;
+  }
+  .center > * {
+    padding: 0.5rem 0;
+  }
+}
+
+hr {
+  background: var(--surface0);
+  border: none;
+  height: 0.1rem;
+}
