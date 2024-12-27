@@ -1,6 +1,8 @@
 # @help: https://git-scm.com/docs/gitignore
 
 dist/
+docs/
 node_modules/
+out/
 out/
 target/
