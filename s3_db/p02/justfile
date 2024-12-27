@@ -1,0 +1,17 @@
+_default:
+    @just --list
+
+build:
+    latexmk -cd -file-line-error -halt-on-error -outdir="../out" -pdflua -shell-escape "./tex/main.tex"
+
+clean:
+    rm -rf "./out/"
+
+down:
+    docker compose --file "./docker/compose.yml" down --volumes
+
+logs:
+    docker compose --file "./docker/compose.yml" logs --follow
+
+up:
+    docker compose --file "./docker/compose.yml" up --detach

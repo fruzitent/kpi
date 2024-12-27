@@ -1,0 +1,42 @@
+$ docker run --rm                                 \
+  --add-host "host.docker.internal:host-gateway"  \
+  --env "PGDATABASE=example"                      \
+  --env "PGHOST=host.docker.internal"             \
+  --env "PGOPTIONS=--search_path=realtor"         \
+  --env "PGPASSWORD=pwd!02"                       \
+  --env "PGPORT=5432"                             \
+  --env "PGUSER=employee_02"                      \
+  "docker.io/library/postgres:17.1"               \
+  psql                                            \
+    -c "select count(*) from realtor.user;"       \
+    -c "insert into realtor.stat default values;" \
+    -c "drop table realtor.property;"             \
+  ;
+count
+-------
+    467
+(1 row)
+
+ERROR:  permission denied for table stat
+ERROR:  must be owner of table property
+$ docker run --rm                                 \
+  --add-host "host.docker.internal:host-gateway"  \
+  --env "PGDATABASE=example"                      \
+  --env "PGHOST=host.docker.internal"             \
+  --env "PGOPTIONS=--search_path=realtor"         \
+  --env "PGPASSWORD=pwd!01"                       \
+  --env "PGPORT=5432"                             \
+  --env "PGUSER=employee_01"                      \
+  "docker.io/library/postgres:17.1"               \
+  psql                                            \
+    -c "select count(*) from realtor.user;"       \
+    -c "insert into realtor.stat default values;" \
+    -c "drop table realtor.property;"             \
+  ;
+count
+-------
+    467
+(1 row)
+
+INSERT 0 1
+ERROR:  must be owner of table property

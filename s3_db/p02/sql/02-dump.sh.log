@@ -1,0 +1,35 @@
+$ docker run --rm                                        \
+  --add-host "host.docker.internal:host-gateway"         \
+  --env "PGDATABASE=example"                             \
+  --env "PGHOST=host.docker.internal"                    \
+  --env "PGOPTIONS=--search_path=realtor"                \
+  --env "PGPASSWORD=postgres"                            \
+  --env "PGPORT=5432"                                    \
+  --env "PGUSER=postgres"                                \
+  "docker.io/library/postgres:17.1"                      \
+  sh -c "pg_dump --format=custom > db.dump               \
+      && psql -c 'truncate realtor.user cascade'         \
+      && psql -c 'select * from realtor.user;'           \
+      && pg_restore --clean --dbname=$PGDATAGASE db.dump \
+      && psql -c 'select * from realtor.user'            \
+      ";
+NOTICE:  truncate cascades to table "agent"
+NOTICE:  truncate cascades to table "client"
+NOTICE:  truncate cascades to table "offer"
+NOTICE:  truncate cascades to table "appointment"
+NOTICE:  truncate cascades to table "tenancy"
+NOTICE:  truncate cascades to table "trade"
+TRUNCATE TABLE
+ user_id | user_type | email | first_name | last_name | password | stat_id
+---------+-----------+-------+------------+-----------+----------+---------
+(0 rows)
+
+ user_id | user_type |          email          | first_name |   last_name   |             password             | stat_id
+---------+-----------+-------------------------+------------+---------------+----------------------------------+---------
+       1 | agent     | norberto@example.net    | Alexys     | Lemke         | 6881a6a9fbb7e63a6c5c819897ef4f88 |       1
+       2 | client    | franz@example.org       | Enid       | Walter        | 7d868071de41f57f8a6dcd675ebfb740 |       2
+       3 | agent     | colin@example.com       | Devyn      | Zboncak       | 3f62bb76c037503fa59c4b17c4f84079 |       3
+       4 | agent     | mark@example.com        | Una        | Schuster      | 31c490d306b64032c8f21a6a3e4a1207 |       4
+       5 | client    | oswaldo@example.net     | Sydnie     | Boehm         | 65510876942524d6b22f1aa35588b4ca |       5
+...
+(170 rows)
