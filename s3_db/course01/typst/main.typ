@@ -1,6 +1,7 @@
 #show heading: set text(weight: "regular")
 #show heading.where(level: 1): set align(center)
 #show heading.where(level: 1): set text(weight: "bold")
+#show link: set text(fill: blue.darken(30%))
 
 // TODO: https://github.com/typst/typst/issues/311
 #show figure: it => [ #it #v(-par.spacing) #{ "" } ]
