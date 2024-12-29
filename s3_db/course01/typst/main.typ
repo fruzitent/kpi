@@ -4,7 +4,7 @@
 #show link: set text(fill: blue.darken(30%))
 
 // TODO: https://github.com/typst/typst/issues/311
-#show figure: it => [ #it #v(-par.spacing) #{ "" } ]
+#show figure: it => block[ #it #v(-par.spacing) #{ "" } ]
 #show heading: it => [ #it #v(-par.spacing) #{ "" } ]
 #show list: it => [ #it #v(-par.spacing) #{ "" } ]
 #show terms: it => [ #it #v(-par.spacing) #{ "" } ]
