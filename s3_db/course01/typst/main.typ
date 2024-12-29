@@ -66,6 +66,7 @@
 
 #include "title.typ"
 #include "contents.typ"
+#include "acronym.typ"
 #include "intro.typ"
 #include "body.typ"
 #include "summary.typ"
