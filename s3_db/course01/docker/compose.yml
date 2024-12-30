@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+# @help: https://docs.docker.com/compose/compose-file
+
+x-healthcheck: &healthcheck
+  interval: "10s"
+  retries: 3
+  start_period: "10s"
+  timeout: "5s"
+
+secrets:
+  psql_pswd:
+    external: true
+    name: "${STACK}_psql_pswd"
+
+services:
+  psql-primary:
+    deploy:
+      replicas: 1
+    environment:
+      POSTGRES_INITDB_ARGS: "--auth=scram-sha-256"
+      POSTGRES_PASSWORD_FILE: "/run/secrets/psql_pswd"
+    healthcheck:
+      <<: *healthcheck
+      test:
+        - "CMD"
+        - "pg_isready"
+    # @see: https://www.postgresql.org/docs/release
+    image: "docker.io/library/postgres:17.2"
+    ports:
+      - protocol: "tcp"
+        published: 5432
+        target: 5432
+    secrets:
+      - "psql_pswd"
+    user: "postgres"
+    volumes:
+      - source: "../sql/"
+        target: "/docker-entrypoint-initdb.d/"
+        type: "bind"
+      - source: "psql_data"
+        target: "/var/lib/postgresql/data/"
+        type: "volume"
+
+volumes:
+  psql_data:
+    name: "{{.Service.Name}}-{{.Task.Slot}}_data"
