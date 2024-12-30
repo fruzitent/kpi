@@ -1,0 +1,89 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: light dark;
+  font-size: clamp(1rem, 0.861rem + 0.696vw, 1.2rem);
+}
+
+body {
+  display: grid;
+  grid-template:
+    "block-x block-1 block-1" 0.15fr
+    "block-2 block-3 block-4" 0.2fr
+    "block-2 block-5 block-4" 0.3fr
+    "block-2 block-5 block-6" 0.2fr
+    "block-7 block-7 block-y" 0.15fr
+    / 0.2fr 0.55fr 0.25fr;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.block {
+  overflow-y: scroll;
+}
+
+.block-x,
+.block-y {
+  display: grid;
+  overflow-y: hidden;
+  place-items: center;
+}
+
+.block-x {
+  grid-area: block-x;
+}
+
+.block-y {
+  grid-area: block-y;
+}
+
+button {
+  padding: 1em 3em;
+}
+
+.block-1,
+.block-7 {
+  background: blue;
+}
+
+.block-1 {
+  grid-area: block-1;
+}
+
+.block-7 {
+  grid-area: block-7;
+}
+
+.block-2,
+.block-4 {
+  background: orange;
+}
+
+.block-2 {
+  grid-area: block-2;
+}
+
+.block-4 {
+  grid-area: block-4;
+}
+
+.block-3,
+.block-6 {
+  background: green;
+}
+
+.block-3 {
+  grid-area: block-3;
+}
+
+.block-6 {
+  grid-area: block-6;
+}
+
+.block-5 {
+  grid-area: block-5;
+}
