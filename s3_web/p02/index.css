@@ -1,0 +1,25 @@
+html {
+  color-scheme: light dark;
+  font-size: clamp(2.25rem, 1.467rem + 3.913vw, 4.5rem);
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+a,
+a:visited {
+  color: lavander;
+}
+
+a:hover {
+  color: lightblue;
+}
