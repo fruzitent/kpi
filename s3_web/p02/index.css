@@ -1,14 +1,19 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
 html {
   color-scheme: light dark;
   font-size: clamp(2.25rem, 1.467rem + 3.913vw, 4.5rem);
 }
 
-body {
+#root {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100dvh;
 }
 
 a {

@@ -9,7 +9,7 @@ html {
   font-size: clamp(1rem, 0.861rem + 0.696vw, 1.2rem);
 }
 
-body {
+#root {
   display: grid;
   grid-template:
     "block-x block-1 block-1" 0.15fr
