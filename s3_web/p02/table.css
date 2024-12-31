@@ -46,17 +46,13 @@ button {
   background: green;
 }
 
-.block-x,
-.block-7 {
+thead,
+tfoot {
   height: 15%;
 }
 
-.block-2,
-.block-3,
-.block-6 {
-  height: 20%;
-}
-
-.block-5 {
+.block-3 {
   height: 30%;
 }
+
+/* TODO: block-6 */
