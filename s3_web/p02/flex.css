@@ -34,6 +34,10 @@ footer {
   flex-direction: row;
 }
 
+button {
+  padding: 1em 3em;
+}
+
 .block-1,
 .block-7 {
   background: blue;
