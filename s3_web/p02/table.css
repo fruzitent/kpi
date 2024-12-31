@@ -1,0 +1,62 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: light dark;
+  font-size: clamp(1rem, 0.861rem + 0.696vw, 1.2rem);
+}
+
+/* TODO: https://w3.org/TR/css-overflow-3/#text-overflow */
+table {
+  height: 100dvh;
+  width: 100dvw;
+}
+
+td {
+  word-wrap: break-word;
+  vertical-align: top;
+  overflow-y: scroll;
+}
+
+.block-x,
+.block-y {
+  text-align: center;
+  vertical-align: middle;
+}
+
+button {
+  padding: 1em 3em;
+}
+
+.block-1,
+.block-7 {
+  background: blue;
+}
+
+.block-2,
+.block-4 {
+  background: orange;
+}
+
+.block-3,
+.block-6 {
+  background: green;
+}
+
+.block-x,
+.block-7 {
+  height: 15%;
+}
+
+.block-2,
+.block-3,
+.block-6 {
+  height: 20%;
+}
+
+.block-5 {
+  height: 30%;
+}
