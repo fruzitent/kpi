@@ -5,11 +5,13 @@
 
 [dependencies]
 bevy = { version = "0.15.0", features = ["dynamic_linking", "wayland"] }
+bevy-inspector-egui = { version = "0.28.0", optional = true }
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
 
 [dev-dependencies]
 
 [features]
+debug = ["dep:bevy-inspector-egui"]
 
 [package]
 authors = ["fruzitent <fruzit@gmail.com>"]
