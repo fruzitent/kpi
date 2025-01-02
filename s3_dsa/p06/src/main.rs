@@ -47,7 +47,7 @@ fn main() {
     app.add_plugins(DefaultPlugins);
     #[cfg(feature = "debug")]
     app.add_plugins(bevy_inspector_egui::quick::WorldInspectorPlugin::new());
-    app.add_systems(Startup, setup);
+    app.add_systems(Startup, (setup, setup_camera));
     app.add_systems(Update, || {});
     app.insert_resource(State { board: Board::new(8) });
     app.run();
@@ -58,26 +58,7 @@ struct State {
     board: Board<Cell>,
 }
 
-fn setup(
-    mut commands: Commands,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut state: ResMut<State>,
-) {
-    commands.spawn(Camera2d);
-
-    let block_height = 50.0;
-    let block_padding = 5.0;
-    let block_width = 50.0;
-    let disk_radius = (50.0 - block_padding) / 2.0;
-
-    let block = meshes.add(Rectangle::new(block_width, block_height));
-    let disk = meshes.add(Circle::new(disk_radius));
-
-    let black = materials.add(Color::hsl(0.0, 0.0, 0.0));
-    let green = materials.add(Color::hsl(120.0, 0.5, 0.5));
-    let white = materials.add(Color::hsl(0.0, 1.0, 1.0));
-
+fn setup(mut commands: Commands, mut state: ResMut<State>) {
     let half_stride = state.board.stride / 2;
     let top_left = (half_stride - 1) * state.board.stride + (half_stride - 1);
     let top_right = (half_stride - 1) * state.board.stride + half_stride;
@@ -87,34 +68,54 @@ fn setup(
     state.board.cells[top_right].kind = Some(CellKind::Black);
     state.board.cells[bottom_left].kind = Some(CellKind::Black);
     state.board.cells[bottom_right].kind = Some(CellKind::White);
+    commands
+        .spawn(Node {
+            align_items: AlignItems::Center,
+            display: Display::Grid,
+            height: Val::Percent(100.0),
+            justify_items: JustifyItems::Center,
+            width: Val::Percent(100.0),
+            ..Default::default()
+        })
+        .with_children(|builder| spawn_board(builder, &state));
+}
 
-    for row in 0..state.board.stride {
-        for col in 0..state.board.stride {
-            let total_width = state.board.stride as f32 * (block_width + block_padding) - block_padding;
-            let total_height = state.board.stride as f32 * (block_height + block_padding) - block_padding;
-            let x = col as f32 * (block_width + block_padding) - total_width / 2.0 + block_width / 2.0;
-            let y = row as f32 * (block_height + block_padding) - total_height / 2.0 + block_height / 2.0;
-
-            commands.spawn((
-                Mesh2d(block.clone()),
-                MeshMaterial2d(green.clone()),
-                Transform::from_xyz(x, -y, 0.0),
-            ));
-
-            let cell = &state.board[row][col];
-            if cell.kind.is_none() {
-                continue;
+fn spawn_board(builder: &mut ChildBuilder, state: &State) {
+    builder
+        .spawn(Node {
+            aspect_ratio: Some(1.0),
+            column_gap: Val::Vh(1.0),
+            display: Display::Grid,
+            grid_template_columns: RepeatedGridTrack::flex(state.board.stride as u16, 1.0),
+            grid_template_rows: RepeatedGridTrack::flex(state.board.stride as u16, 1.0),
+            height: Val::Percent(80.0),
+            row_gap: Val::Vh(1.0),
+            ..Default::default()
+        })
+        .with_children(|builder| {
+            for row in 0..state.board.stride {
+                for col in 0..state.board.stride {
+                    let index = row * state.board.stride + col;
+                    spawn_cell(builder, &state.board.cells[index]);
+                }
             }
+        });
+}
 
-            commands.spawn((
-                Mesh2d(disk.clone()),
-                MeshMaterial2d(match cell.kind {
-                    Some(CellKind::Black) => black.clone(),
-                    Some(CellKind::White) => white.clone(),
-                    None => unreachable!(),
-                }),
-                Transform::from_xyz(x, -y, 1.0),
-            ));
-        }
-    }
+fn spawn_cell(builder: &mut ChildBuilder, cell: &Cell) {
+    builder.spawn((
+        Node::default(),
+        BackgroundColor(match cell.kind {
+            Some(CellKind::Black) => Color::hsl(0.0, 0.0, 0.0),
+            Some(CellKind::White) => Color::hsl(0.0, 1.0, 1.0),
+            None => Color::hsl(120.0, 0.5, 0.5),
+        }),
+    ));
+}
+
+#[derive(Component)]
+struct MainCamera;
+
+fn setup_camera(mut commands: Commands) {
+    commands.spawn((Camera2d, MainCamera));
 }
