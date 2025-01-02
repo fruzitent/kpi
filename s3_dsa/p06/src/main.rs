@@ -23,6 +23,7 @@ where
     Cell: Default,
 {
     fn new(stride: usize) -> Self {
+        assert!(stride >= 4 && stride % 2 == 0);
         Self {
             cells: (0..stride.pow(2)).map(|_| Cell::default()).collect(),
             stride,
@@ -77,10 +78,15 @@ fn setup(
     let green = materials.add(Color::hsl(120.0, 0.5, 0.5));
     let white = materials.add(Color::hsl(0.0, 1.0, 1.0));
 
-    state.board.cells[27].kind = Some(CellKind::White);
-    state.board.cells[28].kind = Some(CellKind::Black);
-    state.board.cells[35].kind = Some(CellKind::Black);
-    state.board.cells[36].kind = Some(CellKind::White);
+    let half_stride = state.board.stride / 2;
+    let top_left = (half_stride - 1) * state.board.stride + (half_stride - 1);
+    let top_right = (half_stride - 1) * state.board.stride + half_stride;
+    let bottom_left = half_stride * state.board.stride + (half_stride - 1);
+    let bottom_right = half_stride * state.board.stride + half_stride;
+    state.board.cells[top_left].kind = Some(CellKind::White);
+    state.board.cells[top_right].kind = Some(CellKind::Black);
+    state.board.cells[bottom_left].kind = Some(CellKind::Black);
+    state.board.cells[bottom_right].kind = Some(CellKind::White);
 
     for row in 0..state.board.stride {
         for col in 0..state.board.stride {
