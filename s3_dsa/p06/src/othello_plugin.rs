@@ -7,6 +7,7 @@ pub struct OthelloPlugin;
 impl Plugin for OthelloPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup);
+        app.add_systems(Update, update_square);
         app.insert_resource(State {
             board: othello::Board::new(8),
         });
@@ -59,21 +60,41 @@ fn spawn_board(builder: &mut ChildBuilder, state: &State) {
         });
 }
 
+#[derive(Component)]
+struct Square;
+
 fn spawn_square(builder: &mut ChildBuilder, square: &othello::Square) {
     builder
         .spawn((
+            Square,
             Name::new("Square"),
+            Button,
             Node {
                 padding: UiRect::all(Val::Vh(0.5)),
                 ..Default::default()
             },
             BackgroundColor(Color::hsl(120.0, 0.5, 0.5)),
+            BorderColor(Color::hsl(60.0, 0.5, 0.5)),
         ))
         .with_children(|parent| {
             if let Some(disk) = square {
                 spawn_disk(parent, disk);
             }
         });
+}
+
+fn update_square(mut query: Query<(&Interaction, &mut Node), (Changed<Interaction>, With<Square>)>) {
+    for (&interaction, mut node) in query.iter_mut() {
+        match interaction {
+            Interaction::Pressed => todo!(),
+            Interaction::Hovered => {
+                node.border = UiRect::all(Val::Vh(0.75));
+            }
+            Interaction::None => {
+                node.border = UiRect::all(Val::Vh(0.0));
+            }
+        }
+    }
 }
 
 fn spawn_disk(builder: &mut ChildBuilder, disk: &othello::Disk) {
@@ -84,7 +105,6 @@ fn spawn_disk(builder: &mut ChildBuilder, disk: &othello::Disk) {
             width: Val::Percent(100.0),
             ..Default::default()
         },
-        Button,
         BackgroundColor(match disk.side {
             othello::Side::Dark => Color::hsl(0.0, 0.0, 0.0),
             othello::Side::Light => Color::hsl(0.0, 1.0, 1.0),
