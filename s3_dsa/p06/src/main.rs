@@ -1,7 +1,14 @@
 use bevy::prelude::*;
 
+enum CellKind {
+    Black,
+    White,
+}
+
 #[derive(Default)]
-struct Cell;
+struct Cell {
+    kind: Option<CellKind>,
+}
 
 struct Board<Cell>
 where
@@ -20,6 +27,17 @@ where
             cells: (0..stride.pow(2)).map(|_| Cell::default()).collect(),
             stride,
         }
+    }
+}
+
+impl<Cell> std::ops::Index<usize> for Board<Cell>
+where
+    Cell: Default,
+{
+    type Output = [Cell];
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.cells[index * self.stride..(index + 1) * self.stride]
     }
 }
 
@@ -43,27 +61,53 @@ fn setup(
     mut commands: Commands,
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
-    state: Res<State>,
+    mut state: ResMut<State>,
 ) {
     commands.spawn(Camera2d);
 
-    let cell_height = 50.0;
-    let cell_padding = 5.0;
-    let cell_width = 50.0;
+    let block_height = 50.0;
+    let block_padding = 5.0;
+    let block_width = 50.0;
+    let disk_radius = (50.0 - block_padding) / 2.0;
 
-    let cell = meshes.add(Rectangle::new(cell_width, cell_height));
-    let color = materials.add(Color::hsl(120.0, 0.5, 0.5));
+    let block = meshes.add(Rectangle::new(block_width, block_height));
+    let disk = meshes.add(Circle::new(disk_radius));
+
+    let black = materials.add(Color::hsl(0.0, 0.0, 0.0));
+    let green = materials.add(Color::hsl(120.0, 0.5, 0.5));
+    let white = materials.add(Color::hsl(0.0, 1.0, 1.0));
+
+    state.board.cells[27].kind = Some(CellKind::White);
+    state.board.cells[28].kind = Some(CellKind::Black);
+    state.board.cells[35].kind = Some(CellKind::Black);
+    state.board.cells[36].kind = Some(CellKind::White);
 
     for row in 0..state.board.stride {
         for col in 0..state.board.stride {
-            let total_width = state.board.stride as f32 * (cell_width + cell_padding) - cell_padding;
-            let total_height = state.board.stride as f32 * (cell_height + cell_padding) - cell_padding;
-            let x = col as f32 * (cell_width + cell_padding) - total_width / 2.0 + cell_width / 2.0;
-            let y = row as f32 * (cell_height + cell_padding) - total_height / 2.0 + cell_height / 2.0;
+            let total_width = state.board.stride as f32 * (block_width + block_padding) - block_padding;
+            let total_height = state.board.stride as f32 * (block_height + block_padding) - block_padding;
+            let x = col as f32 * (block_width + block_padding) - total_width / 2.0 + block_width / 2.0;
+            let y = row as f32 * (block_height + block_padding) - total_height / 2.0 + block_height / 2.0;
+
             commands.spawn((
-                Mesh2d(cell.clone()),
-                MeshMaterial2d(color.clone()),
-                Transform::from_xyz(x, y, 0.0),
+                Mesh2d(block.clone()),
+                MeshMaterial2d(green.clone()),
+                Transform::from_xyz(x, -y, 0.0),
+            ));
+
+            let cell = &state.board[row][col];
+            if cell.kind.is_none() {
+                continue;
+            }
+
+            commands.spawn((
+                Mesh2d(disk.clone()),
+                MeshMaterial2d(match cell.kind {
+                    Some(CellKind::Black) => black.clone(),
+                    Some(CellKind::White) => white.clone(),
+                    None => unreachable!(),
+                }),
+                Transform::from_xyz(x, -y, 1.0),
             ));
         }
     }
