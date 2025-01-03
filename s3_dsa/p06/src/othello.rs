@@ -33,11 +33,3 @@ impl Board {
         Self { squares, stride }
     }
 }
-
-impl std::ops::Index<usize> for Board {
-    type Output = [Square];
-
-    fn index(&self, index: usize) -> &Self::Output {
-        &self.squares[index * self.stride..(index + 1) * self.stride]
-    }
-}

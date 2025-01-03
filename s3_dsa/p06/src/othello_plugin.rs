@@ -53,17 +53,21 @@ fn spawn_board(builder: &mut ChildBuilder, state: &State) {
         .with_children(|parent| {
             for row in 0..state.board.stride {
                 for col in 0..state.board.stride {
-                    let square = &state.board[row][col];
-                    spawn_square(parent, square);
+                    let index = row * state.board.stride + col;
+                    let square = &state.board.squares[index];
+                    spawn_square(parent, square, index);
                 }
             }
         });
 }
 
 #[derive(Component)]
+struct Index(usize);
+
+#[derive(Component)]
 struct Square;
 
-fn spawn_square(builder: &mut ChildBuilder, square: &othello::Square) {
+fn spawn_square(builder: &mut ChildBuilder, square: &othello::Square, index: usize) {
     builder
         .spawn((
             Square,
@@ -75,6 +79,7 @@ fn spawn_square(builder: &mut ChildBuilder, square: &othello::Square) {
             },
             BackgroundColor(Color::hsl(120.0, 0.5, 0.5)),
             BorderColor(Color::hsl(60.0, 0.5, 0.5)),
+            Index(index),
         ))
         .with_children(|parent| {
             if let Some(disk) = square {
@@ -83,10 +88,10 @@ fn spawn_square(builder: &mut ChildBuilder, square: &othello::Square) {
         });
 }
 
-fn update_square(mut query: Query<(&Interaction, &mut Node), (Changed<Interaction>, With<Square>)>) {
-    for (&interaction, mut node) in query.iter_mut() {
+fn update_square(mut query: Query<(&Index, &Interaction, &mut Node), (Changed<Interaction>, With<Square>)>) {
+    for (index, interaction, mut node) in query.iter_mut() {
         match interaction {
-            Interaction::Pressed => todo!(),
+            Interaction::Pressed => log::info!("{index}", index = index.0),
             Interaction::Hovered => {
                 node.border = UiRect::all(Val::Vh(0.75));
             }
