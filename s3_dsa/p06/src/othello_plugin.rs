@@ -88,10 +88,24 @@ fn spawn_square(builder: &mut ChildBuilder, square: &othello::Square, index: usi
         });
 }
 
-fn update_square(mut query: Query<(&Index, &Interaction, &mut Node), (Changed<Interaction>, With<Square>)>) {
-    for (index, interaction, mut node) in query.iter_mut() {
+fn update_square(
+    mut commands: Commands,
+    mut query: Query<(Entity, &Index, &Interaction, &mut Node), (Changed<Interaction>, With<Square>)>,
+    mut state: ResMut<State>,
+) {
+    for (entity, index, interaction, mut node) in query.iter_mut() {
         match interaction {
-            Interaction::Pressed => log::info!("{index}", index = index.0),
+            Interaction::Pressed => {
+                commands.entity(entity).with_children(|builder| {
+                    let square = &mut state.board.squares[index.0];
+                    if square.is_none() {
+                        *square = Some(othello::Disk {
+                            side: othello::Side::Dark,
+                        });
+                        spawn_disk(builder, square.as_ref().unwrap());
+                    }
+                });
+            }
             Interaction::Hovered => {
                 node.border = UiRect::all(Val::Vh(0.75));
             }
