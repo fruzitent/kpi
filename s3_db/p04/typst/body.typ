@@ -13,49 +13,49 @@
 
 + запит з використанням функції COUNT
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Знайти кількість об'єктів нерухомості за типом]
 
   #raw(lang: "sql", read("../sql/1a-count.sql"))
 
 + запит з використанням функції SUM
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Знайти валовий дохід кожного агента]
 
   #raw(lang: "sql", read("../sql/1b-sum.sql"))
 
 + запит з використанням групування по декільком стовпцям
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Вивести статистику за типом нерухомості та типом пропозиції]
 
   #raw(lang: "sql", read("../sql/1c-group.sql"))
 
 + запит з використанням умови відбору груп HAVING
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Знайти агентів які скасували більш ніж 2 пропозиції]
 
   #raw(lang: "sql", read("../sql/1d-group-having.sql"))
 
 + запит з використанням HAVING без GROUP BY
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Перевірити що кількість пропозицій більша за 100]
 
   #raw(lang: "sql", read("../sql/1e-having.sql"))
 
 + запит з використанням функцій row_number() over ....
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Вивести статистику за типом пропозиції]
 
   #raw(lang: "sql", read("../sql/1f-over.sql"))
 
 + запит, в котрому значення одного зі стовпців таблиці будуть виведені в рядок через кому
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Вивести список міст по кожній країні]
 
   #raw(lang: "sql", read("../sql/1g-concat.sql"))
 
 + запит з використанням сортування по декільком стовпцям в різному порядку
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Знайти квартиру з найменшою ціною за площу]
 
   #raw(lang: "sql", read("../sql/1h-sort.sql"))
 
