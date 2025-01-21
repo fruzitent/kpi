@@ -1,15 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" style="margin: 0; padding: 0">
   <head>
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>s3_web/p03</title>
     <style type="text/css">
-      * {
-        margin: 0;
-        padding: 0;
-      }
-
       @media only screen and (max-width: 600px) {
         table,
         thead,
@@ -25,57 +20,36 @@
           width: 100%;
         }
       }
-
-      #root {
-        margin: 0 auto;
-        max-width: 600px;
-      }
-
-      button {
-        padding: 1em 3em;
-      }
-
-      td {
-        vertical-align: top;
-      }
-
-      .block-x,
-      .block-y {
-        text-align: center;
-        vertical-align: middle;
-      }
-
-      thead,
-      tfoot {
-        background: blue;
-      }
-
-      .block-2,
-      .block-4 {
-        background: orange;
-      }
-
-      .block-3,
-      .block-6 {
-        background: green;
-      }
     </style>
   </head>
-  <body>
-    <div id="root">
-      <table cellspacing="0">
-        <colgroup>
-          <col width="20%" />
-          <col width="55%" />
-          <col width="25%" />
+  <body style="margin: 0; padding: 0">
+    <div id="root" style="margin: 0 auto; max-width: 600px; padding: 0">
+      <table cellspacing="0" style="margin: 0; padding: 0">
+        <colgroup style="margin: 0; padding: 0">
+          <col width="20%" style="margin: 0; padding: 0" />
+          <col width="55%" style="margin: 0; padding: 0" />
+          <col width="25%" style="margin: 0; padding: 0" />
         </colgroup>
-        <thead>
-          <tr>
-            <td class="block block-x" colspan="1">
-              <button>x</button>
+        <thead style="background-color: blue; margin: 0; padding: 0">
+          <tr style="margin: 0; padding: 0">
+            <td
+              class="block block-x"
+              colspan="1"
+              style="
+                margin: 0;
+                padding: 0;
+                text-align: center;
+                vertical-align: middle;
+              "
+            >
+              <button style="margin: 0; padding: 1em 3em">x</button>
             </td>
-            <td class="block block-1" colspan="2">
-              <p>
+            <td
+              class="block block-1"
+              colspan="2"
+              style="margin: 0; padding: 0; vertical-align: top"
+            >
+              <p style="margin: 0; padding: 0">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Curabitur vel eros laoreet, hendrerit nulla ornare, volutpat
                 tellus. Praesent eu metus ut tortor vulputate rutrum.
@@ -93,10 +67,19 @@
             </td>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td class="block block-2" rowspan="3">
-              <p>
+        <tbody style="margin: 0; padding: 0">
+          <tr style="margin: 0; padding: 0">
+            <td
+              class="block block-2"
+              rowspan="3"
+              style="
+                background-color: orange;
+                margin: 0;
+                padding: 0;
+                vertical-align: top;
+              "
+            >
+              <p style="margin: 0; padding: 0">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Curabitur vel eros laoreet, hendrerit nulla ornare, volutpat
                 tellus. Praesent eu metus ut tortor vulputate rutrum.
@@ -112,8 +95,17 @@
                 in.
               </p>
             </td>
-            <td class="block block-3" rowspan="1">
-              <p>
+            <td
+              class="block block-3"
+              rowspan="1"
+              style="
+                background-color: green;
+                margin: 0;
+                padding: 0;
+                vertical-align: top;
+              "
+            >
+              <p style="margin: 0; padding: 0">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Curabitur vel eros laoreet, hendrerit nulla ornare, volutpat
                 tellus. Praesent eu metus ut tortor vulputate rutrum.
@@ -129,8 +121,17 @@
                 in.
               </p>
             </td>
-            <td class="block block-4" rowspan="2">
-              <p>
+            <td
+              class="block block-4"
+              rowspan="2"
+              style="
+                background-color: orange;
+                margin: 0;
+                padding: 0;
+                vertical-align: top;
+              "
+            >
+              <p style="margin: 0; padding: 0">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Curabitur vel eros laoreet, hendrerit nulla ornare, volutpat
                 tellus. Praesent eu metus ut tortor vulputate rutrum.
@@ -147,9 +148,13 @@
               </p>
             </td>
           </tr>
-          <tr>
-            <td class="block block-5" rowspan="2">
-              <p>
+          <tr style="margin: 0; padding: 0">
+            <td
+              class="block block-5"
+              rowspan="2"
+              style="margin: 0; padding: 0; vertical-align: top"
+            >
+              <p style="margin: 0; padding: 0">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Curabitur vel eros laoreet, hendrerit nulla ornare, volutpat
                 tellus. Praesent eu metus ut tortor vulputate rutrum.
@@ -166,9 +171,18 @@
               </p>
             </td>
           </tr>
-          <tr>
-            <td class="block block-6" rowspan="1">
-              <p>
+          <tr style="margin: 0; padding: 0">
+            <td
+              class="block block-6"
+              rowspan="1"
+              style="
+                background-color: green;
+                margin: 0;
+                padding: 0;
+                vertical-align: top;
+              "
+            >
+              <p style="margin: 0; padding: 0">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Curabitur vel eros laoreet, hendrerit nulla ornare, volutpat
                 tellus. Praesent eu metus ut tortor vulputate rutrum.
@@ -186,10 +200,14 @@
             </td>
           </tr>
         </tbody>
-        <tfoot>
-          <tr>
-            <td class="block block-7" colspan="2">
-              <p>
+        <tfoot style="background-color: blue; margin: 0; padding: 0">
+          <tr style="margin: 0; padding: 0">
+            <td
+              class="block block-7"
+              colspan="2"
+              style="margin: 0; padding: 0; vertical-align: top"
+            >
+              <p style="margin: 0; padding: 0">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Curabitur vel eros laoreet, hendrerit nulla ornare, volutpat
                 tellus. Praesent eu metus ut tortor vulputate rutrum.
@@ -205,8 +223,17 @@
                 in.
               </p>
             </td>
-            <td class="block block-y" colspan="1">
-              <button>y</button>
+            <td
+              class="block block-y"
+              colspan="1"
+              style="
+                margin: 0;
+                padding: 0;
+                text-align: center;
+                vertical-align: middle;
+              "
+            >
+              <button style="margin: 0; padding: 1em 3em">y</button>
             </td>
           </tr>
         </tfoot>
