@@ -17,4 +17,5 @@ begin
 end;
 $$ language plpgsql;
 
-call realtor.print_total_price(42);
+call realtor.print_total_price(37);
+-- offer 37: total 113

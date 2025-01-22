@@ -18,43 +18,43 @@
 
 + створення процедури, в якій використовується тимчасова таблиця, котра створена через змінну типу TABLE
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Створити кеш відвідувань]
 
   #raw(lang: "sql", read("../sql/1a-temporary.sql"))
 
 + створення процедури з використанням умовної конструкції IF
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Порахувати ціну за пропозицію враховуючи послуги агента]
 
   #raw(lang: "sql", read("../sql/1b-if.sql"))
 
 + створення процедури з використанням циклу WHILE
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Оновити ціни на нерухомість враховуючи 4% інфляції]
 
   #raw(lang: "sql", read("../sql/1c-while.sql"))
 
 + створення процедури без параметрів
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Розрахувати валовий дохід (без налогу) за рік]
 
   #raw(lang: "sql", read("../sql/1d-void.sql"))
 
 + створення процедури з вхідним параметром та RETURN
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Вивести користувача]
 
   #raw(lang: "sql", read("../sql/1e-inout.sql"))
 
 + створення процедури оновлення даних в деякій таблиці БД
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Оновити стан пропозиції]
 
   #raw(lang: "sql", read("../sql/1f-update.sql"))
 
 + створення процедури, в котрій робиться вибірка даних
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Створити кортеж з короткою інформацією про пропозицію]
 
   #raw(lang: "sql", read("../sql/1g-select.sql"))
 
