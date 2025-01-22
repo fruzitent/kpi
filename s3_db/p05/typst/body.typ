@@ -44,7 +44,7 @@
 
   #text(fill: green)[>] #text(fill: gray)[]
 
-  #raw(lang: "sql", read("../sql/1e-return.sql"))
+  #raw(lang: "sql", read("../sql/1e-inout.sql"))
 
 + створення процедури оновлення даних в деякій таблиці БД
 
