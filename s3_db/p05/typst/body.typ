@@ -83,28 +83,13 @@
 == Робота з курсорами
 
 + створення курсору
-
-  #text(fill: green)[>] #text(fill: gray)[]
-
-  #raw(lang: "sql", read("../sql/3a-create.sql"))
-
 + відкриття курсору
-
-  #text(fill: green)[>] #text(fill: gray)[]
-
-  #raw(lang: "sql", read("../sql/3b-open.sql"))
-
 + вибірка даних
-
-  #text(fill: green)[>] #text(fill: gray)[]
-
-  #raw(lang: "sql", read("../sql/3c-select.sql"))
-
 + робота з курсорами
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Виконати дії над всіма пропозиціями ефективно використовуючи пам'ять]
 
-  #raw(lang: "sql", read("../sql/3d-work.sql"))
+  #raw(lang: "sql", read("../sql/3abcd-cursor.sql"))
 
 == Робота з тригерами
 
