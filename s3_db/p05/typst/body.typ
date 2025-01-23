@@ -62,19 +62,21 @@
 
 + створити функцію, котра повертає деяке скалярне значення
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Обрахувати кількість пропозицій]
 
   #raw(lang: "sql", read("../sql/2a-scalar.sql"))
 
 + створити функцію, котра повертає таблицю з динамічним набором стовпців
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Знайти пропозиції створені після дати]
+  #footnote[PostgreSQL строго типізована, тому фізично не може повернути таблицю з динамічними стовпцями (в якості альтернативи
+    можна використати json-аггрегатор)]
 
   #raw(lang: "sql", read("../sql/2b-dynamic.sql"))
 
 + створити функцію, котра повертає таблицю наперед заданої структури
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Повернути лише публічні дані про обліковий запис для профілю]
 
   #raw(lang: "sql", read("../sql/2c-table.sql"))
 
