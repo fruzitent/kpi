@@ -95,18 +95,18 @@
 
 + створити тригер, котрий буде спрацьовувати при видаленні даних
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Забезпечити відсутність сиріт у поліморфній сутності]
 
   #raw(lang: "sql", read("../sql/4a-delete.sql"))
 
 + створити тригер, котрий буде спрацьовувати при модифікації даних
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Запобігти зміні типу батьківскього первинного ключа]
 
   #raw(lang: "sql", read("../sql/4b-update.sql"))
 
 + створити тригер, котрий буде спрацьовувати при додаванні даних
 
-  #text(fill: green)[>] #text(fill: gray)[]
+  #text(fill: green)[>] #text(fill: gray)[Запобігти накладкам у розкладі візитів]
 
   #raw(lang: "sql", read("../sql/4c-insert.sql"))
