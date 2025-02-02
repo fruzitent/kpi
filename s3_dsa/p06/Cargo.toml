@@ -1,0 +1,39 @@
+#:schema https://raw.githubusercontent.com/rust-lang/cargo/refs/heads/master/crates/cargo-util-schemas/manifest.schema.json
+# @help: https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+
+[dependencies]
+bevy = { version = "0.15.0", features = ["dynamic_linking", "wayland"] }
+bevy-inspector-egui = { version = "0.28.0", optional = true }
+log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
+
+[dev-dependencies]
+
+[features]
+debug = ["dep:bevy-inspector-egui"]
+
+[package]
+authors = ["fruzitent <fruzit@gmail.com>"]
+description = "s3_dsa/p06"
+edition = "2021"
+license-file = "license.md"
+name = "p06"
+readme = "readme.md"
+repository = "git+https://github.com/fruzitent/kpi.git"
+version = "0.1.0"
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = "s"
+strip = "debuginfo"
