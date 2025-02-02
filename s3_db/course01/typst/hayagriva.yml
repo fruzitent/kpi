@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mkdjr/hayagriva/refs/heads/main/hayagriva.schema.json
+# @help: https://github.com/typst/hayagriva/blob/main/docs/file-format.md
+
+# TODO: https://github.com/typst/hayagriva/pull/192
+
+db_engines_2023:
+  title: "PostgreSQL is the DBMS of the Year 2023"
+  type: "web"
+  url:
+    date: "2024-01-02"
+    value: "https://db-engines.com/en/blog_post/106"
+
+so_survey_2024:
+  title: "Developers want more, more, more: the 2024 results from Stack Overflow Developer Survey"
+  type: "web"
+  url:
+    date: "2024-07-24"
+    value: "https://stackoverflow.blog/2024/07/24/developers-want-more-more-more-the-2024-results-from-stack-overflow-s-annual-developer-survey"
