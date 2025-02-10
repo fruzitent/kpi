@@ -1,0 +1,14 @@
+set windows-shell := ["cmd", "/c"]
+
+_default:
+    @just --list
+
+asm := join(justfile_directory(), "src", "main.asm")
+img := join(justfile_directory(), "target", "release", "main.img")
+
+assemble:
+    mkdir {{ if os_family() == "unix" {"-p"} else {""} }} {{ parent_directory(img) }}
+    nasm -Wall -f bin -o {{ img }} {{ asm }}
+
+qemu *flags:
+    qemu-system-i386 -drive file={{ img }},format=raw -net none {{ flags }}
