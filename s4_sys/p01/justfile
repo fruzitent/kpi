@@ -4,11 +4,31 @@ _default:
     @just --list
 
 asm := join(justfile_directory(), "src", "main.asm")
-img := join(justfile_directory(), "target", "release", "main.img")
+elf := join(justfile_directory(), "target", "debug", "main.elf")
+img := join(justfile_directory(), "target", "debug", "main.img")
+obj := join(justfile_directory(), "target", "debug", "main.obj")
+
+export LD := env("LD", "ld")
+export OBJCOPY := env("OBJCOPY", "objcopy")
 
 assemble:
     mkdir {{ if os_family() == "unix" {"-p"} else {""} }} {{ parent_directory(img) }}
-    nasm -Wall -f bin -o {{ img }} {{ asm }}
+    nasm -Wall -f elf -g -o {{ obj }} {{ asm }}
+    {{ LD }} -Ttext=0x7c00 -m elf_i386 -o {{ elf }} {{ obj }}
+    {{ OBJCOPY }} --output-target binary {{ elf }} {{ img }}
+
+gdbinit := join(justfile_directory(), "src", "gdbinit_real_mode.txt")
+tdesc := join(justfile_directory(), "src", "target.xml")
+
+# @see: https://github.com/mhugo/gdb_init_real_mode/blob/master/gdbinit_real_mode.txt
+# @see: https://github.com/qemu/qemu/blob/v7.2.0/gdb-xml/i386-32bit.xml
+gdb:
+    gdb {{ elf }} \
+        --init-command {{ gdbinit }} \
+        --eval-command "set tdesc filename {{ tdesc }}" \
+        --eval-command "target remote 127.0.0.1:1234" \
+        --eval-command "break _start" \
+        --eval-command "continue"
 
 qemu *flags:
     qemu-system-i386 -drive file={{ img }},format=raw -net none {{ flags }}

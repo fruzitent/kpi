@@ -1,7 +1,11 @@
         bits 16
 ; @see: https://ctyme.com/intr/rb-2270.htm
-        org 0x7c00
+; org 0x7c00
 
+        section .text
+        global _start
+
+_start:
         cli
         hlt
 
