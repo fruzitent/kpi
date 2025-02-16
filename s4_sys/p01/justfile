@@ -20,6 +20,16 @@ assemble:
     {{ LD }} --script {{ ld }} -o {{ elf }} {{ obj }}
     {{ OBJCOPY }} --output-target binary {{ elf }} {{ img }}
 
+[unix]
+deploy:
+    #!/bin/sh
+    set -euo pipefail
+    drives=$(lsblk --nodeps --output "name,size,model" --paths --scsi | tail --lines +2)
+    choice=$(echo "${drives}" | gum choose --header "Select SCSI device" | cut --delimiter " " --fields 1)
+    gum confirm --default=false "Format ${choice}" || exit $?
+    sudo umount ${choice}* 2>/dev/null || true
+    sudo dd bs=4MB conv=fsync if={{ img }} of=${choice} status=progress
+
 gdbinit := join(justfile_directory(), "src", "gdbinit_real_mode.txt")
 tdesc := join(justfile_directory(), "src", "target.xml")
 
