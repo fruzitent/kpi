@@ -6,6 +6,7 @@ _default:
 asm := join(justfile_directory(), "src", "main.asm")
 elf := join(justfile_directory(), "target", "debug", "main.elf")
 img := join(justfile_directory(), "target", "debug", "main.img")
+lst := join(justfile_directory(), "target", "debug", "main.lst")
 obj := join(justfile_directory(), "target", "debug", "main.obj")
 
 export LD := env("LD", "ld")
@@ -13,7 +14,7 @@ export OBJCOPY := env("OBJCOPY", "objcopy")
 
 assemble:
     mkdir {{ if os_family() == "unix" {"-p"} else {""} }} {{ parent_directory(img) }}
-    nasm -Wall -f elf -g -o {{ obj }} {{ asm }}
+    nasm -Wall -f elf -g -l {{ lst }} -o {{ obj }} {{ asm }}
     {{ LD }} -Ttext=0x7c00 -m elf_i386 -o {{ elf }} {{ obj }}
     {{ OBJCOPY }} --output-target binary {{ elf }} {{ img }}
 
