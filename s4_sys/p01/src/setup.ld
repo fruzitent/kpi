@@ -11,15 +11,21 @@ MEMORY {
 
 SECTIONS {
     .text : {
+        PROVIDE(_ld_text_start = .);
         *(.text);
+        PROVIDE(_ld_text_end = .);
     } > mbr
 
     .data : {
+        PROVIDE(_ld_data_start = .);
         *(.data);
+        PROVIDE(_ld_data_end = .);
     } > mbr
 
     .bss : {
+        PROVIDE(_ld_bss_start = .);
         *(.bss);
+        PROVIDE(_ld_bss_end = .);
     } > mbr
 
     /* @see: https://en.wikipedia.org/wiki/Master_boot_record#Partition_table_entries */

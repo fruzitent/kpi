@@ -1,10 +1,20 @@
         bits 16
 
+        extern _ld_bss_end
+        extern _ld_bss_start
+        extern _ld_data_end
+        extern _ld_data_start
+        extern _ld_text_end
+        extern _ld_text_start
+
         section .text
         global _start
 
 _start:
         cli
+
+; TODO: init regs
+        mov sp, stack_top
 
 memset:
         mov byte [dest+0], 0x00
@@ -37,3 +47,5 @@ dest:
 
 stack:
         resb 64
+
+stack_top:
