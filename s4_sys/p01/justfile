@@ -16,7 +16,7 @@ export OBJCOPY := env("OBJCOPY", "objcopy")
 
 assemble:
     mkdir {{ if os_family() == "unix" {"-p"} else {""} }} {{ parent_directory(img) }}
-    nasm -Wall -f elf -g -l {{ lst }} -o {{ obj }} {{ asm }}
+    nasm -Wall -Werror -Wno-reloc-abs-word -f elf -g -l {{ lst }} -o {{ obj }} {{ asm }}
     {{ LD }} --script {{ ld }} -o {{ elf }} {{ obj }}
     {{ OBJCOPY }} --output-target binary {{ elf }} {{ img }}
 
