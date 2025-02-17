@@ -1,0 +1,60 @@
+set windows-shell := ["cmd", "/c"]
+
+_default:
+    @just --list
+
+asm := join("src", "main.asm")
+ld := join("src", "setup.ld")
+
+elf := join("target", "debug", "main.elf")
+img := join("target", "debug", "main.img")
+lst := join("target", "debug", "main.lst")
+obj := join("target", "debug", "main.obj")
+
+export LD := env("LD", "ld")
+export OBJCOPY := env("OBJCOPY", "objcopy")
+
+assemble:
+    mkdir {{ if os_family() == "unix" {"-p"} else {""} }} {{ parent_directory(img) }}
+    nasm -Wall -Werror -Wno-reloc-abs-word -f elf -g -l {{ lst }} -o {{ obj }} {{ asm }}
+    {{ LD }} --script {{ ld }} -o {{ elf }} {{ obj }}
+    {{ OBJCOPY }} --output-target binary {{ elf }} {{ img }}
+
+[unix]
+deploy:
+    #!/bin/sh
+    set -euo pipefail
+    drives=$(lsblk --nodeps --output "name,size,model" --paths --scsi | tail --lines +2)
+    choice=$(echo "${drives}" | gum choose --header "Select SCSI device" | cut --delimiter " " --fields 1)
+    gum confirm --default=false "Format ${choice}" || exit $?
+    sudo umount ${choice}* 2>/dev/null || true
+    sudo dd bs=4MB conv=fsync if={{ img }} of=${choice} status=progress
+
+# @see: https://github.com/mhugo/gdb_init_real_mode/blob/master/gdbinit_real_mode.txt
+gdbinit := join("src", "gdbinit_real_mode.txt")
+# @see: https://github.com/qemu/qemu/blob/v7.2.0/gdb-xml/i386-32bit.xml
+tdesc := join("src", "target.xml")
+
+gdb:
+    gdb {{ elf }} \
+        --init-command {{ gdbinit }} \
+        --eval-command "set tdesc filename {{ tdesc }}" \
+        --eval-command "target remote 127.0.0.1:1234" \
+        --eval-command "break _start" \
+        --eval-command "continue"
+
+qemu *flags:
+    qemu-system-i386 -drive file={{ img }},format=raw -net none {{ flags }}
+
+fonts_dir := join("assets", "fonts")
+typst_flags := "--font-path " + fonts_dir + " --ignore-system-fonts " + "--root " + justfile_directory()
+
+typst_dst := join("target", "typst", "main.pdf")
+typst_src := join("typst", "main.typ")
+
+compile:
+    mkdir -p {{ parent_directory(typst_dst) }}
+    typst compile {{ typst_flags }} {{ typst_src }} {{ typst_dst }}
+
+preview:
+    tinymist preview {{ typst_flags }} {{ typst_src }}
