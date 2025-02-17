@@ -3,13 +3,13 @@ set windows-shell := ["cmd", "/c"]
 _default:
     @just --list
 
-asm := join(justfile_directory(), "src", "main.asm")
-ld := join(justfile_directory(), "src", "setup.ld")
+asm := join("src", "main.asm")
+ld := join("src", "setup.ld")
 
-elf := join(justfile_directory(), "target", "debug", "main.elf")
-img := join(justfile_directory(), "target", "debug", "main.img")
-lst := join(justfile_directory(), "target", "debug", "main.lst")
-obj := join(justfile_directory(), "target", "debug", "main.obj")
+elf := join("target", "debug", "main.elf")
+img := join("target", "debug", "main.img")
+lst := join("target", "debug", "main.lst")
+obj := join("target", "debug", "main.obj")
 
 export LD := env("LD", "ld")
 export OBJCOPY := env("OBJCOPY", "objcopy")
@@ -30,11 +30,11 @@ deploy:
     sudo umount ${choice}* 2>/dev/null || true
     sudo dd bs=4MB conv=fsync if={{ img }} of=${choice} status=progress
 
-gdbinit := join(justfile_directory(), "src", "gdbinit_real_mode.txt")
-tdesc := join(justfile_directory(), "src", "target.xml")
-
 # @see: https://github.com/mhugo/gdb_init_real_mode/blob/master/gdbinit_real_mode.txt
+gdbinit := join("src", "gdbinit_real_mode.txt")
 # @see: https://github.com/qemu/qemu/blob/v7.2.0/gdb-xml/i386-32bit.xml
+tdesc := join("src", "target.xml")
+
 gdb:
     gdb {{ elf }} \
         --init-command {{ gdbinit }} \
