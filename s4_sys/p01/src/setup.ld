@@ -14,6 +14,14 @@ SECTIONS {
         *(.text);
     } > mbr
 
+    .data : {
+        *(.data);
+    } > mbr
+
+    .bss : {
+        *(.bss);
+    } > mbr
+
     /* @see: https://en.wikipedia.org/wiki/Master_boot_record#Partition_table_entries */
     .partition_table : {
         LONG(0x80) /* bootable */
