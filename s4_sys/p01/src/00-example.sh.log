@@ -1,0 +1,251 @@
+$ just assemble qemu -s -S
+mkdir -p target/debug
+nasm -Wall -Werror -Wno-reloc-abs-word -f elf -g -l target/debug/main.lst -o target/debug/main.obj src/main.asm
+ld --script src/setup.ld -o target/debug/main.elf target/debug/main.obj
+objcopy --output-target binary target/debug/main.elf target/debug/main.img
+qemu-system-i386 -drive file=target/debug/main.img,format=raw -net none -s -S
+$ just gdb
+gdb target/debug/main.elf --init-command src/gdbinit_real_mode.txt --eval-command "set tdesc filename src/target.xml" --eval-command "target remote 127.0.0.1:1234" --eval-command "break _start" --eval-command "continue"
+GNU gdb (GDB) 16.2
+Copyright (C) 2024 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-pc-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+
+warning: A handler for the OS ABI "GNU/Linux" is not built into this configuration
+of GDB.  Attempting to continue with the default i8086 settings.
+
+The target architecture is set to "i8086".
+Reading symbols from target/debug/main.elf...
+warning: A handler for the OS ABI "GNU/Linux" is not built into this configuration
+of GDB.  Attempting to continue with the default i8086 settings.
+
+Remote debugging using 127.0.0.1:1234
+---------------------------[ STACK ]---
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+---------------------------[ DS:SI ]---
+00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+---------------------------[ ES:DI ]---
+00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+----------------------------[ CPU ]----
+AX: 0000 BX: 0000 CX: 0000 DX: 0663
+SI: 0000 DI: 0000 SP: 0000 BP: 0000
+CS: F000 DS: 0000 ES: 0000 SS: 0000
+
+IP: FFF0 EIP:0000FFF0
+CS:IP: F000:FFF0 (0xFFFF0)
+SS:SP: 0000:0000 (0x00000)
+SS:BP: 0000:0000 (0x00000)
+OF <0>  DF <0>  IF <0>  TF <0>  SF <0>  ZF <0>  AF <0>  PF <0>  CF <0>
+ID <0>  VIP <0> VIF <0> AC <0>  VM <0>  RF <0>  NT <0>  IOPL <0>
+---------------------------[ CODE ]----
+   0xffff0:	jmp    0xf000:0xe05b
+   0xffff5:	xor    BYTE PTR ds:0x322f,dh
+   0xffff9:	xor    bp,WORD PTR [bx]
+   0xffffb:	cmp    WORD PTR [bx+di],di
+   0xffffd:	add    ah,bh
+   0xfffff:	add    BYTE PTR [bx+si],al
+   0x100001:	add    BYTE PTR [bx+si],al
+   0x100003:	add    BYTE PTR [bx+si],al
+   0x100005:	add    BYTE PTR [bx+si],al
+   0x100007:	add    BYTE PTR [bx+si],al
+0x0000fff0 in ?? ()
+Breakpoint 1 at 0x7c00: file src/main.asm, line 14.
+Continuing.
+---------------------------[ STACK ]---
+D52F F000 0000 0000 6F66 0000 8E89 0000
+8ECA 0000 0000 0000 0000 0000 8E89 0000
+---------------------------[ DS:SI ]---
+00000000: 53 FF 00 F0 53 FF 00 F0 C3 E2 00 F0 53 FF 00 F0  S...S.......S...
+00000010: 53 FF 00 F0 54 FF 00 F0 53 FF 00 F0 53 FF 00 F0  S...T...S...S...
+00000020: A5 FE 00 F0 87 E9 00 F0 4B D9 00 F0 4B D9 00 F0  ........K...K...
+00000030: 4B D9 00 F0 4B D9 00 F0 57 EF 00 F0 4B D9 00 F0  K...K...W...K...
+---------------------------[ ES:DI ]---
+00000000: 53 FF 00 F0 53 FF 00 F0 C3 E2 00 F0 53 FF 00 F0  S...S.......S...
+00000010: 53 FF 00 F0 54 FF 00 F0 53 FF 00 F0 53 FF 00 F0  S...T...S...S...
+00000020: A5 FE 00 F0 87 E9 00 F0 4B D9 00 F0 4B D9 00 F0  ........K...K...
+00000030: 4B D9 00 F0 4B D9 00 F0 57 EF 00 F0 4B D9 00 F0  K...K...W...K...
+----------------------------[ CPU ]----
+AX: AA55 BX: 0000 CX: 0000 DX: 0080
+SI: 0000 DI: 0000 SP: 6F14 BP: 0000
+CS: 0000 DS: 0000 ES: 0000 SS: 0000
+
+IP: 7C00 EIP:00007C00
+CS:IP: 0000:7C00 (0x07C00)
+SS:SP: 0000:6F14 (0x06F14)
+SS:BP: 0000:0000 (0x00000)
+OF <0>  DF <0>  IF <1>  TF <0>  SF <0>  ZF <0>  AF <0>  PF <0>  CF <0>
+ID <0>  VIP <0> VIF <0> AC <0>  VM <0>  RF <0>  NT <0>  IOPL <0>
+---------------------------[ CODE ]----
+=> 0x7c00 <_start>:	cli
+   0x7c01 <_start+1>:	mov    sp,0x7d28
+   0x7c04 <memset>:	mov    BYTE PTR ds:0x7ce4,0x0
+   0x7c09 <memset+5>:	mov    BYTE PTR ds:0x7ce5,0x0
+   0x7c0e <memset+10>:	mov    BYTE PTR ds:0x7ce6,0x0
+   0x7c13 <memset+15>:	mov    BYTE PTR ds:0x7ce7,0x0
+   0x7c18 <memcpy>:	mov    al,ds:0x7ce0
+   0x7c1b <memcpy+3>:	mov    ds:0x7ce7,al
+   0x7c1e <memcpy+6>:	mov    al,ds:0x7ce1
+   0x7c21 <memcpy+9>:	mov    ds:0x7ce6,al
+
+Breakpoint 1, _start () at src/main.asm:14
+14	        cli
+real-mode-gdb$ dump memory ./target/debug/_start.bin *_start *_start+512
+real-mode-gdb$ break *memcpy
+Breakpoint 2 at 0x7c18: file src/main.asm, line 26.
+real-mode-gdb$ c
+Continuing.
+---------------------------[ STACK ]---
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+---------------------------[ DS:SI ]---
+00000000: 53 FF 00 F0 53 FF 00 F0 C3 E2 00 F0 53 FF 00 F0  S...S.......S...
+00000010: 53 FF 00 F0 54 FF 00 F0 53 FF 00 F0 53 FF 00 F0  S...T...S...S...
+00000020: A5 FE 00 F0 87 E9 00 F0 4B D9 00 F0 4B D9 00 F0  ........K...K...
+00000030: 4B D9 00 F0 4B D9 00 F0 57 EF 00 F0 4B D9 00 F0  K...K...W...K...
+---------------------------[ ES:DI ]---
+00000000: 53 FF 00 F0 53 FF 00 F0 C3 E2 00 F0 53 FF 00 F0  S...S.......S...
+00000010: 53 FF 00 F0 54 FF 00 F0 53 FF 00 F0 53 FF 00 F0  S...T...S...S...
+00000020: A5 FE 00 F0 87 E9 00 F0 4B D9 00 F0 4B D9 00 F0  ........K...K...
+00000030: 4B D9 00 F0 4B D9 00 F0 57 EF 00 F0 4B D9 00 F0  K...K...W...K...
+----------------------------[ CPU ]----
+AX: AA55 BX: 0000 CX: 0000 DX: 0080
+SI: 0000 DI: 0000 SP: 7D28 BP: 0000
+CS: 0000 DS: 0000 ES: 0000 SS: 0000
+
+IP: 7C18 EIP:00007C18
+CS:IP: 0000:7C18 (0x07C18)
+SS:SP: 0000:7D28 (0x07D28)
+SS:BP: 0000:0000 (0x00000)
+OF <0>  DF <0>  IF <0>  TF <0>  SF <0>  ZF <0>  AF <0>  PF <0>  CF <0>
+ID <0>  VIP <0> VIF <0> AC <0>  VM <0>  RF <0>  NT <0>  IOPL <0>
+---------------------------[ CODE ]----
+=> 0x7c18 <memcpy>:	mov    al,ds:0x7ce0
+   0x7c1b <memcpy+3>:	mov    ds:0x7ce7,al
+   0x7c1e <memcpy+6>:	mov    al,ds:0x7ce1
+   0x7c21 <memcpy+9>:	mov    ds:0x7ce6,al
+   0x7c24 <memcpy+12>:	mov    al,ds:0x7ce2
+   0x7c27 <memcpy+15>:	mov    ds:0x7ce5,al
+   0x7c2a <memcpy+18>:	mov    al,ds:0x7ce3
+   0x7c2d <memcpy+21>:	mov    ds:0x7ce4,al
+   0x7c30 <_end>:	hlt
+   0x7c31:	add    BYTE PTR [bx+si],al
+
+Breakpoint 2, memcpy () at src/main.asm:26
+26	        mov al, [source+0]
+real-mode-gdb$ dump memory ./target/debug/memcpy.bin *_start *_start+512
+real-mode-gdb$ break *_end
+Breakpoint 3 at 0x7c30: file src/main.asm, line 36.
+real-mode-gdb$ c
+Continuing.
+---------------------------[ STACK ]---
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+---------------------------[ DS:SI ]---
+00000000: 53 FF 00 F0 53 FF 00 F0 C3 E2 00 F0 53 FF 00 F0  S...S.......S...
+00000010: 53 FF 00 F0 54 FF 00 F0 53 FF 00 F0 53 FF 00 F0  S...T...S...S...
+00000020: A5 FE 00 F0 87 E9 00 F0 4B D9 00 F0 4B D9 00 F0  ........K...K...
+00000030: 4B D9 00 F0 4B D9 00 F0 57 EF 00 F0 4B D9 00 F0  K...K...W...K...
+---------------------------[ ES:DI ]---
+00000000: 53 FF 00 F0 53 FF 00 F0 C3 E2 00 F0 53 FF 00 F0  S...S.......S...
+00000010: 53 FF 00 F0 54 FF 00 F0 53 FF 00 F0 53 FF 00 F0  S...T...S...S...
+00000020: A5 FE 00 F0 87 E9 00 F0 4B D9 00 F0 4B D9 00 F0  ........K...K...
+00000030: 4B D9 00 F0 4B D9 00 F0 57 EF 00 F0 4B D9 00 F0  K...K...W...K...
+----------------------------[ CPU ]----
+AX: AA28 BX: 0000 CX: 0000 DX: 0080
+SI: 0000 DI: 0000 SP: 7D28 BP: 0000
+CS: 0000 DS: 0000 ES: 0000 SS: 0000
+
+IP: 7C30 EIP:00007C30
+CS:IP: 0000:7C30 (0x07C30)
+SS:SP: 0000:7D28 (0x07D28)
+SS:BP: 0000:0000 (0x00000)
+OF <0>  DF <0>  IF <0>  TF <0>  SF <0>  ZF <0>  AF <0>  PF <0>  CF <0>
+ID <0>  VIP <0> VIF <0> AC <0>  VM <0>  RF <0>  NT <0>  IOPL <0>
+---------------------------[ CODE ]----
+=> 0x7c30 <_end>:	hlt
+   0x7c31:	add    BYTE PTR [bx+si],al
+   0x7c33:	add    BYTE PTR [bx+si],al
+   0x7c35:	add    BYTE PTR [bx+si],al
+   0x7c37:	add    BYTE PTR [bx+si],al
+   0x7c39:	add    BYTE PTR [bx+si],al
+   0x7c3b:	add    BYTE PTR [bx+si],al
+   0x7c3d:	add    BYTE PTR [bx+si],al
+   0x7c3f:	add    BYTE PTR [bx+si],al
+   0x7c41:	add    BYTE PTR [bx+si],al
+
+Breakpoint 3, _end () at src/main.asm:36
+36	        hlt
+real-mode-gdb$ dump memory ./target/debug/_end.bin *_start *_start+512
+real-mode-gdb$ exit
+Detaching from program: ./target/debug/main.elf, process 1
+Ending remote debugging.
+[Inferior 1 (process 1) detached]
+$ hexyl ./target/debug/_start.bin
+┌────────┬─────────────────────────┬─────────────────────────┬────────┬────────┐
+│00000000│ fa bc 28 7d c6 06 e4 7c ┊ 00 c6 06 e5 7c 00 c6 06 │××(}×•×|┊⋄×•×|⋄×•│
+│00000010│ e6 7c 00 c6 06 e7 7c 00 ┊ a0 e0 7c a2 e7 7c a0 e1 │×|⋄×•×|⋄┊××|××|××│
+│00000020│ 7c a2 e6 7c a0 e2 7c a2 ┊ e5 7c a0 e3 7c a2 e4 7c │|××|××|×┊×|××|××|│
+│00000030│ f4 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │×⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│00000040│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│*       │                         ┊                         │        ┊        │
+│000000e0│ 0a 14 1e 28 3f 3f 3f 3f ┊ 00 00 00 00 00 00 00 00 │_••(????┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│000000f0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│*       │                         ┊                         │        ┊        │
+│000001b0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 80 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄×⋄│
+│000001c0│ 00 00 01 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄•⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│000001d0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│*       │                         ┊                         │        ┊        │
+│000001f0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 55 aa │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄U×│
+└────────┴─────────────────────────┴─────────────────────────┴────────┴────────┘
+$ hexyl ./target/debug/memcpy.bin
+┌────────┬─────────────────────────┬─────────────────────────┬────────┬────────┐
+│00000000│ fa bc 28 7d c6 06 e4 7c ┊ 00 c6 06 e5 7c 00 c6 06 │××(}×•×|┊⋄×•×|⋄×•│
+│00000010│ e6 7c 00 c6 06 e7 7c 00 ┊ a0 e0 7c a2 e7 7c a0 e1 │×|⋄×•×|⋄┊××|××|××│
+│00000020│ 7c a2 e6 7c a0 e2 7c a2 ┊ e5 7c a0 e3 7c a2 e4 7c │|××|××|×┊×|××|××|│
+│00000030│ f4 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │×⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│00000040│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│*       │                         ┊                         │        ┊        │
+│000000e0│ 0a 14 1e 28 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │_••(⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│000000f0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│*       │                         ┊                         │        ┊        │
+│000001b0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 80 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄×⋄│
+│000001c0│ 00 00 01 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄•⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│000001d0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│*       │                         ┊                         │        ┊        │
+│000001f0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 55 aa │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄U×│
+└────────┴─────────────────────────┴─────────────────────────┴────────┴────────┘
+$ hexyl ./target/debug/_end.bin
+┌────────┬─────────────────────────┬─────────────────────────┬────────┬────────┐
+│00000000│ fa bc 28 7d c6 06 e4 7c ┊ 00 c6 06 e5 7c 00 c6 06 │××(}×•×|┊⋄×•×|⋄×•│
+│00000010│ e6 7c 00 c6 06 e7 7c 00 ┊ a0 e0 7c a2 e7 7c a0 e1 │×|⋄×•×|⋄┊××|××|××│
+│00000020│ 7c a2 e6 7c a0 e2 7c a2 ┊ e5 7c a0 e3 7c a2 e4 7c │|××|××|×┊×|××|××|│
+│00000030│ f4 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │×⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│00000040│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│*       │                         ┊                         │        ┊        │
+│000000e0│ 0a 14 1e 28 28 1e 14 0a ┊ 00 00 00 00 00 00 00 00 │_••((••_┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│000000f0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│*       │                         ┊                         │        ┊        │
+│000001b0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 80 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄×⋄│
+│000001c0│ 00 00 01 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄•⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│000001d0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 00 00 │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄⋄⋄│
+│*       │                         ┊                         │        ┊        │
+│000001f0│ 00 00 00 00 00 00 00 00 ┊ 00 00 00 00 00 00 55 aa │⋄⋄⋄⋄⋄⋄⋄⋄┊⋄⋄⋄⋄⋄⋄U×│
+└────────┴─────────────────────────┴─────────────────────────┴────────┴────────┘
