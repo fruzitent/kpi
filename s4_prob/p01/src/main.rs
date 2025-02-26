@@ -11,7 +11,13 @@ fn main() {
     for item in ITEMS.iter() {
         *map.entry(item).or_insert(0) += 1;
     }
-    for (key, value) in map.iter() {
-        println!("{key}: {value}")
+
+    let mut builder = tabled::builder::Builder::new();
+    for (i, (key, value)) in map.iter().enumerate() {
+        builder.push_column([format!("x_{i}"), key.to_string(), value.to_string()]);
     }
+
+    let mut table = builder.build();
+    table.with(tabled::settings::Style::modern());
+    println!("{table}");
 }
