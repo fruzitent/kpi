@@ -16,63 +16,75 @@ fn setup_logger() -> Result<(), fern::InitError> {
     Ok(())
 }
 
-pub trait IntoOrd<T> {
-    fn into_ord(self) -> T;
+pub trait IntoOrd {
+    type Output: Ord;
+    fn into_ord(self) -> Self::Output;
 }
 
-impl IntoOrd<i32> for i32 {
-    fn into_ord(self) -> i32 {
+impl IntoOrd for i32 {
+    type Output = i32;
+    fn into_ord(self) -> Self::Output {
         self
     }
 }
 
-impl IntoOrd<ordered_float::OrderedFloat<f32>> for f32 {
-    fn into_ord(self) -> ordered_float::OrderedFloat<f32> {
+impl IntoOrd for f32 {
+    type Output = ordered_float::OrderedFloat<f32>;
+    fn into_ord(self) -> Self::Output {
         self.into()
     }
 }
 
-pub struct Variation<T: Copy + Ord>(std::collections::BTreeMap<T, usize>);
+pub struct Variation<T: IntoOrd>(std::collections::BTreeMap<T::Output, usize>);
 
-impl<T: Copy + Ord> Variation<T> {
+impl<T: IntoOrd> Variation<T> {
+    pub fn get(&self, value: T) -> Option<&usize> {
+        self.0.get(&value.into_ord())
+    }
+
     // TODO: https://en.wikipedia.org/wiki/Histogram#Number_of_bins_and_width
-    fn get_count(&self, total: usize) -> usize {
+    pub fn get_count(&self, total: usize) -> usize {
         let count = total.isqrt();
         log::debug!("n = {count}");
         count
     }
 
-    fn get_first_key(&self) -> Option<T> {
-        self.0.first_key_value().map(|(key, _)| *key)
-    }
-
-    fn get_last_key(&self) -> Option<T> {
-        self.0.last_key_value().map(|(key, _)| *key)
-    }
-
-    fn get_step(&self, count: usize) -> T
-    where
-        T: num_traits::cast::FromPrimitive
-            + std::fmt::Display
-            + std::ops::Div<Output = T>
-            + std::ops::Sub<Output = T>,
-    {
-        let x_1 = self.get_first_key().unwrap();
-        let x_k = self.get_last_key().unwrap();
-        let step = (x_k - x_1) / T::from_usize(count).unwrap();
-        log::debug!("h = (x_k - x_1) / m = ({x_k} - {x_1}) / {count} = {step}");
-        step
-    }
-
-    fn get_total(&self) -> usize {
+    pub fn get_total(&self) -> usize {
         let total = self.0.values().sum();
         log::debug!("n = {total}");
         total
     }
 }
 
-impl<T: Copy + Ord, U: Copy + IntoOrd<T>> From<&[U]> for Variation<T> {
-    fn from(items: &[U]) -> Self {
+impl<T: IntoOrd> Variation<T>
+where
+    T::Output: Copy,
+{
+    pub fn get_first_key(&self) -> Option<T::Output> {
+        self.0.first_key_value().map(|(key, _)| *key)
+    }
+
+    pub fn get_last_key(&self) -> Option<T::Output> {
+        self.0.last_key_value().map(|(key, _)| *key)
+    }
+
+    pub fn get_step(&self, count: usize) -> T::Output
+    where
+        T::Output: num_traits::cast::FromPrimitive
+            + std::fmt::Display
+            + std::ops::Div<Output = T::Output>
+            + std::ops::Sub<Output = T::Output>,
+    {
+        let first = self.get_first_key().unwrap();
+        let last = self.get_last_key().unwrap();
+        let step = (last - first) / num_traits::FromPrimitive::from_usize(count).unwrap();
+        log::debug!("h = (x_k - x_1) / m = ({last} - {first}) / {count} = {step}");
+        step
+    }
+}
+
+impl<T: IntoOrd + Copy> From<&[T]> for Variation<T> {
+    fn from(items: &[T]) -> Self {
         Self(items.iter().fold(Default::default(), |mut map, &item| {
             *map.entry(item.into_ord()).or_insert(0) += 1;
             map
@@ -80,7 +92,10 @@ impl<T: Copy + Ord, U: Copy + IntoOrd<T>> From<&[U]> for Variation<T> {
     }
 }
 
-impl<T: Copy + Ord + std::fmt::Display> std::fmt::Display for Variation<T> {
+impl<T: IntoOrd> std::fmt::Display for Variation<T>
+where
+    T::Output: std::fmt::Display,
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut builder = tabled::builder::Builder::new();
         for (i, (key, value)) in self.0.iter().enumerate() {
@@ -143,7 +158,7 @@ mod tests {
             (0.99, 2),
         ];
         for (value, count) in EXPECTED.iter() {
-            assert_eq!(*series.0.get(value.into()).unwrap(), *count);
+            assert_eq!(*series.get(*value).unwrap(), *count);
         }
         let total = series.get_total();
         assert_eq!(total, 40);
