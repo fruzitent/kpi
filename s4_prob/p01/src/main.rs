@@ -1,23 +1,27 @@
-pub struct Variation<T: Copy + Ord>(std::collections::BTreeMap<T, usize>);
+pub trait IntoOrd<T> {
+    fn into_ord(self) -> T;
+}
 
-impl<T: Copy + Ord> Variation<T> {
-    fn new(items: &[T]) -> Self {
-        Self(items.iter().fold(Default::default(), |mut map, &item| {
-            *map.entry(item).or_insert(0) += 1;
-            map
-        }))
+impl IntoOrd<i32> for i32 {
+    fn into_ord(self) -> i32 {
+        self
     }
 }
 
-impl Variation<ordered_float::OrderedFloat<f32>> {
-    pub fn new_f32(items: &[f32]) -> Self {
-        Self::new(
-            &items
-                .iter()
-                .copied()
-                .map(ordered_float::OrderedFloat)
-                .collect::<Vec<_>>(),
-        )
+impl IntoOrd<ordered_float::OrderedFloat<f32>> for f32 {
+    fn into_ord(self) -> ordered_float::OrderedFloat<f32> {
+        self.into()
+    }
+}
+
+pub struct Variation<T: Copy + Ord>(std::collections::BTreeMap<T, usize>);
+
+impl<T: Copy + Ord> Variation<T> {
+    fn new<U: Copy + IntoOrd<T>>(items: &[U]) -> Self {
+        Self(items.iter().fold(Default::default(), |mut map, &item| {
+            *map.entry(item.into_ord()).or_insert(0) += 1;
+            map
+        }))
     }
 }
 
@@ -55,7 +59,7 @@ mod tests {
             0.90, 0.94, 0.85, 0.81, 0.87, 0.85, 0.90, 0.82,
             0.99, 0.90, 0.94, 0.82, 0.97, 0.81, 0.85, 0.87,
         ];
-        let series = Variation::new_f32(ITEMS);
+        let series = Variation::new(ITEMS);
         const EXPECTED: &[(f32, usize)] = &[
             (0.81, 3),
             (0.82, 4),
