@@ -1,0 +1,28 @@
+_default:
+    @just --list
+
+export STACK := env_var_or_default("STACK", "s3_db-exam01")
+
+PSQL_SRV := STACK + "_psql-primary"
+PSQL_SEC := "psql_pswd"
+
+CID := "docker service ps --quiet $1 | xargs docker inspect --format {{.Status.ContainerStatus.ContainerID}}"
+IID := "docker service ps --quiet $1 | xargs docker inspect --format {{.Spec.ContainerSpec.Image}}"
+SECRET := "docker exec $1 cat /run/secrets/$2"
+
+deploy:
+    docker stack deploy --compose-file "./docker/compose.yml" --detach=false "{{STACK}}"
+
+exec cid=shell(CID, PSQL_SRV) iid=shell(IID, PSQL_SRV) secret=shell(SECRET, cid, PSQL_SEC):
+    docker run --rm -it --add-host "host.docker.internal:host-gateway" --env "PGPASSWORD={{secret}}" "{{iid}}" \
+    psql --host "host.docker.internal" --port 5432 --username "postgres"
+
+init:
+    -docker swarm init
+    -openssl rand -base64 32 | docker secret create "{{STACK}}_psql_pswd" -
+
+rm:
+    docker stack rm --detach=false "{{STACK}}"
+
+rmv:
+    docker volume ls --filter "label=com.docker.stack.namespace={{STACK}}" --quiet | xargs --no-run-if-empty docker volume rm --force
