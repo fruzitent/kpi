@@ -26,3 +26,16 @@ rm:
 
 rmv:
     docker volume ls --filter "label=com.docker.stack.namespace={{STACK}}" --quiet | xargs --no-run-if-empty docker volume rm --force
+
+fonts_dir := join("assets", "fonts")
+typst_flags := "--font-path " + fonts_dir + " --ignore-system-fonts " + "--root " + justfile_directory()
+
+typst_dst := join("target", "typst", "main.pdf")
+typst_src := join("typst", "main.typ")
+
+compile:
+    mkdir -p {{ parent_directory(typst_dst) }}
+    typst compile {{ typst_flags }} {{ typst_src }} {{ typst_dst }}
+
+preview:
+    tinymist preview {{ typst_flags }} {{ typst_src }}
