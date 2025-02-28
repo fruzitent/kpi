@@ -6,12 +6,63 @@
 
 = SQL-таблиці
 
-#figure(caption: [Назва], table(
+#figure(caption: [member - гравець кіберспортивної команди], table(
   align: horizon,
   columns: 3,
   inset: 0.75em,
   ..([Атрибут], [Тип], [Опис]),
-  ..([foo], [bar], [baz]),
+  ..([date_of_birth], [timestamptz], [Дата народження]),
+  ..([first_name], [text], [Ім'я]),
+  ..([last_name], [text], [Фамілія]),
+  ..([member_id], [primary key], [Ідентифікатор]),
+  ..([user_name], [text], [Псевдонім]),
+))
+
+#figure(caption: [team - кіберспортивна команда], table(
+  align: horizon,
+  columns: 3,
+  inset: 0.75em,
+  ..([Атрибут], [Тип], [Опис]),
+  ..([description], [text], [Короткий опис]),
+  ..([team_id], [primary key], [Ідентифікатор]),
+  ..([team_name], [text], [Назва]),
+))
+
+#figure(caption: [member_team - співставлення гравців до команд], table(
+  align: horizon,
+  columns: 3,
+  inset: 0.75em,
+  ..([Атрибут], [Тип], [Опис]),
+  ..([member_id], [foreign key], [Сутність гравця]),
+  ..([team_id], [foreign key], [Сутність команди]),
+))
+
+#figure(caption: [game - гра, з якої проводять кіберспортивний турнір], table(
+  align: horizon,
+  columns: 3,
+  inset: 0.75em,
+  ..([Атрибут], [Тип], [Опис]),
+  ..([game_id], [primary key], [Ідентифікатор]),
+  ..([game_name], [text], [Назва]),
+  ..([max_players], [bigint], [Максимальна кількість гравців]),
+  ..([min_players], [bigint], [Мінімальна кількість гравців]),
+))
+
+#figure(caption: [match - турнірний матч], table(
+  align: horizon,
+  columns: 3,
+  inset: 0.75em,
+  ..([Атрибут], [Тип], [Опис]),
+  ..([bracket], [bracket], [Дужка]),
+  ..([match_id], [primary key], [Ідентифікатор]),
+))
+
+#figure(caption: [schedule - планувальник матчів], table(
+  align: horizon,
+  columns: 3,
+  inset: 0.75em,
+  ..([Атрибут], [Тип], [Опис]),
+  ..([schedule_id], [primary key], [Ідентифікатор]),
 ))
 
 #raw(lang: "sql", read("../sql/00-initdb.sql"))
