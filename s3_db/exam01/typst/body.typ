@@ -48,12 +48,25 @@
   ..([min_players], [bigint], [Мінімальна кількість гравців]),
 ))
 
+#figure(caption: [event - сутність турніру], table(
+  align: horizon,
+  columns: 3,
+  inset: 0.75em,
+  ..([Атрибут], [Тип], [Опис]),
+  ..([event_id], [primary key], [Ідентифікатор]),
+  ..([event_name], [text], [Назва]),
+  ..([game_id], [foreign key], [Гра з якої проводиться змагання]),
+  ..([location], [text], [Розташування]),
+  ..([scheduled_at], [timestamptz], [Запланований час початку]),
+))
+
 #figure(caption: [match - турнірний матч], table(
   align: horizon,
   columns: 3,
   inset: 0.75em,
   ..([Атрибут], [Тип], [Опис]),
   ..([bracket], [bracket], [Дужка]),
+  ..([event_id], [foreign key], [Сутність турніру]),
   ..([match_id], [primary key], [Ідентифікатор]),
 ))
 

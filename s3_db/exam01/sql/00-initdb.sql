@@ -6,7 +6,7 @@ create table public.member (
     first_name text not null,
     last_name text not null,
     member_id bigint not null generated always as identity primary key,
-    user_name text not null
+    user_name text not null unique
 );
 
 drop table if exists public.team;
@@ -32,6 +32,16 @@ create table public.game (
     min_players bigint not null default 1
 );
 
+drop table if exists public.event;
+create table public.event (
+    event_id bigint not null generated always as identity primary key,
+    event_name text not null,
+    game_id bigint not null references public.game (game_id) no delete cascade,
+    location text not null, -- TODO: PostGIS
+    scheduled_at timestamp with time zone not null,
+    url text
+);
+
 drop type if exists public.bracket;
 create type public.bracket as enum (
     'loser',
@@ -41,6 +51,7 @@ create type public.bracket as enum (
 drop table if exists public.match;
 create table public.match (
     bracket bracket not null,
+    event_id bigint not null,
     match_id bigint not null generated always as identity primary key
 );
 

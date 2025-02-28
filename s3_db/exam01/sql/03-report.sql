@@ -1,7 +1,7 @@
 -- top-5 /w avg since last 3 years
 
-drop procedure if exists foo;
-create procedure foo as
+drop procedure if exists public.foo;
+create procedure pubic.foo as
 $$
 declare
     _cursor cursor for select * from foo;
@@ -15,4 +15,4 @@ begin
 end;
 $$ language plpgsql;
 
-call foo();
+call public.foo();
